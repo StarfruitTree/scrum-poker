@@ -1,18 +1,41 @@
 {
-  "name": "Test",
+  "name": "scrum-poker",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server",
-    "build": "webpack --mode production --config webpack.prod.js"
-  },
-  "keywords": [],
-  "author": "",
+  "description": "Scrum planing remotely never be so easy.",
+  "repository": "https://github.com/StarfruitTree/scrum-poker.git",
+  "homepage": "https://starfruittree.github.io/scrum-poker/",
+  "author": "StarfruitTree",
   "license": "ISC",
+  "private": true,
+  "keywords": [],
+  "scripts": {
+    "dev": "webpack-dev-server --open --config webpack.dev.ts",
+    "build": "webpack --mode production --config webpack.prod.ts",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "jest --coverage && open ./coverage/lcov-report/index.html",
+    "deploy": "gh-pages -d dist"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "moduleNameMapper": {
+      "^@scrpoker(.*)": "<rootDir>/src/$1"
+    },
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)?$": "ts-jest"
+    }
+  },
   "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "@types/mini-css-extract-plugin": "^0.9.1",
     "@types/react-dom": "^16.9.8",
+    "@types/webpack-dev-server": "^3.11.0",
+    "babel-jest": "^26.3.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^7.7.0",
     "eslint-config-airbnb": "^18.2.0",
@@ -25,10 +48,14 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.1.0",
+    "gh-pages": "^3.1.0",
     "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.4.2",
     "mini-css-extract-plugin": "^0.10.0",
     "prettier": "^2.1.0",
+    "ts-jest": "^26.3.0",
     "ts-loader": "^8.0.3",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.2",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
