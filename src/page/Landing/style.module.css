@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+hr {
+  margin: 15px 0px;
+}
+
+p {
+  margin: 5px 0px;
+}

@@ -12,7 +12,17 @@ const config: Configuration = {
   },
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json', '.gif', '.png', '.jpg', '.jpeg', '.svg'],
+    extensions: [
+      '.ts',
+      '.tsx',
+      '.js',
+      '.json',
+      '.gif',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.svg',
+    ],
     alias: {
       '@scrpoker': resolve(__dirname, 'src'),
     },
