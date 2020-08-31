@@ -1,4 +1,4 @@
 import Button from './Button';
-import Navbar from './Navbar';
+import Typo from './Typo';
 
-export { Button, Navbar };
+export { Button, Typo };

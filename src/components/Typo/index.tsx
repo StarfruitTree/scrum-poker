@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 
-interface Typo {
-  type: keyof JSX.IntrinsicElements;
+interface Props {
+  type?: keyof JSX.IntrinsicElements;
+  className?: keyof JSX.IntrinsicElements;
 }
 
-export default function Typo({ type, children }: Typo) {
+const Typo: React.FC<Props> = ({ type, children, className }) => {
   const Component = type || 'p';
-  return <Component>{children}</Component>;
-}
+  return <Component className={className}>{children}</Component>;
+};
+
+export default Typo;

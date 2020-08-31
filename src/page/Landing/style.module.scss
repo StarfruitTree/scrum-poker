@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  div {
+    hr {
+      margin: 15px 0px;
+    }
+
+    p {
+      margin: 10px 0px;
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .container > div {
+    width: 90%;
+  }
+}
