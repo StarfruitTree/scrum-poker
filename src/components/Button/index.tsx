@@ -3,7 +3,7 @@ import Style from './style.module.scss';
 
 interface Props {
   buttonType: string;
-  iconClassName: string;
+  iconClassName?: string;
 }
 
 const Button: React.FC<Props> = ({ buttonType, iconClassName, children }) => {
