@@ -10,7 +10,7 @@ export default function LandingPage() {
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
         <Button
-          className={style['custom-button']}
+          className={style.customButton}
           icon="arrow-right"
           type="primary"
         >

@@ -8,14 +8,13 @@ interface Props {
   className?: string;
 }
 
-const Button: React.FC<Props> = ({ type, icon, children, className }) => {
-  const classes =
-    className === undefined ? style[type] : style[type] + ' ' + className;
+const Button: React.FC<Props> = ({ type, icon, children, className = '' }) => {
+  const classes = `${style[type]} ${className}`;
 
   return (
     <button className={classes} type="button">
       <span>{children}</span>
-      {icon && <Icon icon={icon} />}
+      {icon && <Icon name={icon} />}
     </button>
   );
 };

@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
-import LandingPage from './page/Landing';
-import WelcomeForm from './page/Welcome';
+import LandingPage from './pages/Landing';
+import WelcomeForm from './pages/Welcome';
 import './styles/global.scss';
 
 function App() {

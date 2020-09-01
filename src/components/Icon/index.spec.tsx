@@ -4,7 +4,7 @@ import { Icon } from '@scrpoker/components';
 
 describe('<Icon />', () => {
   it('should render an i tag with className="fas fa-arrow-right" when icon="arrow-right"', () => {
-    const component = renderer.create(<Icon icon="arrow-right" />);
+    const component = renderer.create(<Icon name="arrow-right" />);
     const tree = component.toJSON() as ReactTestRendererJSON;
 
     expect(tree.type).toBe('i');

@@ -1,11 +1,11 @@
 import React from 'react';
 
 interface Props {
-  icon: string;
+  name: string;
 }
 
-const Icon: React.FC<Props> = ({ icon }) => {
-  return <i className={'fas fa-' + icon} />;
+const Icon: React.FC<Props> = ({ name }) => {
+  return <i className={'fas fa-' + name} />;
 };
 
 export default Icon;
