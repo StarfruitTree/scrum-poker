@@ -25,6 +25,10 @@
   padding: 10px 30px;
 }
 
+.custom-button {
+  width: 350px;
+}
+
 @media only screen and (max-width: 600px) {
   .form-container {
     box-shadow: none;
@@ -34,7 +38,7 @@
     flex-direction: column;
 
     button {
-      width: 196px;
+      width: 100%;
       margin: 15px 0px;
     }
 

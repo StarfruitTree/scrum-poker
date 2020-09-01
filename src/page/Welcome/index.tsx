@@ -10,8 +10,12 @@ export default function Welcome() {
           <Typo type="h2">Let's get started</Typo>
           <Typo>So, you want to:</Typo>
         </div>
-        <Button buttonType="primary">Create a new room</Button>
-        <Button buttonType="secondary">Join a room</Button>
+        <Button className={Style['custom-button']} buttonType="primary">
+          Create a new room
+        </Button>
+        <Button className={Style['custom-button']} buttonType="secondary">
+          Join a room
+        </Button>
       </div>
     </div>
   );

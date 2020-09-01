@@ -1,37 +1,28 @@
-.primary {
+.primary,
+.secondary {
   display: flex;
   justify-content: center;
   align-items: center;
   outline: none;
-  background-color: #2267f2;
-  color: white;
   box-shadow: 0px 3px 5px #888888;
-  border-color: transparent;
   border-radius: 8px;
   padding: 10px;
   font-size: 1rem;
-  width: 350px;
+  width: 100%;
 
   span {
     flex-grow: 1;
   }
 }
 
+.primary {
+  background-color: #2267f2;
+  color: white;
+  border-color: transparent;
+}
+
 .secondary {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  outline: none;
   background-color: white;
   color: #2267f2;
-  box-shadow: 0px 3px 5px #888888;
   border: 1px solid #2267f2;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 1rem;
-  width: 350px;
-
-  span {
-    flex-grow: 1;
-  }
 }

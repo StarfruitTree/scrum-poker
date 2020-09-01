@@ -9,7 +9,11 @@ export default function LandingPage() {
         <Typo type="h2">Scrum Poker</Typo>
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
-        <Button iconClassName="arrow-right" buttonType="primary">
+        <Button
+          className={Style['custom-button']}
+          iconClassName="arrow-right"
+          buttonType="primary"
+        >
           Get started
         </Button>
       </div>
