@@ -3,10 +3,8 @@ import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
 import Button from '.';
 
 describe('<Button />', () => {
-  it('should render button with className="primary" and children is hello when buttonType="primary"', () => {
-    const component = renderer.create(
-      <Button buttonType="primary">hello</Button>
-    );
+  it('should render button with className="primary" and children is hello when type="primary"', () => {
+    const component = renderer.create(<Button type="primary">hello</Button>);
 
     const tree = component.toJSON() as ReactTestRendererJSON;
 
@@ -15,13 +13,9 @@ describe('<Button />', () => {
     expect(tree.props.className).toBe('primary');
   });
 
-  it('should render button with className="secondary custom-button" and children is hello when buttonType="secondary" and className="custom-button"', () => {
+  it('should render button with className="secondary custom-button" and children is hello when type="secondary" and className="custom-button"', () => {
     const component = renderer.create(
-      <Button
-        iconClassName="arrow-right"
-        className="custom-button"
-        buttonType="secondary"
-      >
+      <Button icon="arrow-right" className="custom-button" type="secondary">
         hello
       </Button>
     );

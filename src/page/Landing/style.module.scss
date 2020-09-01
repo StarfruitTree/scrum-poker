@@ -6,11 +6,11 @@
 
   div {
     hr {
-      margin: 15px 0px;
+      margin: 1rem 0px;
     }
 
     p {
-      margin: 10px 0px;
+      margin: 1rem 0px;
     }
   }
 }
@@ -21,6 +21,6 @@
 
 @media only screen and (max-width: 600px) {
   .container > div {
-    width: 90%;
+    padding: 1.5rem;
   }
 }
