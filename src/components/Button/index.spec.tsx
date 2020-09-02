@@ -20,7 +20,7 @@ describe('<Button />', () => {
       </Button>
     );
 
-    let tree = component.toJSON() as renderer.ReactTestRendererJSON;
+    const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
     expect(tree.type).toBe('button');
 

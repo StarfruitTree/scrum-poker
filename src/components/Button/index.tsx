@@ -1,6 +1,6 @@
 import React from 'react';
-import style from './style.module.scss';
 import { Icon } from '@scrpoker/components';
+import style from './style.module.scss';
 
 interface Props {
   type: string;

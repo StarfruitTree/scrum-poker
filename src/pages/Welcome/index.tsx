@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button, Typo } from '@scrpoker/components';
+import { Typo, Button } from '@scrpoker/components';
 import style from './style.module.scss';
 
-export default function Welcome() {
+const Welcome: React.FC = () => {
   return (
     <div className={style.container}>
       <div className={style['form-container']}>
         <div>
-          <Typo type="h2">Let's get started</Typo>
+          <Typo type="h2">Let&apos;s get started</Typo>
           <Typo>So, you want to:</Typo>
         </div>
         <Button className={style['custom-button']} type="primary">
@@ -19,4 +19,6 @@ export default function Welcome() {
       </div>
     </div>
   );
-}
+};
+
+export default Welcome;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
 
-export default function LandingPage() {
+const LandingPage: React.FC = () => {
   return (
     <div className={style.container}>
       <div>
@@ -19,4 +19,6 @@ export default function LandingPage() {
       </div>
     </div>
   );
-}
+};
+
+export default LandingPage;

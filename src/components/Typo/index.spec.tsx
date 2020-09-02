@@ -1,11 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Typo from '.';
+import Typo from './index';
 
 describe('<Typo />', () => {
   it('should render h1 without class name when type="h1" and className is undefined and render hello text', () => {
     const component = renderer.create(<Typo type="h1">hello</Typo>);
-    let tree = component.toJSON() as renderer.ReactTestRendererJSON;
+    const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
     expect(tree.type).toBe('h1');
 
@@ -14,7 +14,7 @@ describe('<Typo />', () => {
 
   it('should render p with className="custom" when type is undefined with hello text', () => {
     const component = renderer.create(<Typo className="custom">hello</Typo>);
-    let tree = component.toJSON() as renderer.ReactTestRendererJSON;
+    const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
     expect(tree.type).toBe('p');
 
