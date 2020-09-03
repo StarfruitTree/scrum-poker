@@ -1,12 +1,12 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
-import LandingPage from './page/Landing';
 import './styles/global.scss';
+import { Landing } from './pages';
 
 function App() {
   return (
     <>
-      <LandingPage />
+      <Landing />
     </>
   );
 }

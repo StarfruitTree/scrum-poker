@@ -1,18 +1,24 @@
 import React from 'react';
 import { Button, Typo } from '@scrpoker/components';
-import Style from './style.module.scss';
+import style from './style.module.scss';
 
-export default function LandingPage() {
+const LandingPage: React.FC = () => {
   return (
-    <div className={Style.container}>
+    <div className={style.container}>
       <div>
         <Typo type="h2">Scrum Poker</Typo>
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
-        <Button iconClassName="arrow-right" buttonType="primary">
+        <Button
+          className={style.customButton}
+          icon="arrow-right"
+          type="primary"
+        >
           Get started
         </Button>
       </div>
     </div>
   );
-}
+};
+
+export default LandingPage;

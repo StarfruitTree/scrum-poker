@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 interface Props {
   type?: keyof JSX.IntrinsicElements;
-  className?: keyof JSX.IntrinsicElements;
+  className?: string;
 }
 
 const Typo: React.FC<Props> = ({ type, children, className }) => {
