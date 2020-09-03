@@ -6,7 +6,6 @@ export default merge(config, {
   devtool: 'inline-source-map',
   devServer: {
     historyApiFallback: true,
-    host: '0.0.0.0',
     clientLogLevel: 'none',
     port: 3000,
   },

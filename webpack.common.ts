@@ -12,7 +12,17 @@ const config: Configuration = {
   },
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json', '.gif', '.png', '.jpg', '.jpeg', '.svg'],
+    extensions: [
+      '.ts',
+      '.tsx',
+      '.js',
+      '.json',
+      '.gif',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.svg',
+    ],
     alias: {
       '@scrpoker': resolve(__dirname, 'src'),
     },
@@ -34,6 +44,21 @@ const config: Configuration = {
             options: {
               modules: true,
             },
+          },
+        ],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+            },
+          },
+          {
+            loader: 'sass-loader',
           },
         ],
       },

@@ -1,9 +1,22 @@
 import React from 'react';
+import { Icon } from '@scrpoker/components';
+import style from './style.module.scss';
 
 interface Props {
-  label: string;
+  type: string;
+  icon?: string;
+  className?: string;
 }
 
-export default function Button({ label }: Props) {
-  return <button type="button">{label}</button>;
-}
+const Button: React.FC<Props> = ({ type, icon, children, className = '' }) => {
+  const classes = `${style[type]} ${className}`;
+
+  return (
+    <button className={classes} type="button">
+      <span>{children}</span>
+      {icon && <Icon name={icon} />}
+    </button>
+  );
+};
+
+export default Button;
