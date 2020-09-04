@@ -3,7 +3,7 @@ import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
 import Button from '.';
 
 describe('<Button />', () => {
-  it('should render button with className="secondary custom-button" and children is hello when type="secondary" and className="custom-button"', () => {
+  it('should render button with className="secondary custom-button"', () => {
     const component = renderer.create(
       <Button icon="arrow-right" className="custom-button" type="secondary">
         hello
