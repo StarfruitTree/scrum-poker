@@ -15,6 +15,18 @@
   }
 }
 
+.title {
+  display: flex;
+}
+
+.title > span {
+  border: 1px solid black;
+  border-radius: 12px;
+  padding: 0.3rem;
+  font-size: 0.7rem;
+  margin-left: 0.8rem;
+}
+
 .customButton {
   width: 180px;
 }

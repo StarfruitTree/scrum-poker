@@ -1,4 +1,5 @@
-import Welcome from './Welcome';
-import Landing from './Landing';
+import WelcomePage from './Welcome';
+import LandingPage from './Landing';
+import JoinRoomPage from './JoinRoom';
 
-export { Welcome, Landing };
+export { WelcomePage, LandingPage, JoinRoomPage };
