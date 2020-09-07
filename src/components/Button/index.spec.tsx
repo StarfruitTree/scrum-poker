@@ -17,7 +17,7 @@ describe('<Button />', () => {
     expect(tree.props.className).toBe('secondary custom-button');
   });
 
-  it('should render button with className="secondary"', () => {
+  it('should render button with className="secondary "', () => {
     const component = renderer.create(
       <Button icon="arrow-right" type="secondary">
         hello

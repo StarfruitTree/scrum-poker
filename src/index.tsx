@@ -1,12 +1,12 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
 import './styles/global.scss';
-import { JoinRoomPage } from './pages';
+import { CreateRoomPage } from './pages';
 
 function App() {
   return (
     <>
-      <JoinRoomPage />
+      <CreateRoomPage />
     </>
   );
 }
