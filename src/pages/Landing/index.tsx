@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Typo, Icon } from '@scrpoker/components';
+import { Button, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
 import packagejson from '../../../package.json';
 
