@@ -5,7 +5,7 @@ interface Props {
   className?: string;
 }
 
-const Typo: React.FC<Props> = ({ type, children, className }) => {
+const Typo: React.FC<Props> = ({ type, children, className = '' }) => {
   const Component = type || 'p';
   return <Component className={className}>{children}</Component>;
 };

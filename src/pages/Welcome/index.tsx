@@ -5,7 +5,7 @@ import style from './style.module.scss';
 const Welcome: React.FC = () => {
   return (
     <div className={style.container}>
-      <div className={style['form-container']}>
+      <div className={style['formContainer']}>
         <div>
           <Typo type="h2">Let&apos;s get started</Typo>
           <Typo>So, you want to:</Typo>

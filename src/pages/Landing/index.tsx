@@ -1,12 +1,16 @@
 import React from 'react';
-import { Button, Typo } from '@scrpoker/components';
+import { Button, Typo, Icon } from '@scrpoker/components';
 import style from './style.module.scss';
+import packagejson from '../../../package.json';
 
 const LandingPage: React.FC = () => {
   return (
     <div className={style.container}>
       <div>
-        <Typo type="h2">Scrum Poker</Typo>
+        <div className={style.title}>
+          <Typo type="h2">Scrum Poker </Typo>
+          <Typo type="span">v{packagejson.version}</Typo>
+        </div>
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
         <Button
