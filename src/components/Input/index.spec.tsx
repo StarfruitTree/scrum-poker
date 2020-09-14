@@ -16,7 +16,7 @@ describe('<Input />', () => {
     expect(tree.props.placeholder).toBe('Your name');
   });
 
-  it('should render an input tag with placeholder="Your name" and className=" "', () => {
+  it('should render an input tag with placeholder="Your name" and className=""', () => {
     const component = renderer.create(<Input placeHolder="Your name" />);
     const tree = component.toJSON() as ReactTestRendererJSON;
 

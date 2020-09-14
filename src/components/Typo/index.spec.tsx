@@ -12,7 +12,7 @@ describe('<Typo />', () => {
     expect(tree?.props.className).toBe('');
   });
 
-  it('should render p with className="custom" when type is undefined with hello text', () => {
+  it('should render p tag with className="custom"', () => {
     const component = renderer.create(<Typo className="custom">hello</Typo>);
     const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
