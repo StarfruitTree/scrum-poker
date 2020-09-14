@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Typo, Icon } from '@scrpoker/components';
 import style from './style.module.scss';
-import Package from '../../../package.json';
+import packagejson from '../../../package.json';
 
 const LandingPage: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
       <div>
         <div className={style.title}>
           <Typo type="h2">Scrum Poker </Typo>
-          <Typo type="span">v{Package.version}</Typo>
+          <Typo type="span">v{packagejson.version}</Typo>
         </div>
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
