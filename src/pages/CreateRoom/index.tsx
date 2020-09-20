@@ -1,9 +1,11 @@
 import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const CreateRoom: React.FC = () => {
+  const history = useHistory();
+
   const [userInfo, setUserInfo] = useState({
     host: '',
     description: '',
@@ -21,7 +23,7 @@ const CreateRoom: React.FC = () => {
         method: 'post',
         body: userData,
       }).then((response) => response.json());
-      alert(response);
+      history.push(`/room/${response.code}`);
     } catch (err) {
       console.log(err);
     }

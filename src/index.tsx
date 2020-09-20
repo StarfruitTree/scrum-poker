@@ -1,19 +1,14 @@
 import ReactDOM from 'react-dom';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './styles/global.scss';
 import {
   CreateRoomPage,
   LandingPage,
   JoinRoomPage,
   WelcomePage,
+  RoomPage,
 } from './pages';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useRouteMatch,
-} from 'react-router-dom';
-import { getQueryParams } from './utils';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function App() {
   return (
@@ -30,6 +25,9 @@ function App() {
         </Route>
         <Route path="/room/join" exact>
           <JoinRoomPage />
+        </Route>
+        <Route path="/room/:channel" exact>
+          <RoomPage />
         </Route>
       </Switch>
     </Router>
