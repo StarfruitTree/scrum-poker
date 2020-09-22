@@ -1,16 +1,18 @@
 import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { NameContext } from '../../';
 
 const JoinRoom: React.FC = () => {
+  const context = useContext(NameContext);
   const history = useHistory();
 
-  const [userInfo, setUserInfo] = useState({
+  let userInfo = {
     host: '',
     description: '',
     roomCode: '',
-  });
+  };
 
   const submit = async () => {
     const userData = new FormData();
@@ -29,11 +31,12 @@ const JoinRoom: React.FC = () => {
   };
 
   const nameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({ ...userInfo, host: event.target.value });
+    userInfo = { ...userInfo, host: event.target.value };
+    context.username = event.target.value;
   };
 
   const roomCodeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({ ...userInfo, roomCode: event.target.value });
+    userInfo = { ...userInfo, roomCode: event.target.value };
   };
 
   return (
