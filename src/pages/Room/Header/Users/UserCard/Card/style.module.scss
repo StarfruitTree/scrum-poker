@@ -1,0 +1,22 @@
+.card {
+  width: 64px;
+  height: 90px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  box-shadow: 0 5px 6px #888888;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ready {
+  color: #5aae77;
+  border-color: #5aae77;
+}
+
+.revealed {
+  background-color: #376fe9;
+  border-color: #376fe9;
+  color: white;
+  font-size: 2rem;
+}

@@ -1,0 +1,27 @@
+.roomInfo {
+  .inline {
+    display: inline;
+  }
+
+  .dotted {
+    border-top: 1.3px dashed grey;
+  }
+
+  i {
+    margin-left: 3px;
+  }
+
+  h2,
+  span,
+  p {
+    margin: 0.5rem 0;
+  }
+
+  hr {
+    margin: 0.3rem 0;
+  }
+
+  span {
+    font-weight: 300;
+  }
+}
