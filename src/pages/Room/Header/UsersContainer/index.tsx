@@ -13,7 +13,7 @@ interface Props {
   className?: string;
 }
 
-const Users: React.FC<Props> = ({ users, className = '' }) => {
+const UsersContainer: React.FC<Props> = ({ users, className = '' }) => {
   return (
     <div className={`${style.usersContainer} ${className}`}>
       {users.map((user, index) => (
@@ -29,4 +29,4 @@ const Users: React.FC<Props> = ({ users, className = '' }) => {
   );
 };
 
-export default Users;
+export default UsersContainer;

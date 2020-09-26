@@ -1,7 +1,7 @@
 import React from 'react';
 import RoomInfo from './RoomInfo';
 import style from './style.module.scss';
-import Users from './Users';
+import UsersContainer from './UsersContainer';
 
 const Header: React.FC = () => {
   interface User {
@@ -34,7 +34,7 @@ const Header: React.FC = () => {
         className={style.roomInfo}
       />
 
-      <Users users={users} />
+      <UsersContainer users={users} />
     </div>
   );
 };
