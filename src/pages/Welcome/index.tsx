@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Typo, Button } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Link } from 'react-router-dom';
@@ -17,7 +17,6 @@ const Welcome: React.FC = () => {
           </Button>
         </Link>
         <Link to="/room/join">
-          {' '}
           <Button className={style['custom-button']} type="secondary">
             Join a room
           </Button>

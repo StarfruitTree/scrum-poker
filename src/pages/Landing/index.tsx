@@ -15,7 +15,6 @@ const LandingPage: React.FC = () => {
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
         <Link to="/welcome">
-          {' '}
           <Button
             className={style.customButton}
             icon="arrow-right"

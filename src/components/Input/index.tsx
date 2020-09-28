@@ -17,7 +17,7 @@ const Input: React.FC<Props> = ({
       className={className}
       placeholder={placeholder}
       onChange={onTextChange}
-    ></input>
+    />
   );
 };
 
