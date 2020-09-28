@@ -1,5 +1,6 @@
 import React from 'react';
 import style from './style.module.scss';
+import { Typo } from '@scrpoker/components';
 interface Props {
   letter: string;
   pictureRef?: string;
@@ -19,7 +20,7 @@ const Avatar: React.FC<Props> = ({ letter, pictureRef, className = '' }) => {
       {havePictureRef ? (
         <img src={pictureRef} className={style.picture} />
       ) : (
-        letter
+        <Typo>{letter}</Typo>
       )}
     </div>
   );

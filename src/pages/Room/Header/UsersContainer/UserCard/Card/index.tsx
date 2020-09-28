@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './style.module.scss';
-import { Icon } from '@scrpoker/components';
+import { Icon, Typo } from '@scrpoker/components';
 
 interface Props {
   status: string;
@@ -20,7 +20,7 @@ const Card: React.FC<Props> = ({ status, point, className = '' }) => {
       } ${className}`}
     >
       {status == 'revealed' ? (
-        point
+        <Typo type="h2">{point}</Typo>
       ) : status == 'standBy' ? (
         <Icon name="question" size="fa-lg" />
       ) : (
