@@ -1,8 +1,49 @@
 import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
-import React from 'react';
-
+import React, { useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { NameContext } from '../../';
 const CreateRoom: React.FC = () => {
+  const context = useContext(NameContext);
+
+  const history = useHistory();
+
+  let userInfo = {
+    host: '',
+    description: '',
+    roomName: '',
+  };
+
+  const submit = async () => {
+    const userData = new FormData();
+    userData.append('host', userInfo.host);
+    userData.append('description', userInfo.description);
+    userData.append('roomName', userInfo.roomName);
+
+    try {
+      const response = await fetch('https://localhost:44397/api/rooms/create', {
+        method: 'post',
+        body: userData,
+      }).then((response) => response.json());
+      history.push(`/room/${response.code}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const hostNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    userInfo = { ...userInfo, host: event.target.value };
+    context.username = event.target.value;
+  };
+
+  const teamNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    userInfo = { ...userInfo, roomName: event.target.value };
+  };
+
+  const descriptionHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    userInfo = { ...userInfo, description: event.target.value };
+  };
+
   return (
     <div className={style.container}>
       <div className={style.formContainer}>
@@ -12,12 +53,16 @@ const CreateRoom: React.FC = () => {
           <Icon className={style.userIcon} name="user-circle" size="fa-3x" />
           <Icon className={style.cameraIcon} name="camera" size="fa-lg" />
         </div>
-        <Input placeHolder="Your name" />
-        <Input placeHolder="Your team name" />
-        <Input placeHolder="Description" />
+        <Input onTextChange={hostNameHandler} placeholder="Your name" />
+        <Input onTextChange={teamNameHandler} placeholder="Your team name" />
+        <Input onTextChange={descriptionHandler} placeholder="Description" />
         <div className={style.buttonContainer}>
-          <Button type="primary">Create</Button>
-          <Button type="secondary">Cancel</Button>
+          <Button type="primary" onclick={submit}>
+            Create
+          </Button>
+          <Link to="/welcome">
+            <Button type="secondary">Cancel</Button>
+          </Link>
         </div>
       </div>
     </div>
