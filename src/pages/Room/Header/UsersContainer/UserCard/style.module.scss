@@ -1,0 +1,16 @@
+.userCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  position: absolute;
+  top: 70px;
+  left: 13px;
+}
+
+.username {
+  margin-top: 20px;
+}

@@ -1,0 +1,74 @@
+$default-left-space: 120px;
+@mixin child($n) {
+  &:nth-child(#{$n}) {
+    @if $n == 1 {
+      left: 0;
+    } @else {
+      left: ($n - 1) * $default-left-space;
+    }
+  }
+}
+
+@keyframes onHover {
+  from {
+    top: 0;
+  }
+  to {
+    top: -50px;
+  }
+}
+
+@keyframes onMouseLeft {
+  from {
+    top: -50px;
+  }
+  to {
+    top: 0px;
+  }
+}
+
+.playingCard {
+  position: absolute;
+  width: 130px;
+  height: 200px;
+  background-color: #9b9c9d;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  box-shadow: -6px 0px 5px #888888;
+  font-size: 4rem;
+  top: 0;
+  $elements: 10;
+  @for $i from 1 to $elements {
+    @include child($i);
+  }
+}
+
+.playingCard:not(:hover) {
+  animation: onMouseLeft 0.5s forwards;
+}
+
+.playingCard:hover {
+  animation: onHover 0.5s forwards;
+}
+
+.smallPointTopLeft {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 1.5rem;
+}
+
+.smallPointBottomRight {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 1.5rem;
+}
+
+.chosen {
+  background-color: #376fe9;
+}
