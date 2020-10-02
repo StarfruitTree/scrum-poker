@@ -18,6 +18,7 @@ const JoinRoom: React.FC = () => {
     const userData = new FormData();
     userData.append('username', userInfo.host);
     userData.append('roomCode', userInfo.roomCode);
+    context.action = 'join';
 
     try {
       const response = await fetch('https://localhost:44397/api/rooms/join', {

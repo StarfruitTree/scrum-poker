@@ -27,7 +27,7 @@ namespace scrum_poker_server.HubModels
       Users.Add(host);
     }
 
-    public bool Add(User user)
+    public bool AddUser(User user)
     {
       var userInRoom = Users.FirstOrDefault(u => u.Name == user.Name);
 

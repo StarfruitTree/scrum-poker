@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3mhGqOeeV4frVFeriwzF5lj3sWC5I06v27XR2vlV6lYZkmLHaAPcgkjKf/pw+3rUWkKWJYuHnZhH1PQpPvVR8A==",
+  "dgSpecHash": "S+6/QJhmGGsdStipUKvEGzMSimRLXaGthiaWEqGP08Y9O+KLTCHkGkzCiuVNfzqeuxlRKu4kYuNdFdPWnjy3Eg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\anvpham\\source\\repos\\scrum-poker-server\\scrum-poker-server\\scrum-poker-server.csproj",
+  "projectFilePath": "C:\\Users\\anvpham\\Desktop\\Test\\backend\\scrum-poker-server\\scrum-poker-server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\anvpham\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\anvpham\\.nuget\\packages\\microsoft.bcl.hashcode\\1.1.0\\microsoft.bcl.hashcode.1.1.0.nupkg.sha512",

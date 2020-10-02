@@ -914,11 +914,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\anvpham\\source\\repos\\scrum-poker-server\\scrum-poker-server\\scrum-poker-server.csproj",
+      "projectUniqueName": "C:\\Users\\anvpham\\Desktop\\Test\\backend\\scrum-poker-server\\scrum-poker-server.csproj",
       "projectName": "scrum-poker-server",
-      "projectPath": "C:\\Users\\anvpham\\source\\repos\\scrum-poker-server\\scrum-poker-server\\scrum-poker-server.csproj",
+      "projectPath": "C:\\Users\\anvpham\\Desktop\\Test\\backend\\scrum-poker-server\\scrum-poker-server.csproj",
       "packagesPath": "C:\\Users\\anvpham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\anvpham\\source\\repos\\scrum-poker-server\\scrum-poker-server\\obj\\",
+      "outputPath": "C:\\Users\\anvpham\\Desktop\\Test\\backend\\scrum-poker-server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\anvpham\\AppData\\Roaming\\NuGet\\NuGet.Config",

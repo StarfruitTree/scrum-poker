@@ -19,7 +19,7 @@ const CreateRoom: React.FC = () => {
     userData.append('host', userInfo.host);
     userData.append('description', userInfo.description);
     userData.append('roomName', userInfo.roomName);
-
+    context.action = 'create';
     try {
       const response = await fetch('https://localhost:44397/api/rooms/create', {
         method: 'post',
@@ -38,10 +38,12 @@ const CreateRoom: React.FC = () => {
 
   const teamNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, roomName: event.target.value };
+    context.roomName = event.target.value;
   };
 
   const descriptionHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, description: event.target.value };
+    context.description = event.target.value;
   };
 
   return (

@@ -27,6 +27,14 @@ namespace scrum_poker_server
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+              builder.SetIsOriginAllowed(_ => true)
+                     .AllowAnyMethod()
+                     .AllowAnyHeader()
+                     .AllowCredentials();
+            }));
+
       services.AddControllers();
 
       services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
@@ -44,14 +52,16 @@ namespace scrum_poker_server
         app.UseDeveloperExceptionPage();
       }
 
+      app.UseCors("MyPolicy");
+
       app.UseRouting();
 
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapGet("/", async context =>
               {
-            await context.Response.WriteAsync("Web APIs of scrum poker");
-          });
+                await context.Response.WriteAsync("Web APIs of scrum poker");
+              });
 
         endpoints.MapHub<Room>("/room");
 
