@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import style from './style.module.scss';
-import { useLocation } from 'react-router-dom';
-import { NameContext } from '../../';
+import { UserContext } from '../../';
 import * as signalR from '@microsoft/signalr';
 
 const connection = new signalR.HubConnectionBuilder()
@@ -16,37 +15,63 @@ interface User {
   point: number;
 }
 
+interface Room {
+  roomName: string;
+  description: string;
+}
+
+export const RoomContext = React.createContext({ connection: connection });
+
 const Room: React.FC = () => {
-  const { username, roomName, description, action } = useContext(NameContext);
-
-  const path = useLocation().pathname;
-
-  const roomId = path.substring(6, path.length);
+  const { username, roomId, roomName, description, action } = useContext(
+    UserContext
+  );
 
   const [users, setUsers] = useState([] as User[]);
   const [members, setMembers] = useState(0);
-  const newUserConnectedCallback = (user: User) => {
-    setUsers([...users, user]);
-    let newMembers = members;
-    newMembers++;
-    setMembers(newMembers);
+  const [roomInfo, setRoomInfo] = useState({ roomName: '', description: '' });
+
+  const newUserConnectedCallback = async (data: any) => {
+    setUsers([
+      ...users,
+      { name: data.username, status: data.status, point: data.point },
+    ]);
+    setMembers(data.members);
   };
 
-  const firstTimeJoinCallback = (data: any) => {
-    console.log(data[0]);
-    setUsers([...users, data[0]]);
-    let newMembers = members;
-    newMembers++;
-    setMembers(newMembers);
+  const firstTimeJoinCallback = async (data: any) => {
+    setUsers([...data.users]);
+    setMembers(data.members);
+    setRoomInfo({ roomName: data.roomName, description: data.description });
+  };
+
+  const userStatusChangedCallback = async (user: any) => {
+    console.log(user);
+    const newUsers = users.map((u) => {
+      if (u.name == user.name) {
+        u.point = user.point;
+        u.status = user.status;
+      }
+
+      return u;
+    });
+
+    setUsers(newUsers);
   };
 
   useEffect(() => {
+    // connection.off('newUserConnected');
     connection.on('newUserConnected', newUserConnectedCallback);
-  }, [users]);
+  }, [newUserConnectedCallback]);
+
+  useEffect(() => {
+    connection.off('userStatusChanged');
+    connection.on('userStatusChanged', userStatusChangedCallback);
+  }, [userStatusChangedCallback]);
 
   useEffect(() => {
     connection.on('firstTimeJoin', firstTimeJoinCallback);
-  });
+  }, []);
 
   useEffect(() => {
     connection.start().then(() => {
@@ -63,16 +88,19 @@ const Room: React.FC = () => {
   }, []);
 
   return (
-    <div className={style.pokingRoom}>
-      <Header
-        roomId={roomId}
-        roomName={roomName}
-        description={description}
-        members={members}
-        users={users}
-      />
-      <Footer />
-    </div>
+    <RoomContext.Provider value={{ connection: connection }}>
+      <div className={style.pokingRoom}>
+        <Header
+          roomId={roomId}
+          roomName={roomInfo.roomName}
+          description={roomInfo.description}
+          members={members}
+          users={users}
+          className={style.header}
+        />
+        <Footer />
+      </div>
+    </RoomContext.Provider>
   );
 };
 

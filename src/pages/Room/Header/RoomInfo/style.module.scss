@@ -1,8 +1,4 @@
 .roomInfo {
-  .inline {
-    display: inline;
-  }
-
   .dotted {
     border-top: 1.3px dashed grey;
   }
@@ -11,17 +7,28 @@
     margin-left: 3px;
   }
 
-  h2,
-  span,
-  p {
+  h1 {
     margin: 0.5rem 0;
+    font-weight: 600;
   }
 
   hr {
+    margin: 0.5rem 0;
+  }
+  p {
     margin: 0.3rem 0;
   }
+}
 
-  span {
-    font-weight: 300;
-  }
+.inline {
+  display: inline;
+}
+
+.block {
+  display: block;
+}
+
+.light {
+  font-size: 0.9rem;
+  font-weight: 400;
 }

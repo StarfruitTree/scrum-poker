@@ -23,19 +23,16 @@ namespace scrum_poker_server.HubModels
     {
       Members = 1;
       RoomId = id;
+      RoomName = roomName;
+      Description = description;
       Users = new List<User>();
       Users.Add(host);
     }
 
-    public bool AddUser(User user)
+    public void AddUser(User user)
     {
-      var userInRoom = Users.FirstOrDefault(u => u.Name == user.Name);
-
-      if (userInRoom != null) return false;
-
       Users.Add(user);
       Members++;
-      return true;
     }
 
     public User[] GetUsers()

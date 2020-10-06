@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using scrum_poker_server.HubServices;
 using scrum_poker_server.HubModels;
 
-
 namespace scrum_poker_server.Hubs
 {
   public class Room : Hub
@@ -24,8 +23,9 @@ namespace scrum_poker_server.Hubs
       var room = new PokingRoom(roomId, roomName, description, new User(username, status, point));
       var users = room.GetUsers();
       _roomService.Add(room);
+            var members = room.Members;
 
-      await Clients.Group(roomId).SendAsync("firstTimeJoin", users );
+      await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomId, roomName, description, members } );
     }
 
     public async Task Join(string roomId, string username, string status, int point)
@@ -33,16 +33,25 @@ namespace scrum_poker_server.Hubs
       await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
 
       var room = _roomService.FindRoom(roomId);
-      room.AddUser(new User { 
-          Name = username,
-          Status = status,
-          Point = point
-      });
-      var roomUsers = room.GetUsers();
+            room.AddUser(new User(username, status, 0));
+      var users = room.GetUsers();
 
-      await Clients.Group(roomId).SendAsync("newUserConnected", new { username, status, point });
-      await Clients.Caller.SendAsync("firstTimeJoin", new { room.RoomId, room.RoomName, room.Description, room.Members, roomUsers });
+      var roomName = room.RoomName;
+      var description = room.Description;
+      var members = room.Members;
+
+      await Clients.GroupExcept(roomId, Context.ConnectionId).SendAsync("newUserConnected", new { username, status, point, members });
+      await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomId, roomName, description, members });
     }
+
+    public async Task ChangeStatus(string roomId, string name, string status, int point)
+    {
+            var room = _roomService.FindRoom(roomId);
+            var user = room.Users.FirstOrDefault(u => u.Name == name);
+            user.Status = status;
+            user.Point = point;
+            await Clients.Group(roomId).SendAsync("userStatusChanged", new { name, status, point });
+    } 
 
     public async Task RemoveFromGroup(string groupName)
     {

@@ -2,9 +2,9 @@ import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { NameContext } from '../../';
+import { UserContext } from '../../';
 const CreateRoom: React.FC = () => {
-  const context = useContext(NameContext);
+  const context = useContext(UserContext);
 
   const history = useHistory();
 
@@ -25,6 +25,7 @@ const CreateRoom: React.FC = () => {
         method: 'post',
         body: userData,
       }).then((response) => response.json());
+      context.roomId = response.code;
       history.push(`/room/${response.code}`);
     } catch (err) {
       console.log(err);

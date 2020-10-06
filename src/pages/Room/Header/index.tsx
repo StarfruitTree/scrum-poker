@@ -14,6 +14,7 @@ interface Props {
   roomName: string;
   description: string;
   members: number;
+  className?: string;
   users: User[];
 }
 
@@ -23,9 +24,10 @@ const Header: React.FC<Props> = ({
   description,
   members,
   users,
+  className = '',
 }) => {
   return (
-    <div className={style.header}>
+    <div className={`${style.header} ${className}`}>
       <RoomInfo
         title={roomName}
         description={description}

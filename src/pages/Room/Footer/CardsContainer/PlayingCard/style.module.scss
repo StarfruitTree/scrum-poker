@@ -38,13 +38,21 @@ $default-left-space: 120px;
   align-items: center;
   border-radius: 12px;
   border: 1px solid transparent;
-  box-shadow: -6px 0px 5px #888888;
+  box-shadow: 2px 4px 4px 5px rgba(0, 0, 0, 0.25);
   font-size: 4rem;
   top: 0;
   $elements: 10;
   @for $i from 1 to $elements {
     @include child($i);
   }
+}
+
+.disable {
+  background-color: #9b9c9d;
+}
+
+.enable {
+  background-color: #376fe9;
 }
 
 .playingCard:not(:hover) {
@@ -67,8 +75,4 @@ $default-left-space: 120px;
   bottom: 8px;
   right: 8px;
   font-size: 1.5rem;
-}
-
-.chosen {
-  background-color: #376fe9;
 }

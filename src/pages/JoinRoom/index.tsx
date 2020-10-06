@@ -2,10 +2,10 @@ import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { NameContext } from '../../';
+import { UserContext } from '../../';
 
 const JoinRoom: React.FC = () => {
-  const context = useContext(NameContext);
+  const context = useContext(UserContext);
   const history = useHistory();
 
   let userInfo = {
@@ -38,6 +38,7 @@ const JoinRoom: React.FC = () => {
 
   const roomCodeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, roomCode: event.target.value };
+    context.roomId = event.target.value;
   };
 
   return (

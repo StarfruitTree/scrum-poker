@@ -1,20 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Typo } from '@scrpoker/components';
 import style from './style.module.scss';
-
+import { RoomContext } from '@scrpoker/pages/Room';
+import { UserContext } from '@scrpoker/index';
 interface Props {
   point: number;
-  chosen: boolean;
+  enable: boolean;
   className?: string;
   styles?: string;
 }
 
-const PlayingCard: React.FC<Props> = ({ point, chosen, className = '' }) => {
+const PlayingCard: React.FC<Props> = ({ point, enable, className = '' }) => {
+  const { connection } = useContext(RoomContext);
+  const { username, roomId } = useContext(UserContext);
+
+  async function Send() {
+    connection.send('ChangeStatus', roomId, username, 'revealed', point);
+  }
+
   return (
     <div
       className={`${style.playingCard} ${
-        chosen ? style.chosen : ''
+        enable ? style.enable : style.disable
       } ${className}`}
+      onClick={() => {
+        Send();
+      }}
     >
       <Typo className={style.smallPointTopLeft}>{point}</Typo>
       <Typo className={style.smallPointBottomRight}>{point}</Typo>

@@ -10,8 +10,9 @@ import {
 } from './pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-export const NameContext = React.createContext({
+export const UserContext = React.createContext({
   username: '',
+  roomId: '',
   roomName: '',
   description: '',
   action: '',
@@ -19,8 +20,14 @@ export const NameContext = React.createContext({
 
 function App() {
   return (
-    <NameContext.Provider
-      value={{ username: '', roomName: '', description: '', action: '' }}
+    <UserContext.Provider
+      value={{
+        username: '',
+        roomId: '',
+        roomName: '',
+        description: '',
+        action: '',
+      }}
     >
       <Router>
         <Switch>
@@ -41,7 +48,7 @@ function App() {
           </Route>
         </Switch>
       </Router>
-    </NameContext.Provider>
+    </UserContext.Provider>
   );
 }
 

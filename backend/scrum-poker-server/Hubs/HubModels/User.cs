@@ -15,11 +15,6 @@ namespace scrum_poker_server.HubModels
 
     public int Point { get; set; }
 
-        public User()
-        {
-
-        }
-
     public User(string name, string status, int point = 0)
     {
       Name = name;
