@@ -3,34 +3,36 @@ import RoomInfo from './RoomInfo';
 import style from './style.module.scss';
 import UsersContainer from './UsersContainer';
 
-const Header: React.FC = () => {
-  interface User {
-    name: string;
-    status: string;
-    point?: number;
-  }
+interface User {
+  name: string;
+  status: string;
+  point?: number;
+}
 
-  const users: User[] = [
-    { name: 'Phieu', status: 'standBy' },
-    { name: 'An', status: 'standBy' },
-    { name: 'Hoang', status: 'standBy' },
-    { name: 'Tien', status: 'standBy' },
-    { name: 'Phi', status: 'standBy' },
-    { name: 'Son', status: 'standBy' },
-    { name: 'Hieu', status: 'standBy' },
-    { name: 'Thai', status: 'standBy' },
-    { name: 'Hong', status: 'standBy' },
-    { name: 'Phieu', status: 'standBy' },
-    { name: 'Phieu', status: 'ready' },
-    { name: 'Phieu', status: 'revealed', point: 2 },
-  ];
+interface Props {
+  roomId: string;
+  roomName: string;
+  description: string;
+  members: number;
+  className?: string;
+  users: User[];
+}
+
+const Header: React.FC<Props> = ({
+  roomId,
+  roomName,
+  description,
+  members,
+  users,
+  className = '',
+}) => {
   return (
-    <div className={style.header}>
+    <div className={`${style.header} ${className}`}>
       <RoomInfo
-        title="Tricentis Flood"
-        description="Sprint #53 planning is here, so let's get the party started shall we? Yes..."
-        roomCode="123456"
-        members={12}
+        title={roomName}
+        description={description}
+        roomCode={roomId}
+        members={members}
         className={style.roomInfo}
       />
 

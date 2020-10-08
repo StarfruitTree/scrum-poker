@@ -19,16 +19,19 @@ const RoomInfo: React.FC<Props> = ({
 }) => {
   return (
     <div className={`${style.roomInfo} ${className}`}>
-      <Typo type="h2">{title}</Typo>
+      <Typo type="h1">{title}</Typo>
       <Typo>{description}</Typo>
       <hr className={style.dotted} />
-      <Typo type="span">
+      <Typo className={`${style.inline} ${style.light}`}>
         Room&apos;s code:{' '}
-        <Typo type="h4" className={style.inline}>
+        <Typo type="b" className={style.inline}>
           {roomCode}
         </Typo>
-        <Icon name="copy" size="fa-sm" /> - Members:{' '}
-        <Typo type="h4" className={style.inline}>
+        <Icon name="copy" size="fa-sm" />
+      </Typo>
+      <Typo className={`${style.inline} ${style.light}`}>
+        &nbsp;- Members:{' '}
+        <Typo type="b" className={style.inline}>
           {members}
         </Typo>
       </Typo>

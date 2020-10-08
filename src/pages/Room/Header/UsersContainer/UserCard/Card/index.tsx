@@ -20,7 +20,7 @@ const Card: React.FC<Props> = ({ status, point, className = '' }) => {
       } ${className}`}
     >
       {status == 'revealed' ? (
-        <Typo type="h2">{point}</Typo>
+        <Typo type="h1">{point}</Typo>
       ) : status == 'standBy' ? (
         <Icon name="question" size="fa-lg" />
       ) : (

@@ -2,9 +2,9 @@ import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { NameContext } from '../../';
+import { UserContext } from '../../';
 const CreateRoom: React.FC = () => {
-  const context = useContext(NameContext);
+  const context = useContext(UserContext);
 
   const history = useHistory();
 
@@ -19,12 +19,13 @@ const CreateRoom: React.FC = () => {
     userData.append('host', userInfo.host);
     userData.append('description', userInfo.description);
     userData.append('roomName', userInfo.roomName);
-
+    context.action = 'create';
     try {
       const response = await fetch('https://localhost:44397/api/rooms/create', {
         method: 'post',
         body: userData,
       }).then((response) => response.json());
+      context.roomId = response.code;
       history.push(`/room/${response.code}`);
     } catch (err) {
       console.log(err);
@@ -38,10 +39,12 @@ const CreateRoom: React.FC = () => {
 
   const teamNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, roomName: event.target.value };
+    context.roomName = event.target.value;
   };
 
   const descriptionHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, description: event.target.value };
+    context.description = event.target.value;
   };
 
   return (

@@ -4,19 +4,19 @@ import style from './style.module.scss';
 
 interface PlayingCards {
   point: number;
-  chosen: boolean;
+  enable: boolean;
 }
 
 const Footer: React.FC = () => {
   const cardsInfo: PlayingCards[] = [
-    { point: 0, chosen: false },
-    { point: 1, chosen: false },
-    { point: 2, chosen: false },
-    { point: 3, chosen: false },
-    { point: 5, chosen: false },
-    { point: 8, chosen: false },
-    { point: 13, chosen: false },
-    { point: 21, chosen: false },
+    { point: 0, enable: true },
+    { point: 1, enable: true },
+    { point: 2, enable: true },
+    { point: 3, enable: true },
+    { point: 5, enable: true },
+    { point: 8, enable: true },
+    { point: 13, enable: true },
+    { point: 21, enable: true },
   ];
 
   return (

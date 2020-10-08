@@ -15,7 +15,7 @@ const UserCard: React.FC<Props> = ({ name, status, point, className = '' }) => {
   return (
     <div className={`${style.userCard} ${className}`}>
       <Card status={status} point={point} />
-      <Avatar className={style.avatar} letter={name[0]} />
+      <Avatar className={style.avatar} letter={name[0].toUpperCase()} />
       <Typo className={style.username}>{name}</Typo>
     </div>
   );

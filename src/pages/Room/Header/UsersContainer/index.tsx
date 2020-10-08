@@ -16,9 +16,9 @@ interface Props {
 const UsersContainer: React.FC<Props> = ({ users, className = '' }) => {
   return (
     <div className={`${style.usersContainer} ${className}`}>
-      {users.map((user, index) => (
+      {users.map((user) => (
         <UserCard
-          key={index}
+          key={user.name}
           name={user.name}
           status={user.status}
           point={user.point}
