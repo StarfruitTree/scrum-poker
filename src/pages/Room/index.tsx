@@ -16,6 +16,7 @@ interface User {
 }
 
 interface Room {
+  users: User[];
   roomName: string;
   description: string;
 }
@@ -31,21 +32,22 @@ const Room: React.FC = () => {
   const [members, setMembers] = useState(0);
   const [roomInfo, setRoomInfo] = useState({ roomName: '', description: '' });
 
-  const newUserConnectedCallback = async (data: any) => {
-    setUsers([
-      ...users,
-      { name: data.username, status: data.status, point: data.point },
-    ]);
-    setMembers(data.members);
+  const newUserConnectedCallback = async ({ name, status, point }: User) => {
+    setUsers([...users, { name: name, status: status, point: point }]);
+    setMembers(users.length + 1);
   };
 
-  const firstTimeJoinCallback = async (data: any) => {
-    setUsers([...data.users]);
-    setMembers(data.members);
-    setRoomInfo({ roomName: data.roomName, description: data.description });
+  const firstTimeJoinCallback = async ({
+    users,
+    roomName,
+    description,
+  }: Room) => {
+    setUsers([...users]);
+    setMembers(users.length);
+    setRoomInfo({ roomName: roomName, description: description });
   };
 
-  const userStatusChangedCallback = async (user: any) => {
+  const userStatusChangedCallback = async (user: User) => {
     console.log(user);
     const newUsers = users.map((u) => {
       if (u.name == user.name) {
@@ -60,7 +62,7 @@ const Room: React.FC = () => {
   };
 
   useEffect(() => {
-    // connection.off('newUserConnected');
+    connection.off('newUserConnected');
     connection.on('newUserConnected', newUserConnectedCallback);
   }, [newUserConnectedCallback]);
 
