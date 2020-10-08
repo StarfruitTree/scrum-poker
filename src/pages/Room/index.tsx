@@ -29,12 +29,10 @@ const Room: React.FC = () => {
   );
 
   const [users, setUsers] = useState([] as User[]);
-  const [members, setMembers] = useState(0);
   const [roomInfo, setRoomInfo] = useState({ roomName: '', description: '' });
 
-  const newUserConnectedCallback = async ({ name, status, point }: User) => {
-    setUsers([...users, { name: name, status: status, point: point }]);
-    setMembers(users.length + 1);
+  const newUserConnectedCallback = async (user: User) => {
+    setUsers([...users, user]);
   };
 
   const firstTimeJoinCallback = async ({
@@ -43,7 +41,6 @@ const Room: React.FC = () => {
     description,
   }: Room) => {
     setUsers([...users]);
-    setMembers(users.length);
     setRoomInfo({ roomName: roomName, description: description });
   };
 
@@ -96,7 +93,7 @@ const Room: React.FC = () => {
           roomId={roomId}
           roomName={roomInfo.roomName}
           description={roomInfo.description}
-          members={members}
+          members={users.length}
           users={users}
           className={style.header}
         />
