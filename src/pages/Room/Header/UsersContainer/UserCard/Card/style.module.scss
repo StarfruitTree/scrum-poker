@@ -1,6 +1,8 @@
+$ratio: 0.67;
+$card-height: 90px;
 .card {
-  width: 64px;
-  height: 90px;
+  width: $ratio * $card-height;
+  height: $card-height;
   border: 1px solid #dddddd;
   border-radius: 5px;
   box-shadow: 0 5px 6px #888888;
