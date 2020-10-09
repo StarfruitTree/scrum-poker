@@ -45,7 +45,6 @@ const Room: React.FC = () => {
   };
 
   const userStatusChangedCallback = async (user: User) => {
-    console.log(user);
     const newUsers = users.map((u) => {
       if (u.name == user.name) {
         u.point = user.point;
