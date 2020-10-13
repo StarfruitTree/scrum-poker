@@ -10,7 +10,7 @@ interface User {
 }
 
 interface Props {
-  roomId: string;
+  roomCode: string;
   roomName: string;
   description: string;
   members: number;
@@ -19,22 +19,17 @@ interface Props {
 }
 
 const Header: React.FC<Props> = ({
-  roomId,
+  roomCode,
   roomName,
   description,
   members,
   users,
   className = '',
 }) => {
+  const data = { roomCode, roomName, description, members };
   return (
     <div className={`${style.header} ${className}`}>
-      <RoomInfo
-        title={roomName}
-        description={description}
-        roomCode={roomId}
-        members={members}
-        className={style.roomInfo}
-      />
+      <RoomInfo data={data} className={style.roomInfo} />
 
       <UsersContainer users={users} />
     </div>

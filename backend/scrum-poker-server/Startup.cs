@@ -21,52 +21,54 @@ namespace scrum_poker_server
 
     public Startup(IConfiguration configuration)
     {
-      _configuration = configuration;
+        _configuration = configuration;
     }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
-              builder.SetIsOriginAllowed(_ => true)
-                     .AllowAnyMethod()
-                     .AllowAnyHeader()
-                     .AllowCredentials();
-            }));
+          services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+                {
+                  builder.SetIsOriginAllowed(_ => true)
+                         .AllowAnyMethod()
+                         .AllowAnyHeader()
+                         .AllowCredentials();
+                }));
 
-      services.AddControllers();
+          services.AddControllers();
 
-      services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
+          services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
 
-      services.AddSignalR();
+          services.AddSignalR();
 
-      services.AddSingleton<RoomService>();
+          services.AddSingleton<RoomService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
+          if (env.IsDevelopment())
+          {
+            app.UseDeveloperExceptionPage();
+          }
 
-      app.UseCors("MyPolicy");
+          app.UseHttpsRedirection();
 
-      app.UseRouting();
+          app.UseCors("MyPolicy");
 
-      app.UseEndpoints(endpoints =>
-      {
-        endpoints.MapGet("/", async context =>
-              {
-                await context.Response.WriteAsync("Web APIs of scrum poker");
-              });
+          app.UseRouting();
 
-        endpoints.MapHub<Room>("/room");
+          app.UseEndpoints(endpoints =>
+          {
+            endpoints.MapGet("/", async context =>
+                  {
+                    await context.Response.WriteAsync("Web APIs of scrum poker");
+                  });
 
-        endpoints.MapControllers();
-      });
+            endpoints.MapHub<Room>("/room");
+
+            endpoints.MapControllers();
+          });
     }
   }
 }

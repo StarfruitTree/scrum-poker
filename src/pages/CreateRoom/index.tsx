@@ -25,7 +25,7 @@ const CreateRoom: React.FC = () => {
         method: 'post',
         body: userData,
       }).then((response) => response.json());
-      context.roomId = response.code;
+      context.roomCode = response.code;
       history.push(`/room/${response.code}`);
     } catch (err) {
       console.log(err);

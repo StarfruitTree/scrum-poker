@@ -21,23 +21,23 @@ namespace scrum_poker_server.HubModels
 
     public PokingRoom(string id, string roomName, string description, User host)
     {
-      Members = 1;
-      RoomId = id;
-      RoomName = roomName;
-      Description = description;
-      Users = new List<User>();
-      Users.Add(host);
+          Members = 1;
+          RoomId = id;
+          RoomName = roomName;
+          Description = description;
+          Users = new List<User>();
+          Users.Add(host);
     }
 
     public void AddUser(User user)
     {
-      Users.Add(user);
-      Members++;
+          Users.Add(user);
+          Members++;
     }
 
     public User[] GetUsers()
     {
-      return Users.ToArray();
+          return Users.ToArray();
     }
   }
 }

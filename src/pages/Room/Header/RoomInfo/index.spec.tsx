@@ -6,10 +6,13 @@ describe('<RoomInfo />', () => {
   it('should render a component with className="roomInfo"', () => {
     const component = renderer.create(
       <RoomInfo
-        title="Tricentis Flood"
-        description="Sprint #53 planning is here, so let's get the party started shall we? Yes..."
-        roomCode="123456"
-        members={12}
+        data={{
+          roomName: 'Tricentis Flood',
+          roomCode: '123456',
+          description:
+            "Sprint #53 planning is here, so let's get the party started shall we? Yes...",
+          members: 12,
+        }}
       />
     );
 
@@ -20,10 +23,13 @@ describe('<RoomInfo />', () => {
   it('should render a component with className="roomInfo custom"', () => {
     const component = renderer.create(
       <RoomInfo
-        title="Tricentis Flood"
-        description="Sprint #53 planning is here, so let's get the party started shall we? Yes..."
-        roomCode="123456"
-        members={12}
+        data={{
+          roomName: 'Tricentis Flood',
+          roomCode: '123456',
+          description:
+            "Sprint #53 planning is here, so let's get the party started shall we? Yes...",
+          members: 12,
+        }}
         className="custom"
       />
     );

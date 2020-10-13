@@ -12,10 +12,10 @@ interface Props {
 
 const PlayingCard: React.FC<Props> = ({ point, enable, className = '' }) => {
   const { connection } = useContext(RoomContext);
-  const { username, roomId } = useContext(UserContext);
+  const { username, roomCode } = useContext(UserContext);
 
   async function Send() {
-    connection.send('ChangeStatus', roomId, username, 'revealed', point);
+    connection.send('ChangeStatus', roomCode, username, 'revealed', point);
   }
 
   return (
