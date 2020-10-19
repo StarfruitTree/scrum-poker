@@ -12,7 +12,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 export const UserContext = React.createContext({
   username: '',
-  roomId: '',
+  roomCode: '',
   roomName: '',
   description: '',
   action: '',
@@ -23,7 +23,7 @@ function App() {
     <UserContext.Provider
       value={{
         username: '',
-        roomId: '',
+        roomCode: '',
         roomName: '',
         description: '',
         action: '',

@@ -14,19 +14,19 @@ namespace scrum_poker_server.HubServices
 
     public RoomService()
     {
-      Rooms = new List<PokingRoom>();
+          Rooms = new List<PokingRoom>();
     }
 
     public void Add(PokingRoom newRoom)
     {
-      Rooms.Add(newRoom);
+          Rooms.Add(newRoom);
     }
 
     public PokingRoom FindRoom(string roomId)
     {
-      var room = Rooms.FirstOrDefault(r => r.RoomId == roomId);
-      if (room != null) return room;
-      return null;
+          var room = Rooms.FirstOrDefault(r => r.RoomId == roomId);
+          if (room != null) return room;
+          return null;
     }
   }
 }

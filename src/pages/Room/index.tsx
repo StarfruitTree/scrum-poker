@@ -24,7 +24,7 @@ interface Room {
 export const RoomContext = React.createContext({ connection: connection });
 
 const Room: React.FC = () => {
-  const { username, roomId, roomName, description, action } = useContext(
+  const { username, roomCode, roomName, description, action } = useContext(
     UserContext
   );
 
@@ -75,11 +75,19 @@ const Room: React.FC = () => {
     connection.start().then(() => {
       if (action == 'create') {
         connection
-          .send('create', roomId, roomName, description, username, 'standBy', 0)
+          .send(
+            'create',
+            roomCode,
+            roomName,
+            description,
+            username,
+            'standBy',
+            0
+          )
           .catch((err) => console.log(err));
       } else {
         connection
-          .send('join', roomId, username, 'standBy', 0)
+          .send('join', roomCode, username, 'standBy', 0)
           .catch((err) => console.log(err));
       }
     });
@@ -89,7 +97,7 @@ const Room: React.FC = () => {
     <RoomContext.Provider value={{ connection: connection }}>
       <div className={style.pokingRoom}>
         <Header
-          roomId={roomId}
+          roomCode={roomCode}
           roomName={roomInfo.roomName}
           description={roomInfo.description}
           members={users.length}

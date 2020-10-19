@@ -38,7 +38,7 @@ const JoinRoom: React.FC = () => {
 
   const roomCodeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, roomCode: event.target.value };
-    context.roomId = event.target.value;
+    context.roomCode = event.target.value;
   };
 
   return (
