@@ -11,8 +11,19 @@ namespace scrum_poker_server.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserRoom>().HasKey(userRoom => new { userRoom.UserID, userRoom.RoomId });
+        }
+
         public DbSet<Room> Rooms { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Story> Stories { get; set; }
+
+        public DbSet<UserRoom> UserRooms { get; set; }
+
+        public DbSet<SubmittedPointByUser> SubmittedPointByUsers { get; set; }
     }
 }

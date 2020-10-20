@@ -16,7 +16,7 @@ const CreateRoom: React.FC = () => {
 
   const submit = async () => {
     const userData = new FormData();
-    userData.append('host', userInfo.host);
+    userData.append('hostName', userInfo.host);
     userData.append('description', userInfo.description);
     userData.append('roomName', userInfo.roomName);
     context.action = 'create';
@@ -24,9 +24,16 @@ const CreateRoom: React.FC = () => {
       const response = await fetch('https://localhost:44397/api/rooms/create', {
         method: 'post',
         body: userData,
-      }).then((response) => response.json());
-      context.roomCode = response.code;
-      history.push(`/room/${response.code}`);
+      });
+
+      const data = await response.json();
+
+      if (response.status == 406) {
+        alert(data.error);
+      } else {
+        context.roomCode = data.code;
+        history.push(`/room/${data.code}`);
+      }
     } catch (err) {
       console.log(err);
     }

@@ -24,8 +24,15 @@ const JoinRoom: React.FC = () => {
       const response = await fetch('https://localhost:44397/api/rooms/join', {
         method: 'post',
         body: userData,
-      }).then((response) => response.json());
-      history.push(`/room/${response.code}`);
+      });
+
+      const data = await response.json();
+
+      if (response.status == 406) {
+        alert(data.error);
+      } else {
+        history.push(`/room/${data.code}`);
+      }
     } catch (err) {
       console.log(err);
     }

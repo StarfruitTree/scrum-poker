@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace scrum_poker_server.Models
 {
@@ -20,8 +17,13 @@ namespace scrum_poker_server.Models
         [MaxLength(100)]
         public string Description { get; set; }
 
-        public string Host { get; set; }
+        [ForeignKey("Host")]
+        public int HostId { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        public User Host { get; set; }
+
+        public ICollection<UserRoom> UserRooms { get; set; }
+
+        public ICollection<Story> Stories { get; set; }
     }
 }
