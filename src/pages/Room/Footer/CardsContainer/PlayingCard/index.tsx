@@ -15,7 +15,7 @@ const PlayingCard: React.FC<Props> = ({ point, enable, className = '' }) => {
   const { username, roomCode } = useContext(UserContext);
 
   async function Send() {
-    connection.send('ChangeStatus', roomCode, username, 'revealed', point);
+    connection.send('ChangeUserStatus', roomCode, username, 'revealed', point);
   }
 
   return (

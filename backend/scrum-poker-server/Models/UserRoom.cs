@@ -1,18 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
+﻿using scrum_poker_server.Utils;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace scrum_poker_server.Models
 {
-    public enum Role
-    {
-        Host,
-        Player
-    }
-
     public class UserRoom
     {
         [ForeignKey("User")]
@@ -25,6 +16,7 @@ namespace scrum_poker_server.Models
 
         public Room Room { get; set; }
 
+        [Column(TypeName = "varchar")]
         public Role Role { get; set; }
     }
 }

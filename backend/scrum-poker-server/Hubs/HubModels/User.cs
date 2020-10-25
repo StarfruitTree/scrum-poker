@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using scrum_poker_server.Models;
+using scrum_poker_server.Utils;
 
 namespace scrum_poker_server.HubModels
 {
@@ -15,11 +11,14 @@ namespace scrum_poker_server.HubModels
 
     public int Point { get; set; }
 
-    public User(string name, string status, int point = 0)
+    public Role Role { get; set; }
+
+    public User(string name, string status, Role role, int point = 0)
     {
       Name = name;
       Status = status;
       Point = point;
+      Role = role;
     }
   }
 }

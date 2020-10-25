@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.Models;
+using scrum_poker_server.Utils;
 
 namespace scrum_poker_server.Controllers
 {
@@ -52,7 +53,7 @@ namespace scrum_poker_server.Controllers
                  Code = roomCode, 
                  Name = roomName, 
                  Description = description }, 
-             Role = Role.Host });
+             Role = Role.host });
 
         await _dbContext.SaveChangesAsync();
 
@@ -78,7 +79,7 @@ namespace scrum_poker_server.Controllers
         {
             User = new User { Name = username },
             Room = room,
-            Role = Role.Player
+            Role = Role.player
         });
 
         await _dbContext.SaveChangesAsync();
