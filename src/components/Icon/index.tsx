@@ -6,8 +6,8 @@ interface Props {
   className?: string;
 }
 
-const Icon: React.FC<Props> = ({ name, size, className = '' }) => (
-  <i className={`fas fa-${name} ${size} ${className}`} />
-);
+const Icon: React.FC<Props> = ({ name, size, className = '' }) => {
+  return <i className={`fas fa-${name} ${size} ${className}`} />;
+};
 
 export default Icon;

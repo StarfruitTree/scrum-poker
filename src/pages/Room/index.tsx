@@ -1,77 +1,94 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import Body from './Body';
 import style from './style.module.scss';
-import { UserContext } from '../../';
+import { UserContext } from '@scrpoker/contexts';
 import * as signalR from '@microsoft/signalr';
-
 const connection = new signalR.HubConnectionBuilder()
-  .withUrl(`https://localhost:44397/room`)
+  .withUrl(`https://localhost:5001/room`)
   .build();
 
 interface User {
   name: string;
   status: string;
   point: number;
+  role: number;
 }
 
 interface Room {
   users: User[];
   roomName: string;
   description: string;
+  roomState: string;
 }
 
-export const RoomContext = React.createContext({ connection: connection });
+interface Story {
+  id: number;
+  title: string;
+  content: string;
+  assignee?: string;
+  point?: number;
+}
 
 const Room: React.FC = () => {
-  const { username, roomCode, roomName, description, action } = useContext(
-    UserContext
-  );
-
-  const [users, setUsers] = useState([] as User[]);
-  const [roomInfo, setRoomInfo] = useState({ roomName: '', description: '' });
-
-  const newUserConnectedCallback = async (user: User) => {
-    setUsers([...users, user]);
+  const userContext = useContext(UserContext);
+  userContext.roomConnection = connection;
+  const currentStory: Story = {
+    id: 4,
+    title: 'Implement APIs',
+    content: `In word processing and desktop publishing, a hard return or paragraph break indicates a new paragraph, to be distinguished from the soft return at the end of a line internal to a paragraph. This distinction allows word wrap to automatically re-flow text as it is edited, without losing paragraph breaks. The software may apply vertical white space or indenting at paragraph breaks, depending on the selected style.
+    How such documents are actually stored depends on the file format. For example, HTML uses the <p> tag as a paragraph container. In plaintext files, there are two common formats. Pre-formatted text will have a newline at the end of every physical line, and two newlines at the end of a paragraph, creating a blank line. An alternative is to only put newlines at the end of each paragraph, and leave word wrapping up to the application that displays or processes the text.  
+    A line break that is inserted manually, and preserved when re-flowing, may still be distinct from a paragraph break, although this is typically not done in prose. HTML's <br /> tag produces a line break without ending the paragraph; the W3C recommends using it only to separate lines of verse (where each "paragraph" is a stanza), or in a street address`,
+    assignee: 'Hieu Le',
+    point: 5,
   };
 
-  const firstTimeJoinCallback = async ({
-    users,
+  const stories: Story[] = [
+    {
+      id: 1,
+      title: 'Implement header component',
+      content: 'Must be responsive',
+      assignee: 'An Pham',
+      point: 3,
+    },
+    {
+      id: 2,
+      title: 'Implement body component',
+      content: 'Must be responsive',
+      assignee: 'An Pham',
+      point: 5,
+    },
+    {
+      id: 3,
+      title: 'Implement footer component',
+      content: 'Must be responsive',
+      assignee: 'An Pham',
+      point: 5,
+    },
+    {
+      id: 4,
+      title: 'Implement APIs',
+      content: `In word processing and desktop publishing, a hard return or paragraph break indicates a new paragraph, to be distinguished from the soft return at the end of a line internal to a paragraph. This distinction allows word wrap to automatically re-flow text as it is edited, without losing paragraph breaks. The software may apply vertical white space or indenting at paragraph breaks, depending on the selected style.
+      How such documents are actually stored depends on the file format. For example, HTML uses the <p> tag as a paragraph container. In plaintext files, there are two common formats. Pre-formatted text will have a newline at the end of every physical line, and two newlines at the end of a paragraph, creating a blank line. An alternative is to only put newlines at the end of each paragraph, and leave word wrapping up to the application that displays or processes the text.     
+      A line break that is inserted manually, and preserved when re-flowing, may still be distinct from a paragraph break, although this is typically not done in prose. HTML's <br /> tag produces a line break without ending the paragraph; the W3C recommends using it only to separate lines of verse (where each "paragraph" is a stanza), or in a street address`,
+      assignee: 'Hieu Le',
+      point: 5,
+    },
+  ];
+
+  const {
+    username,
+    roomCode,
     roomName,
     description,
-  }: Room) => {
-    setUsers([...users]);
-    setRoomInfo({ roomName: roomName, description: description });
-  };
-
-  const userStatusChangedCallback = async (user: User) => {
-    const newUsers = users.map((u) => {
-      if (u.name == user.name) {
-        u.point = user.point;
-        u.status = user.status;
-      }
-
-      return u;
-    });
-
-    setUsers(newUsers);
-  };
+    action,
+    roomState,
+    userRole,
+  } = useContext(UserContext);
 
   useEffect(() => {
-    connection.off('newUserConnected');
-    connection.on('newUserConnected', newUserConnectedCallback);
-  }, [newUserConnectedCallback]);
-
-  useEffect(() => {
-    connection.off('userStatusChanged');
-    connection.on('userStatusChanged', userStatusChangedCallback);
-  }, [userStatusChangedCallback]);
-
-  useEffect(() => {
-    connection.on('firstTimeJoin', firstTimeJoinCallback);
-  }, []);
-
-  useEffect(() => {
+    console.log(roomState);
     connection.start().then(() => {
       if (action == 'create') {
         connection
@@ -82,31 +99,28 @@ const Room: React.FC = () => {
             description,
             username,
             'standBy',
-            0
+            0,
+            roomState
           )
           .catch((err) => console.log(err));
       } else {
         connection
-          .send('join', roomCode, username, 'standBy', 0)
+          .send('join', roomCode, username, 'standBy', 0, userRole)
           .catch((err) => console.log(err));
       }
     });
   }, []);
 
   return (
-    <RoomContext.Provider value={{ connection: connection }}>
-      <div className={style.pokingRoom}>
-        <Header
-          roomCode={roomCode}
-          roomName={roomInfo.roomName}
-          description={roomInfo.description}
-          members={users.length}
-          users={users}
-          className={style.header}
-        />
-        <Footer />
-      </div>
-    </RoomContext.Provider>
+    <div className={style.pokingRoom}>
+      <Header className={style.header} />
+      <Body
+        stories={stories}
+        className={style.body}
+        currentStory={currentStory}
+      />
+      <Footer />
+    </div>
   );
 };
 

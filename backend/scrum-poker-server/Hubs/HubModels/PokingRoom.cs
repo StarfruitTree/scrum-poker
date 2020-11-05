@@ -18,16 +18,17 @@ namespace scrum_poker_server.HubModels
 
         public Story CurrentStory { get; set; }
 
-        public RoomState State { get; set; }
+        public string State { get; set; }
 
         public List<User> Users { get; set; }
 
         public List<Story> Stories { get; set; }
 
-        public PokingRoom(string id, string roomName, string description, User host)
+        public PokingRoom(string id, string roomName, string description, User host, string roomState)
         {
             RoomId = id;
             RoomName = roomName;
+            State = roomState;
             Description = description;
             Users = new List<User>();
             Stories = new List<Story>();

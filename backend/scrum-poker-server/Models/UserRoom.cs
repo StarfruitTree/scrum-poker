@@ -1,7 +1,6 @@
 ﻿using scrum_poker_server.Utils;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace scrum_poker_server.Models
 {
     public class UserRoom

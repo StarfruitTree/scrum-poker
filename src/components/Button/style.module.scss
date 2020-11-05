@@ -24,3 +24,9 @@ button {
   color: #2267f2;
   border: 1px solid #2267f2;
 }
+
+.disabled {
+  border-color: transparent;
+  background-color: #9b9c9d;
+  cursor: default;
+}

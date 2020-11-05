@@ -1,0 +1,46 @@
+.story {
+  display: flex;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px #888888;
+  width: 100%;
+  height: 100px;
+  padding: 0.8rem;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: white;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.point {
+  border: 2px solid #5e9cff;
+  border-radius: 5px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #5e9cff;
+  font-weight: 600;
+}
+
+.assignee {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+span {
+  font-weight: 500;
+  margin-left: 0.3rem;
+}

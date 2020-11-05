@@ -2,7 +2,7 @@ import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { UserContext } from '../../';
+import { UserContext } from '@scrpoker/contexts';
 const CreateRoom: React.FC = () => {
   const context = useContext(UserContext);
 
@@ -20,8 +20,10 @@ const CreateRoom: React.FC = () => {
     userData.append('description', userInfo.description);
     userData.append('roomName', userInfo.roomName);
     context.action = 'create';
+    context.userRole = 0;
+    context.roomState = 'waiting';
     try {
-      const response = await fetch('https://localhost:44397/api/rooms/create', {
+      const response = await fetch('https://localhost:5001/api/rooms/create', {
         method: 'post',
         body: userData,
       });
@@ -67,11 +69,13 @@ const CreateRoom: React.FC = () => {
         <Input onTextChange={teamNameHandler} placeholder="Your team name" />
         <Input onTextChange={descriptionHandler} placeholder="Description" />
         <div className={style.buttonContainer}>
-          <Button type="primary" onclick={submit}>
+          <Button disabled={false} type="primary" onclick={submit}>
             Create
           </Button>
           <Link to="/welcome">
-            <Button type="secondary">Cancel</Button>
+            <Button disabled={false} type="secondary">
+              Cancel
+            </Button>
           </Link>
         </div>
       </div>

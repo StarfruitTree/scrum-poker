@@ -2,10 +2,10 @@ import { Button, Icon, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { UserContext } from '../../';
+import { UserContext } from '@scrpoker/contexts';
 
 const JoinRoom: React.FC = () => {
-  const context = useContext(UserContext);
+  const userContext = useContext(UserContext);
   const history = useHistory();
 
   let userInfo = {
@@ -18,10 +18,10 @@ const JoinRoom: React.FC = () => {
     const userData = new FormData();
     userData.append('username', userInfo.host);
     userData.append('roomCode', userInfo.roomCode);
-    context.action = 'join';
-
+    userContext.action = 'join';
+    userContext.userRole = 1;
     try {
-      const response = await fetch('https://localhost:44397/api/rooms/join', {
+      const response = await fetch('https://localhost:5001/api/rooms/join', {
         method: 'post',
         body: userData,
       });
@@ -31,6 +31,9 @@ const JoinRoom: React.FC = () => {
       if (response.status == 406) {
         alert(data.error);
       } else {
+        console.log(data);
+        userContext.roomName = data.roomName;
+        userContext.description = data.description;
         history.push(`/room/${data.code}`);
       }
     } catch (err) {
@@ -40,12 +43,12 @@ const JoinRoom: React.FC = () => {
 
   const nameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, host: event.target.value };
-    context.username = event.target.value;
+    userContext.username = event.target.value;
   };
 
   const roomCodeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, roomCode: event.target.value };
-    context.roomCode = event.target.value;
+    userContext.roomCode = event.target.value;
   };
 
   return (
@@ -60,11 +63,13 @@ const JoinRoom: React.FC = () => {
         <Input onTextChange={nameHandler} placeholder="Your name" />
         <Input onTextChange={roomCodeHandler} placeholder="Room's code" />
         <div className={style.buttonContainer}>
-          <Button onclick={submit} type="primary">
+          <Button disabled={false} onclick={submit} type="primary">
             Join
           </Button>
           <Link to="/welcome">
-            <Button type="secondary">Cancel</Button>
+            <Button disabled={false} type="secondary">
+              Cancel
+            </Button>
           </Link>
         </div>
       </div>

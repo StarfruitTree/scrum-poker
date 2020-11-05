@@ -16,6 +16,7 @@ const LandingPage: React.FC = () => {
         <hr />
         <Link to="/welcome">
           <Button
+            disabled={false}
             className={style.customButton}
             icon="arrow-right"
             type="primary"

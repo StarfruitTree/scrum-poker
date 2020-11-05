@@ -10,11 +10,4 @@ namespace scrum_poker_server.Utils
         host,
         player
     }
-
-    public enum RoomState
-    {
-        waiting,
-        playing,
-        revealed
-    }
 }

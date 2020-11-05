@@ -45,15 +45,20 @@ namespace scrum_poker_server.Controllers
           if (room == null) isRoomExisted = false;
         }
 
-         var host = new User { Name = hostName };
+        var host = new User { Name = hostName };
 
-         _dbContext.UserRooms.Add(new UserRoom { 
-             User = host, 
-             Room = new Room { Host = host,
-                 Code = roomCode, 
-                 Name = roomName, 
-                 Description = description }, 
-             Role = Role.host });
+        _dbContext.UserRooms.Add(new UserRoom
+        {
+          User = host,
+          Room = new Room
+          {
+            Host = host,
+            Code = roomCode,
+            Name = roomName,
+            Description = description
+          },
+          Role = Role.host
+        });
 
         await _dbContext.SaveChangesAsync();
 
@@ -73,18 +78,18 @@ namespace scrum_poker_server.Controllers
 
         var userRoom = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == username);
 
-        if(userRoom != null) return StatusCode(406, new { error = "The username is already existed in this room" });
+        if (userRoom != null) return StatusCode(406, new { error = "The username is already existed in this room" });
 
         _dbContext.UserRooms.Add(new UserRoom
         {
-            User = new User { Name = username },
-            Room = room,
-            Role = Role.player
+          User = new User { Name = username },
+          Room = room,
+          Role = Role.player
         });
 
         await _dbContext.SaveChangesAsync();
 
-        return Ok(new { code = roomCode });
+        return Ok(new { code = roomCode, roomName = room.Name, description = room.Description });
       }
       else return StatusCode(422);
     }

@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import './styles/global.scss';
 import {
   CreateRoomPage,
@@ -9,26 +9,24 @@ import {
   RoomPage,
 } from './pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
-export const UserContext = React.createContext({
-  username: '',
-  roomCode: '',
-  roomName: '',
-  description: '',
-  action: '',
-});
+import { UserContext } from '@scrpoker/contexts';
 
 function App() {
+  const [globalState, setGlobalState] = useState({
+    username: '',
+    userRole: 0,
+    roomCode: '',
+    roomName: '',
+    roomState: '',
+    description: '',
+    action: '',
+    point: -1,
+    roomConnection: {},
+    selectedCard: -1,
+  });
+
   return (
-    <UserContext.Provider
-      value={{
-        username: '',
-        roomCode: '',
-        roomName: '',
-        description: '',
-        action: '',
-      }}
-    >
+    <UserContext.Provider value={{ ...globalState, setGlobalState }}>
       <Router>
         <Switch>
           <Route path="/" exact>

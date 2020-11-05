@@ -1,11 +1,13 @@
 import React from 'react';
-import { Icon } from '@scrpoker/components';
+import { Icon, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
+
 interface Props {
   type: string;
   icon?: string;
   className?: string;
   onclick?: () => void;
+  disabled: boolean;
 }
 
 const Button: React.FC<Props> = ({
@@ -14,12 +16,20 @@ const Button: React.FC<Props> = ({
   children,
   className = '',
   onclick,
+  disabled,
 }) => {
-  const classes = `${style[type]} ${className}`;
-
   return (
-    <button onClick={onclick} className={classes} type="button">
-      <span>{children}</span>
+    <button
+      onClick={onclick}
+      className={
+        disabled
+          ? `${style.disabled} ${className}`
+          : `${style[type]} ${className}`
+      }
+      type="button"
+      disabled={disabled}
+    >
+      <Typo type="span">{children}</Typo>
       {icon && <Icon name={icon} />}
     </button>
   );
