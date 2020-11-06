@@ -11,7 +11,9 @@ interface Props {
   point: number;
   roomConnection: any;
   setGlobalState: any;
-  selectedCard: number;
+  isLocked: boolean;
+  submittedUsers: number;
+  canBeRevealed: boolean;
 }
 
 export const UserContext = React.createContext<Props>({
@@ -25,5 +27,7 @@ export const UserContext = React.createContext<Props>({
   point: -1,
   roomConnection: {},
   setGlobalState: {},
-  selectedCard: -1,
+  isLocked: false,
+  submittedUsers: 0,
+  canBeRevealed: false,
 });

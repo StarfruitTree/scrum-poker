@@ -13,14 +13,13 @@ interface Story {
 
 interface Props {
   currentStory?: Story;
-  canBeRevealed?: boolean;
 }
 
-const BoardContainer: React.FC<Props> = ({ currentStory, canBeRevealed }) => {
+const BoardContainer: React.FC<Props> = ({ currentStory }) => {
   return (
     <div className={style.boardContainer}>
       <Board story={currentStory} className={style.board} />
-      <ControlPanel canBeRevealed={canBeRevealed} />
+      <ControlPanel />
     </div>
   );
 };

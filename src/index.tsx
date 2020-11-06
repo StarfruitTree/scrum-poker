@@ -22,7 +22,9 @@ function App() {
     action: '',
     point: -1,
     roomConnection: {},
-    selectedCard: -1,
+    isLocked: false,
+    submittedUsers: 0,
+    canBeRevealed: false,
   });
 
   return (

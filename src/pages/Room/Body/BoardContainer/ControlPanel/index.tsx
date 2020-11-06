@@ -4,11 +4,10 @@ import style from './style.module.scss';
 import { UserContext } from '@scrpoker/contexts';
 
 interface Props {
-  canBeRevealed?: boolean;
   className?: string;
 }
 
-const ControlPanel: React.FC<Props> = ({ canBeRevealed, className = '' }) => {
+const ControlPanel: React.FC<Props> = ({ className = '' }) => {
   const { roomConnection, point, userRole, roomCode, roomState } = useContext(
     UserContext
   );
@@ -32,7 +31,7 @@ const ControlPanel: React.FC<Props> = ({ canBeRevealed, className = '' }) => {
           <React.Fragment>
             <Button
               className={style.button}
-              disabled={point === -1 ? true : false}
+              disabled={point === -1 || userContext.isLocked ? true : false}
               type="primary"
               onclick={() => {
                 roomConnection.send(
@@ -42,13 +41,14 @@ const ControlPanel: React.FC<Props> = ({ canBeRevealed, className = '' }) => {
                   'ready',
                   userContext.point
                 );
+                userContext.setGlobalState({ ...userContext, isLocked: true });
               }}
             >
               Lock
             </Button>
             <Button
               className={style.button}
-              disabled={!canBeRevealed}
+              disabled={!userContext.canBeRevealed}
               type="primary"
               onclick={() => {
                 roomConnection.send(
@@ -62,12 +62,12 @@ const ControlPanel: React.FC<Props> = ({ canBeRevealed, className = '' }) => {
             </Button>
           </React.Fragment>
         )
-      ) : roomState === 'waiting' ? (
+      ) : roomState === 'waiting' || roomState === 'revealed' ? (
         <React.Fragment />
       ) : (
         <Button
           className={style.button}
-          disabled={point === -1 ? true : false}
+          disabled={point === -1 || userContext.isLocked ? true : false}
           type="primary"
           onclick={() => {
             roomConnection.send(
@@ -77,6 +77,7 @@ const ControlPanel: React.FC<Props> = ({ canBeRevealed, className = '' }) => {
               'ready',
               userContext.point
             );
+            userContext.setGlobalState({ ...userContext, isLocked: true });
           }}
         >
           Lock

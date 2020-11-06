@@ -23,9 +23,13 @@ const PlayingCard: React.FC<Props> = ({
     <div
       className={`${style.playingCard} ${
         enable ? style.enable : style.disable
-      } ${isSelected ? style.isSelected : ''} ${className}`}
+      } ${isSelected ? style.isSelected : ''} ${className} ${
+        userContext.point !== point && userContext.isLocked ? style.disable : ''
+      }`}
       onClick={
-        enable
+        userContext.isLocked
+          ? undefined
+          : enable
           ? () => {
               userContext.setGlobalState({ ...userContext, point });
             }

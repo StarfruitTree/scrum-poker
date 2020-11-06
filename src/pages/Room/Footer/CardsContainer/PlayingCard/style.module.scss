@@ -48,7 +48,9 @@ $default-left-space: 120px;
 }
 
 .disable {
-  background-color: #9b9c9d;
+  background-color: #9b9c9d !important;
+  animation: none !important;
+  cursor: default !important;
 }
 
 .enable {
@@ -81,4 +83,5 @@ $default-left-space: 120px;
 .isSelected {
   top: -50px;
   animation: none !important;
+  cursor: default !important;
 }

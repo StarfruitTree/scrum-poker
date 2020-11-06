@@ -28,7 +28,6 @@
 .assign {
   display: flex;
   align-items: center;
-  margin-top: 1rem;
 }
 
 .assignee {
@@ -55,4 +54,21 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+}
+
+.customPoint {
+  background-color: rgb(34, 103, 442);
+  margin-left: 0.5rem;
+}
+
+.submitPoint {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.submit {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
 }

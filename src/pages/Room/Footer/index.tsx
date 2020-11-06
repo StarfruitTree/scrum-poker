@@ -13,7 +13,8 @@ const Footer: React.FC = () => {
   const { roomState, point } = useContext(UserContext);
 
   console.log(roomState);
-  const enable = roomState === 'playing' ? true : false;
+  const enable =
+    roomState === 'playing' || roomState === 'revealed' ? true : false;
 
   const cardsInfo: PlayingCards[] = [
     { point: 0, enable: enable, isSelected: 0 === point },

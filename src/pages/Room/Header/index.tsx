@@ -37,6 +37,7 @@ const Header: React.FC<Props> = ({ className = '' }) => {
 
   const newUserConnectedCallback = async (user: User) => {
     setUsers([...users, user]);
+    userContext.setGlobalState({ ...userContext, canBeRevealed: false });
   };
 
   const userStatusChangedCallback = async (user: User) => {
@@ -47,7 +48,12 @@ const Header: React.FC<Props> = ({ className = '' }) => {
       }
       return u;
     });
+
+    userContext.submittedUsers++;
     setUsers(newUsers);
+    if (userContext.submittedUsers === users.length) {
+      userContext.setGlobalState({ ...userContext, canBeRevealed: true });
+    }
   };
 
   const roomStateChangedCallback = async (data) => {
