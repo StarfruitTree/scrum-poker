@@ -44,7 +44,8 @@ namespace scrum_poker_server.Hubs
       var roomState = room.State;
 
       await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { name = username, status, point });
-      await Clients.Caller.SendAsync("firstTimeJoin", new { users, storyIds, roomState });
+      await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState });
+      await Clients.Caller.SendAsync("initialStories", new { storyIds });
     }
 
     public async Task ChangeUserStatus(string roomCode, string name, string status, int point)
@@ -70,16 +71,16 @@ namespace scrum_poker_server.Hubs
       else await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState });
     }
 
-    public async Task AddStories(string roomCode, int id)
+    public async Task AddStory(string roomCode, int id)
     {
       var room = _roomService.FindRoom(roomCode);
       room.AddStory(id);
-      await Clients.Group(roomCode).SendAsync("storiesUpdated", new { id });
+      await Clients.Group(roomCode).SendAsync("storyAdded", new { id });
     }
 
-    public async Task UpdateStories(string roomCode, int id)
+    public async Task UpdateStory(string roomCode, int id)
     {
-      await Clients.Group(roomCode).SendAsync("storiesUpdated", new { id });
+      await Clients.Group(roomCode).SendAsync("storyUpdated", new { id });
     }
 
     public async Task ChangeCurrentStory(string roomCode, int id)
