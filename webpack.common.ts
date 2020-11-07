@@ -26,18 +26,6 @@ const config: Configuration = {
         loader: 'file-loader',
       },
       {
-        test: /\.css$/,
-        use: [
-          { loader: MiniCssExtractPlugin.loader },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-            },
-          },
-        ],
-      },
-      {
         test: /\.scss$/,
         use: [
           { loader: MiniCssExtractPlugin.loader },
@@ -49,6 +37,12 @@ const config: Configuration = {
           },
           {
             loader: 'sass-loader',
+          },
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              resources: [resolve(__dirname, 'src/styles/_colors.scss')],
+            },
           },
         ],
       },
