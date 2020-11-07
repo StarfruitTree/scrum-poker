@@ -1,5 +1,6 @@
 dist
 node_modules
 coverage
+yarn-error.log
 backend/scrum-poker-server/bin
 backend/scrum-poker-server/obj
