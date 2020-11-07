@@ -5,7 +5,9 @@ import Body from './Body';
 import style from './style.module.scss';
 import { UserContext } from '@scrpoker/contexts';
 import * as signalR from '@microsoft/signalr';
-const connection = new signalR.HubConnectionBuilder().withUrl(`https://localhost:5001/room`).build();
+import { ROOM_CHANNEL } from '@scrpoker/constants/apis';
+
+const connection = new signalR.HubConnectionBuilder().withUrl(ROOM_CHANNEL).build();
 
 interface User {
   name: string;

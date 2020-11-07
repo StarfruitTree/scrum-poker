@@ -3,6 +3,7 @@ import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { UserContext } from '@scrpoker/contexts';
+import { JOIN_ROOM } from '@scrpoker/constants/apis';
 
 const JoinRoom: React.FC = () => {
   const userContext = useContext(UserContext);
@@ -21,7 +22,7 @@ const JoinRoom: React.FC = () => {
     userContext.action = 'join';
     userContext.userRole = 1;
     try {
-      const response = await fetch('https://localhost:5001/api/rooms/join', {
+      const response = await fetch(JOIN_ROOM, {
         method: 'post',
         body: userData,
       });

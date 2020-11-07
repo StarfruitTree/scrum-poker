@@ -3,6 +3,8 @@ import style from './style.module.scss';
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { UserContext } from '@scrpoker/contexts';
+import { CREATE_ROOM } from '@scrpoker/constants/apis';
+
 const CreateRoom: React.FC = () => {
   const context = useContext(UserContext);
 
@@ -23,7 +25,7 @@ const CreateRoom: React.FC = () => {
     context.userRole = 0;
     context.roomState = 'waiting';
     try {
-      const response = await fetch('https://localhost:5001/api/rooms/create', {
+      const response = await fetch(CREATE_ROOM, {
         method: 'post',
         body: userData,
       });
