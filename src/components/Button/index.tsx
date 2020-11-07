@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 interface Props {
   linkTo?: string;
   secondary?: boolean;
+  fullWidth?: boolean;
   icon?: string;
   className?: string;
   disabled?: boolean;
@@ -16,13 +17,15 @@ const Button: React.FC<Props> = ({
   icon,
   children,
   linkTo,
+  fullWidth = false,
   disabled = false,
   secondary = false,
   className = '',
   onclick,
 }) => {
+  const widthClass = fullWidth ? style.fullWidth : '';
   const typeClass = secondary ? style.secondary : '';
-  const classes = `${style.button} ${typeClass} ${className}`;
+  const classes = `${style.button} ${widthClass} ${typeClass} ${className}`;
   return linkTo ? (
     <Link to={linkTo} className={classes}>
       <Typo type="span">{children}</Typo>
