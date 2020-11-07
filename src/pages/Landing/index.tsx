@@ -13,7 +13,7 @@ const LandingPage: React.FC = () => {
         </div>
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
-        <Button linkTo={'/welcome'} icon="arrow-right">
+        <Button linkTo="/welcome" icon="arrow-right">
           Get started
         </Button>
       </div>
