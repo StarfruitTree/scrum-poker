@@ -1,5 +1,5 @@
 dist
 node_modules
 coverage
-backend\scrum-poker-server\bin
-backend\scrum-poker-server\obj
+backend/scrum-poker-server/bin
+backend/scrum-poker-server/obj
