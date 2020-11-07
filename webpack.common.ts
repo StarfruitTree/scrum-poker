@@ -53,9 +53,9 @@ const config: Configuration = {
 
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({ filename: 'style.css' }),
     new HtmlWebpackPlugin({
-      template: './src/assets/index.html',
+      template: resolve(__dirname, 'src/assets/index.html'),
     }),
   ],
 };
