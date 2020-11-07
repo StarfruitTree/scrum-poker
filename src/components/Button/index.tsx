@@ -17,10 +17,10 @@ const Button: React.FC<Props> = ({
   icon,
   children,
   linkTo,
+  className,
   fullWidth = false,
   disabled = false,
   secondary = false,
-  className = '',
   onclick,
 }) => {
   const widthClass = fullWidth ? style.fullWidth : '';
