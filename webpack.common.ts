@@ -32,7 +32,9 @@ const config: Configuration = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[local]--[hash:base64:5]',
+              },
             },
           },
           {
@@ -41,7 +43,7 @@ const config: Configuration = {
           {
             loader: 'sass-resources-loader',
             options: {
-              resources: [resolve(__dirname, 'src/styles/_colors.scss')],
+              resources: [resolve(__dirname, 'src/styles/_colors.scss'), resolve(__dirname, 'src/styles/_sizes.scss')],
             },
           },
         ],
