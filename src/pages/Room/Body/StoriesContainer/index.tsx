@@ -36,7 +36,7 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
       <ReactModal isOpen={modalIsOpen} style={modalStyle} />
       <div className={style.firstColumn}>
         <Typo>Stories</Typo>
-        <Icon onclick={openModal} name="plus" size="lg" className={style.icon} />
+        <Icon onClick={openModal} name="plus" size="lg" className={style.icon} />
       </div>
       <div className={style.stories}>
         {stories.map((s) => (

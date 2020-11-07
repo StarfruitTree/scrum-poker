@@ -64,11 +64,11 @@ const JoinRoom: React.FC = () => {
         <Input onTextChange={nameHandler} placeholder="Your name" />
         <Input onTextChange={roomCodeHandler} placeholder="Room's code" />
         <div className={style.buttonContainer}>
-          <Button disabled={false} onclick={submit} type="primary">
+          <Button disabled={false} onClick={submit}>
             Join
           </Button>
           <Link to="/welcome">
-            <Button disabled={false} type="secondary">
+            <Button disabled={false} secondary>
               Cancel
             </Button>
           </Link>

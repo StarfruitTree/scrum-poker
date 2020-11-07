@@ -71,11 +71,11 @@ const CreateRoom: React.FC = () => {
         <Input onTextChange={teamNameHandler} placeholder="Your team name" />
         <Input onTextChange={descriptionHandler} placeholder="Description" />
         <div className={style.buttonContainer}>
-          <Button disabled={false} type="primary" onclick={submit}>
+          <Button disabled={false} onClick={submit}>
             Create
           </Button>
           <Link to="/welcome">
-            <Button disabled={false} type="secondary">
+            <Button disabled={false} secondary>
               Cancel
             </Button>
           </Link>

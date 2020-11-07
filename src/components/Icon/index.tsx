@@ -4,11 +4,11 @@ interface Props {
   name: string;
   size?: string;
   className?: string;
-  onclick?: () => void;
+  onClick?: () => void;
 }
 
-const Icon: React.FC<Props> = ({ name, size, onclick, className = '' }) => {
-  return <i onClick={onclick} className={`fas fa-${name} ${size} ${className}`} />;
+const Icon: React.FC<Props> = ({ name, size, onClick, className }) => {
+  return <i onClick={onClick} className={`fas fa-${name} ${size} ${className}`} />;
 };
 
 export default Icon;

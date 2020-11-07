@@ -10,7 +10,7 @@ interface Props {
   icon?: string;
   className?: string;
   disabled?: boolean;
-  onclick?: () => void;
+  onClick?: () => void;
 }
 
 const Button: React.FC<Props> = ({
@@ -21,7 +21,7 @@ const Button: React.FC<Props> = ({
   fullWidth = false,
   disabled = false,
   secondary = false,
-  onclick,
+  onClick,
 }) => {
   const widthClass = fullWidth ? style.fullWidth : '';
   const typeClass = secondary ? style.secondary : '';
@@ -32,7 +32,7 @@ const Button: React.FC<Props> = ({
       {icon && <Icon name={icon} />}
     </Link>
   ) : (
-    <button onClick={onclick} className={classes} type="button" disabled={disabled}>
+    <button onClick={onClick} className={classes} type="button" disabled={disabled}>
       <Typo type="span">{children}</Typo>
       {icon && <Icon name={icon} />}
     </button>

@@ -17,11 +17,10 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
         roomState === 'waiting' ? (
           <Button
             className={style.button}
-            onclick={() => {
+            onClick={() => {
               roomConnection.send('ChangeRoomState', roomCode, 'playing');
             }}
             disabled={false}
-            type="primary"
           >
             Start
           </Button>
@@ -30,8 +29,7 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
             <Button
               className={style.button}
               disabled={point === -1 || userContext.isLocked ? true : false}
-              type="primary"
-              onclick={() => {
+              onClick={() => {
                 roomConnection.send(
                   'ChangeUserStatus',
                   userContext.roomCode,
@@ -47,8 +45,7 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
             <Button
               className={style.button}
               disabled={!userContext.canBeRevealed}
-              type="primary"
-              onclick={() => {
+              onClick={() => {
                 roomConnection.send('ChangeRoomState', userContext.roomCode, 'revealed');
               }}
             >
@@ -62,8 +59,7 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
         <Button
           className={style.button}
           disabled={point === -1 || userContext.isLocked ? true : false}
-          type="primary"
-          onclick={() => {
+          onClick={() => {
             roomConnection.send(
               'ChangeUserStatus',
               userContext.roomCode,
