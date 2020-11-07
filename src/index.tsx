@@ -1,13 +1,7 @@
 import ReactDOM from 'react-dom';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import './styles/global.scss';
-import {
-  CreateRoomPage,
-  LandingPage,
-  JoinRoomPage,
-  WelcomePage,
-  RoomPage,
-} from './pages';
+import { CreateRoomPage, LandingPage, JoinRoomPage, WelcomePage, RoomPage } from './pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { UserContext } from '@scrpoker/contexts';
 

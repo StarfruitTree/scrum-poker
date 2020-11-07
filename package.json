@@ -12,6 +12,7 @@
     "dev": "webpack-dev-server --open --config webpack.dev.ts",
     "build": "webpack --mode production --config webpack.prod.ts",
     "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --fix --ext .ts,.tsx",
     "test": "jest --coverage && open ./coverage/lcov-report/index.html",
     "deploy": "gh-pages -d dist"
   },

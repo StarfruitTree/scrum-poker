@@ -10,22 +10,11 @@ interface Props {
   disabled: boolean;
 }
 
-const Button: React.FC<Props> = ({
-  type,
-  icon,
-  children,
-  className = '',
-  onclick,
-  disabled,
-}) => {
+const Button: React.FC<Props> = ({ type, icon, children, className = '', onclick, disabled }) => {
   return (
     <button
       onClick={onclick}
-      className={
-        disabled
-          ? `${style.disabled} ${className}`
-          : `${style[type]} ${className}`
-      }
+      className={disabled ? `${style.disabled} ${className}` : `${style[type]} ${className}`}
       type="button"
       disabled={disabled}
     >

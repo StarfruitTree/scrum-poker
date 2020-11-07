@@ -5,12 +5,7 @@ import Button from '.';
 describe('<Button />', () => {
   it('should render button with className="secondary custom-button" and disabled=false', () => {
     const component = renderer.create(
-      <Button
-        disabled={false}
-        icon="arrow-right"
-        className="custom-button"
-        type="secondary"
-      >
+      <Button disabled={false} icon="arrow-right" className="custom-button" type="secondary">
         hello
       </Button>
     );

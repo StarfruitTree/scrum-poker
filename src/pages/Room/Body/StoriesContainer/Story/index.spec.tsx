@@ -12,12 +12,7 @@ describe('<Story />', () => {
 
   it('should render a story component with className="story custom" and with point, assignee', () => {
     const component = renderer.create(
-      <Story
-        title="Implement header"
-        point={8}
-        assignee="An Pham"
-        className="custom"
-      />
+      <Story title="Implement header" point={8} assignee="An Pham" className="custom" />
     );
     const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 

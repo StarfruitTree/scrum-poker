@@ -12,13 +12,7 @@ interface Props {
   className?: string;
 }
 
-const UserCard: React.FC<Props> = ({
-  name,
-  status,
-  point,
-  role,
-  className = '',
-}) => {
+const UserCard: React.FC<Props> = ({ name, status, point, role, className = '' }) => {
   return (
     <div className={`${style.userCard} ${className}`}>
       {role === 0 ? <Icon className={style.host} name="crown" size="lg" /> : ''}

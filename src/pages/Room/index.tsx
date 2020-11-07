@@ -5,9 +5,7 @@ import Body from './Body';
 import style from './style.module.scss';
 import { UserContext } from '@scrpoker/contexts';
 import * as signalR from '@microsoft/signalr';
-const connection = new signalR.HubConnectionBuilder()
-  .withUrl(`https://localhost:5001/room`)
-  .build();
+const connection = new signalR.HubConnectionBuilder().withUrl(`https://localhost:5001/room`).build();
 
 interface User {
   name: string;
@@ -27,36 +25,17 @@ const Room: React.FC = () => {
   const userContext = useContext(UserContext);
   userContext.roomConnection = connection;
 
-  const {
-    username,
-    roomCode,
-    roomName,
-    description,
-    action,
-    roomState,
-    userRole,
-  } = useContext(UserContext);
+  const { username, roomCode, roomName, description, action, roomState, userRole } = useContext(UserContext);
 
   useEffect(() => {
     console.log(roomState);
     connection.start().then(() => {
       if (action == 'create') {
         connection
-          .send(
-            'create',
-            roomCode,
-            roomName,
-            description,
-            username,
-            'standBy',
-            0,
-            roomState
-          )
+          .send('create', roomCode, roomName, description, username, 'standBy', 0, roomState)
           .catch((err) => console.log(err));
       } else {
-        connection
-          .send('join', roomCode, username, 'standBy', 0, userRole)
-          .catch((err) => console.log(err));
+        connection.send('join', roomCode, username, 'standBy', 0, userRole).catch((err) => console.log(err));
       }
     });
   }, []);

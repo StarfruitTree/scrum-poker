@@ -4,9 +4,7 @@ import Icon from './index';
 
 describe('<Icon />', () => {
   it('should render an i tag with className="fas fa-arrow-right fa-3x custom"', () => {
-    const component = renderer.create(
-      <Icon name="arrow-right" size="fa-3x" className="custom" />
-    );
+    const component = renderer.create(<Icon name="arrow-right" size="fa-3x" className="custom" />);
     const tree = component.toJSON() as ReactTestRendererJSON;
 
     expect(tree.type).toBe('i');

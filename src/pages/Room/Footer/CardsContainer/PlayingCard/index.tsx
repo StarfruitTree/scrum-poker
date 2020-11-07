@@ -11,21 +11,14 @@ interface Props {
   isSelected: boolean;
 }
 
-const PlayingCard: React.FC<Props> = ({
-  point,
-  enable,
-  className = '',
-  isSelected,
-}) => {
+const PlayingCard: React.FC<Props> = ({ point, enable, className = '', isSelected }) => {
   const userContext = useContext(UserContext);
 
   return (
     <div
-      className={`${style.playingCard} ${
-        enable ? style.enable : style.disable
-      } ${isSelected ? style.isSelected : ''} ${className} ${
-        userContext.point !== point && userContext.isLocked ? style.disable : ''
-      }`}
+      className={`${style.playingCard} ${enable ? style.enable : style.disable} ${
+        isSelected ? style.isSelected : ''
+      } ${className} ${userContext.point !== point && userContext.isLocked ? style.disable : ''}`}
       onClick={
         userContext.isLocked
           ? undefined

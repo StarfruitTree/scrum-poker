@@ -31,9 +31,7 @@ describe('<Board />', () => {
       assignee: 'An Pham',
       point: 5,
     };
-    const component = renderer.create(
-      <Board story={story} className="custom" />
-    );
+    const component = renderer.create(<Board story={story} className="custom" />);
     const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
     expect(tree.props.className).toBe('board custom');

@@ -16,12 +16,7 @@ const CardsContainer: React.FC<Props> = ({ playingCards }) => {
   return (
     <div className={style.cardsContainer}>
       {playingCards.map((card, index) => (
-        <PlayingCard
-          isSelected={card.isSelected}
-          key={index}
-          point={card.point}
-          enable={card.enable}
-        />
+        <PlayingCard isSelected={card.isSelected} key={index} point={card.point} enable={card.enable} />
       ))}
     </div>
   );

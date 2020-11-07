@@ -12,20 +12,12 @@ const Welcome: React.FC = () => {
           <Typo>So, you want to:</Typo>
         </div>
         <Link to="/room/create">
-          <Button
-            disabled={false}
-            className={style['custom-button']}
-            type="primary"
-          >
+          <Button disabled={false} className={style['custom-button']} type="primary">
             Create a new room
           </Button>
         </Link>
         <Link to="/room/join">
-          <Button
-            disabled={false}
-            className={style['custom-button']}
-            type="secondary"
-          >
+          <Button disabled={false} className={style['custom-button']} type="secondary">
             Join a room
           </Button>
         </Link>

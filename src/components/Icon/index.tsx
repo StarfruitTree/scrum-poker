@@ -8,9 +8,7 @@ interface Props {
 }
 
 const Icon: React.FC<Props> = ({ name, size, onclick, className = '' }) => {
-  return (
-    <i onClick={onclick} className={`fas fa-${name} ${size} ${className}`} />
-  );
+  return <i onClick={onclick} className={`fas fa-${name} ${size} ${className}`} />;
 };
 
 export default Icon;

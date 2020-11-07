@@ -15,11 +15,7 @@ const Story: React.FC<Props> = ({ title, assignee, point, className = '' }) => {
     <div className={`${style.story} ${className}`}>
       <Typo className={style.title}>{title}</Typo>
       <div className={style.details}>
-        {point !== undefined ? (
-          <Typo className={style.point}>{point}</Typo>
-        ) : (
-          ''
-        )}
+        {point !== undefined ? <Typo className={style.point}>{point}</Typo> : ''}
         {assignee !== undefined ? (
           <div className={style.assignee}>
             <Avatar letter={assignee[0]} />

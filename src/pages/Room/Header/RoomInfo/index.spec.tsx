@@ -9,8 +9,7 @@ describe('<RoomInfo />', () => {
         data={{
           roomName: 'Tricentis Flood',
           roomCode: '123456',
-          description:
-            "Sprint #53 planning is here, so let's get the party started shall we? Yes...",
+          description: "Sprint #53 planning is here, so let's get the party started shall we? Yes...",
           members: 12,
         }}
       />
@@ -26,8 +25,7 @@ describe('<RoomInfo />', () => {
         data={{
           roomName: 'Tricentis Flood',
           roomCode: '123456',
-          description:
-            "Sprint #53 planning is here, so let's get the party started shall we? Yes...",
+          description: "Sprint #53 planning is here, so let's get the party started shall we? Yes...",
           members: 12,
         }}
         className="custom"

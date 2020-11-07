@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Typo, Icon } from '@scrpoker/components';
+import { Button, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
 import packagejson from '../../../package.json';
 import { Link } from 'react-router-dom';
@@ -15,12 +15,7 @@ const LandingPage: React.FC = () => {
         <Typo>Planing remotely has never been so easy. Why not?</Typo>
         <hr />
         <Link to="/welcome">
-          <Button
-            disabled={false}
-            className={style.customButton}
-            icon="arrow-right"
-            type="primary"
-          >
+          <Button disabled={false} className={style.customButton} icon="arrow-right" type="primary">
             Get started
           </Button>
         </Link>

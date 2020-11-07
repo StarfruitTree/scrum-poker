@@ -36,22 +36,11 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
       <ReactModal isOpen={modalIsOpen} style={modalStyle} />
       <div className={style.firstColumn}>
         <Typo>Stories</Typo>
-        <Icon
-          onclick={openModal}
-          name="plus"
-          size="lg"
-          className={style.icon}
-        />
+        <Icon onclick={openModal} name="plus" size="lg" className={style.icon} />
       </div>
       <div className={style.stories}>
         {stories.map((s) => (
-          <Story
-            key={s.id}
-            title={s.title}
-            assignee={s.assignee}
-            point={s.point}
-            className={style.story}
-          />
+          <Story key={s.id} title={s.title} assignee={s.assignee} point={s.point} className={style.story} />
         ))}
       </div>
     </div>

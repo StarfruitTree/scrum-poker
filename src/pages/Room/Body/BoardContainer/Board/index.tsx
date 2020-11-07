@@ -23,11 +23,7 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
         <Typo className={style.title} type="h2">
           {story.title}
         </Typo>
-        {story.point !== undefined ? (
-          <Typo className={style.point}>{story.point}</Typo>
-        ) : (
-          ''
-        )}
+        {story.point !== undefined ? <Typo className={style.point}>{story.point}</Typo> : ''}
       </div>
       <div className={style.content}>
         <Typo type="span">{story.content}</Typo>
@@ -48,14 +44,7 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
         <div className={style.submitPoint}>
           <Typo type="h3">Point</Typo>
           <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.point !== undefined ? (
-            <Avatar
-              className={style.customPoint}
-              letter={story.point.toString()}
-            />
-          ) : (
-            ''
-          )}
+          {story.point !== undefined ? <Avatar className={style.customPoint} letter={story.point.toString()} /> : ''}
         </div>
       </div>
     </div>

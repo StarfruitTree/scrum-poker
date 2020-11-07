@@ -76,10 +76,7 @@ const Header: React.FC<Props> = ({ className = '' }) => {
 
   useEffect(() => {
     userContext.roomConnection.off('userStatusChanged');
-    userContext.roomConnection.on(
-      'userStatusChanged',
-      userStatusChangedCallback
-    );
+    userContext.roomConnection.on('userStatusChanged', userStatusChangedCallback);
   }, [userStatusChangedCallback]);
 
   useEffect(() => {

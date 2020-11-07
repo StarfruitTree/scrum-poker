@@ -8,9 +8,7 @@ interface Props {
 }
 
 const ControlPanel: React.FC<Props> = ({ className = '' }) => {
-  const { roomConnection, point, userRole, roomCode, roomState } = useContext(
-    UserContext
-  );
+  const { roomConnection, point, userRole, roomCode, roomState } = useContext(UserContext);
   const userContext = useContext(UserContext);
   console.log(roomState);
   return (
@@ -51,11 +49,7 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
               disabled={!userContext.canBeRevealed}
               type="primary"
               onclick={() => {
-                roomConnection.send(
-                  'ChangeRoomState',
-                  userContext.roomCode,
-                  'revealed'
-                );
+                roomConnection.send('ChangeRoomState', userContext.roomCode, 'revealed');
               }}
             >
               Reveal

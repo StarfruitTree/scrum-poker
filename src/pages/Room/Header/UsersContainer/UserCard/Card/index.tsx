@@ -12,11 +12,7 @@ const Card: React.FC<Props> = ({ status, point, className = '' }) => {
   return (
     <div
       className={`${style.card} ${
-        status == 'revealed'
-          ? style.revealed
-          : status == 'standBy'
-          ? style.standBy
-          : style.ready
+        status == 'revealed' ? style.revealed : status == 'standBy' ? style.standBy : style.ready
       } ${className}`}
     >
       {status == 'revealed' ? (
