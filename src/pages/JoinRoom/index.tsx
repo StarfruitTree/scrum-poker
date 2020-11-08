@@ -58,8 +58,8 @@ const JoinRoom: React.FC = () => {
         <Typo type="h2">Almost there!</Typo>
         <Typo>We just need to know some info...</Typo>
         <div className={style.userPicture}>
-          <Icon className={style.userIcon} name="user-circle" size="fa-3x" />
-          <Icon className={style.cameraIcon} name="camera" size="fa-lg" />
+          <Icon className={style.userIcon} name="user-circle" size="3x" />
+          <Icon className={style.cameraIcon} name="camera" size="lg" />
         </div>
         <Input onTextChange={nameHandler} placeholder="Your name" />
         <Input onTextChange={roomCodeHandler} placeholder="Room's code" />
