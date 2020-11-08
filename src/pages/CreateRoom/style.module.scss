@@ -19,20 +19,4 @@
   .avatar {
     align-self: center;
   }
-
-  .buttonContainer {
-    margin-top: 2rem;
-  }
-
-  @media only screen and (max-width: 600px) {
-    .formContainer {
-      width: auto;
-      box-shadow: none;
-      border: none;
-    }
-
-    .cameraIcon {
-      display: none;
-    }
-  }
 }
