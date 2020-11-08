@@ -1,26 +1,28 @@
-import { Button, Icon, Typo, Input } from '@scrpoker/components';
-import style from './style.module.scss';
-import React, { useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Button, Icon, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
 import { UserContext } from '@scrpoker/contexts';
 import { CREATE_ROOM } from '@scrpoker/constants/apis';
+import style from './style.module.scss';
+
+const HOST_NAME = 'hostName';
+const ROOM_NAME = 'roomName';
+const DESCRIPTION = 'description';
 
 const CreateRoom: React.FC = () => {
+  const [hostName, setHostName] = useState('');
+  const [roomName, setRoomName] = useState('');
+  const [description, setDescription] = useState('');
   const context = useContext(UserContext);
-
   const history = useHistory();
 
-  let userInfo = {
-    host: '',
-    description: '',
-    roomName: '',
-  };
+  const goBack = () => history.goBack();
 
   const submit = async () => {
     const userData = new FormData();
-    userData.append('hostName', userInfo.host);
-    userData.append('description', userInfo.description);
-    userData.append('roomName', userInfo.roomName);
+    userData.append(HOST_NAME, hostName);
+    userData.append(ROOM_NAME, roomName);
+    userData.append(DESCRIPTION, description);
     context.action = 'create';
     context.userRole = 0;
     context.roomState = 'waiting';
@@ -43,44 +45,38 @@ const CreateRoom: React.FC = () => {
     }
   };
 
-  const hostNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, host: event.target.value };
-    context.username = event.target.value;
-  };
-
-  const teamNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, roomName: event.target.value };
-    context.roomName = event.target.value;
-  };
-
-  const descriptionHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, description: event.target.value };
-    context.description = event.target.value;
+  const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+    switch (name) {
+      case HOST_NAME:
+        context.username = value;
+        setHostName(value);
+        break;
+      case ROOM_NAME:
+        context.roomName = value;
+        setRoomName(value);
+        break;
+      default:
+        context.description = value;
+        setDescription(value);
+    }
   };
 
   return (
     <div className={style.container}>
-      <div className={style.formContainer}>
+      <Card width={450}>
         <Typo type="h2">Almost there!</Typo>
         <Typo>We just need to know some info...</Typo>
-        <div className={style.userPicture}>
-          <Icon className={style.userIcon} name="user-circle" size="fa-3x" />
-          <Icon className={style.cameraIcon} name="camera" size="fa-lg" />
-        </div>
-        <Input onTextChange={hostNameHandler} placeholder="Your name" />
-        <Input onTextChange={teamNameHandler} placeholder="Your team name" />
-        <Input onTextChange={descriptionHandler} placeholder="Description" />
-        <div className={style.buttonContainer}>
-          <Button disabled={false} onClick={submit}>
-            Create
-          </Button>
-          <Link to="/welcome">
-            <Button disabled={false} secondary>
-              Cancel
-            </Button>
-          </Link>
-        </div>
-      </div>
+        <AvatarInput className={style.avatar} />
+        <Input name={HOST_NAME} onTextChange={handleTextChange} placeholder="Your name" />
+        <Input name={ROOM_NAME} onTextChange={handleTextChange} placeholder="Your team name" />
+        <Input name={DESCRIPTION} onTextChange={handleTextChange} placeholder="Description" />
+        <Button fullWidth onClick={submit}>
+          Create
+        </Button>
+        <Button fullWidth secondary onClick={goBack}>
+          Cancel
+        </Button>
+      </Card>
     </div>
   );
 };
