@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Icon, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
+import { Button, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
 import { UserContext } from '@scrpoker/contexts';
 import { CREATE_ROOM } from '@scrpoker/constants/apis';
 import style from './style.module.scss';
