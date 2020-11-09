@@ -29,7 +29,7 @@ const JoinRoom: React.FC = () => {
 
       const data = await response.json();
 
-      if (response.status == 406) {
+      if (response.status === 404 || response.status === 409) {
         alert(data.error);
       } else {
         console.log(data);

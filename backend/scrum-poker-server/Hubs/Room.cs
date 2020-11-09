@@ -68,6 +68,16 @@ namespace scrum_poker_server.Hubs
         var users = room.GetUsers();
         await Clients.Group(roomCode).SendAsync("roomStateChanged", new { users, roomState });
       }
+      else if (roomState == "waiting")
+      {
+        room.Users.ForEach(u =>
+        {
+          u.Status = "standBy";
+          u.Point = -1;
+        });
+        var users = room.GetUsers();
+        await Clients.Group(roomCode).SendAsync("roomStateChanged", new { users, roomState });
+      }
       else await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState });
     }
 

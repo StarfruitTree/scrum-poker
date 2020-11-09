@@ -74,11 +74,11 @@ namespace scrum_poker_server.Controllers
       {
         var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == roomCode);
 
-        if (room == null) return StatusCode(406, new { error = "The room is not existed" });
+        if (room == null) return StatusCode(404, new { error = "The room is not existed" });
 
         var userRoom = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == username);
 
-        if (userRoom != null) return StatusCode(406, new { error = "The username is already existed in this room" });
+        if (userRoom != null) return StatusCode(409, new { error = "The username is already existed in this room" });
 
         _dbContext.UserRooms.Add(new UserRoom
         {

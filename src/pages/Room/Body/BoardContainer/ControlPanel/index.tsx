@@ -5,9 +5,10 @@ import { UserContext } from '@scrpoker/contexts';
 
 interface Props {
   className?: string;
+  currentStoryIsPicked: boolean;
 }
 
-const ControlPanel: React.FC<Props> = ({ className = '' }) => {
+const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' }) => {
   const { roomConnection, point, userRole, roomCode, roomState } = useContext(UserContext);
   const userContext = useContext(UserContext);
   console.log(roomState);
@@ -20,11 +21,11 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
             onClick={() => {
               roomConnection.send('ChangeRoomState', roomCode, 'playing');
             }}
-            disabled={false}
+            disabled={!currentStoryIsPicked}
           >
             Start
           </Button>
-        ) : (
+        ) : roomState === 'playing' ? (
           <React.Fragment>
             <Button
               className={style.button}
@@ -52,6 +53,17 @@ const ControlPanel: React.FC<Props> = ({ className = '' }) => {
               Reveal
             </Button>
           </React.Fragment>
+        ) : (
+          <Button
+            className={style.button}
+            onClick={() => {
+              roomConnection.send('ChangeRoomState', roomCode, 'waiting');
+              roomConnection.send('ChangeCurrentStory', roomCode, -1);
+            }}
+            disabled={false}
+          >
+            Done
+          </Button>
         )
       ) : roomState === 'waiting' || roomState === 'revealed' ? (
         <React.Fragment />

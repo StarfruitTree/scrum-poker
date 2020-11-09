@@ -16,6 +16,11 @@ interface Data {
   roomState: string;
 }
 
+interface RoomState {
+  roomState: string;
+  users?: User[];
+}
+
 interface Props {
   className?: string;
 }
@@ -56,12 +61,19 @@ const Header: React.FC<Props> = ({ className = '' }) => {
     }
   };
 
-  const roomStateChangedCallback = async (data) => {
-    if (data.roomState !== 'revealed') {
-      userContext.setGlobalState({ ...userContext, roomState: data.roomState });
+  const roomStateChangedCallback = async ({ roomState, users }: RoomState) => {
+    if (users === undefined) {
+      userContext.setGlobalState({ ...userContext, roomState: roomState });
     } else {
-      setUsers(data.users);
-      userContext.setGlobalState({ ...userContext, roomState: data.roomState });
+      console.log(users);
+      if (roomState === 'waiting') {
+        userContext.point = -1;
+        userContext.isLocked = false;
+        userContext.canBeRevealed = false;
+        userContext.submittedUsers = 0;
+      }
+      setUsers(users);
+      userContext.setGlobalState({ ...userContext, roomState: roomState });
     }
   };
 

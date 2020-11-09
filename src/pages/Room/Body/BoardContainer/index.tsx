@@ -13,13 +13,14 @@ interface Story {
 
 interface Props {
   currentStory?: Story;
+  className?: string;
 }
 
-const BoardContainer: React.FC<Props> = ({ currentStory }) => {
+const BoardContainer: React.FC<Props> = ({ currentStory, className }) => {
   return (
-    <div className={style.boardContainer}>
+    <div className={`${style.boardContainer} ${className}`}>
       <Board story={currentStory} className={style.board} />
-      <ControlPanel />
+      <ControlPanel currentStoryIsPicked={currentStory !== undefined ? true : false} />
     </div>
   );
 };

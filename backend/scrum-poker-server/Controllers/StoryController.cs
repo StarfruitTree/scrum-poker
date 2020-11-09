@@ -17,6 +17,21 @@ namespace scrum_poker_server.Controllers
       _dbContext = dbContext;
     }
 
+    [HttpGet, Route("get/{id}")]
+    public IActionResult Get(int id)
+    {
+      if (ModelState.IsValid)
+      {
+        var story = _dbContext.Stories.FirstOrDefault(s => s.Id == id);
+        if (story == null)
+        {
+          return StatusCode(404, new { error = "The story is not existed" });
+        }
+        return Ok(new { id, title = story.Title, content = story.Content });
+      }
+      else return StatusCode(422);
+    }
+
     [HttpPost, Route("add")]
     public async Task<IActionResult> Add([FromForm] string roomCode, [FromForm] string title, [FromForm] string content)
     {
@@ -41,7 +56,7 @@ namespace scrum_poker_server.Controllers
 
         await _dbContext.SaveChangesAsync();
 
-        return StatusCode(201, new { id = story.Id, title, content });
+        return StatusCode(201, new { id = story.Id });
       }
       else return StatusCode(422);
     }
