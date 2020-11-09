@@ -18,7 +18,7 @@ namespace scrum_poker_server.Controllers
     }
 
     [HttpPost, Route("add")]
-    public async Task<IActionResult> Add([FromForm] string roomCode, [FromForm] string title, [FromForm] string content)
+    public async Task<IActionResult> Add([FromBody] string roomCode, [FromBody] string title, [FromBody] string content)
     {
       if (ModelState.IsValid)
       {
@@ -47,7 +47,7 @@ namespace scrum_poker_server.Controllers
     }
 
     [HttpPost, Route("submit")]
-    public async Task<IActionResult> SubmitPoint([FromForm] string roomCode, [FromForm] int id, [FromForm] string username, [FromForm] int point)
+    public async Task<IActionResult> SubmitPoint([FromBody] string roomCode, [FromBody] int id, [FromBody] string username, [FromBody] int point)
     {
       if (ModelState.IsValid)
       {
@@ -67,7 +67,7 @@ namespace scrum_poker_server.Controllers
     }
 
     [HttpPost, Route("assign")]
-    public async Task<IActionResult> Assign([FromForm] string roomCode, [FromForm] int id, [FromForm] string username)
+    public async Task<IActionResult> Assign([FromBody] string roomCode, [FromBody] int id, [FromBody] string username)
     {
       if (ModelState.IsValid)
       {

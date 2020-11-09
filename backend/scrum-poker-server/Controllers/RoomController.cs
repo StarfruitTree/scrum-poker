@@ -24,7 +24,7 @@ namespace scrum_poker_server.Controllers
     }
 
     [HttpPost, Route("create")]
-    public async Task<IActionResult> Create([FromForm] string userName, [FromForm] string description, [FromForm] string roomName)
+    public async Task<IActionResult> Create([FromBody] string userName, [FromBody] string description, [FromBody] string roomName)
     {
       if (ModelState.IsValid)
       {
@@ -68,7 +68,7 @@ namespace scrum_poker_server.Controllers
     }
 
     [HttpPost, Route("join")]
-    public async Task<IActionResult> Join([FromForm] string userName, [FromForm] string roomCode)
+    public async Task<IActionResult> Join([FromBody] string userName, [FromBody] string roomCode)
     {
       if (ModelState.IsValid)
       {
