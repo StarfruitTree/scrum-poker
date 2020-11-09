@@ -18,34 +18,27 @@ namespace scrum_poker_server.Hubs
       _roomService = roomService;
     }
 
-    public async Task Create(string roomCode, string roomName, string description, string username, string status, int point, string roomState)
-    {
-      await Groups.AddToGroupAsync(Context.ConnectionId, roomCode);
-
-      var room = new PokingRoom(roomCode, roomName, description, new User(username, status, Role.host, point), roomState);
-      var users = room.GetUsers();
-      _roomService.Add(room);
-
-      await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState });
-    }
-
-    public async Task Join(string roomCode, string username, string status, int point, int role)
+    public async Task Combine(string roomCode, string username, int role)
     {
       await Groups.AddToGroupAsync(Context.ConnectionId, roomCode);
 
       var room = _roomService.FindRoom(roomCode);
-      room.AddUser(new User(username, status, (Role)role, point));
-
-      var users = room.GetUsers();
-      var storyIds = room.StoryIds;
-
-      var roomName = room.RoomName;
-      var description = room.Description;
-      var roomState = room.State;
-
-      await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { name = username, status, point });
-      await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState });
-      await Clients.Caller.SendAsync("initialStories", new { storyIds });
+      if (room == null)
+      {
+        room = new PokingRoom(roomCode, new User(username, "standby", (Role)role, 0), "waiting");
+        _roomService.Add(room);
+        var users = room.GetUsers();
+        await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State });
+      }
+      else
+      {
+        room.AddUser(new User(username, "standby", (Role)role, 0));
+        var users = room.GetUsers();
+        var storyIds = room.GetStoryIds();
+        await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { username, status = "standby", point = 0 });
+        await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State });
+        await Clients.Caller.SendAsync("initialStories", new { storyIds, currentStoryId = room.CurrentStoryId });
+      }
     }
 
     public async Task ChangeUserStatus(string roomCode, string name, string status, int point)

@@ -12,10 +12,6 @@ namespace scrum_poker_server.HubModels
   {
     public string RoomId { get; set; }
 
-    public string RoomName { get; set; }
-
-    public string Description { get; set; }
-
     public int CurrentStoryId { get; set; }
 
     public string State { get; set; }
@@ -24,12 +20,10 @@ namespace scrum_poker_server.HubModels
 
     public List<int> StoryIds { get; set; }
 
-    public PokingRoom(string id, string roomName, string description, User host, string roomState)
+    public PokingRoom(string id, User host, string roomState)
     {
       RoomId = id;
-      RoomName = roomName;
       State = roomState;
-      Description = description;
       Users = new List<User>();
       StoryIds = new List<int>();
       Users.Add(host);
@@ -48,6 +42,11 @@ namespace scrum_poker_server.HubModels
     public User[] GetUsers()
     {
       return Users.ToArray();
+    }
+
+    public int[] GetStoryIds()
+    {
+      return StoryIds.ToArray();
     }
   }
 }
