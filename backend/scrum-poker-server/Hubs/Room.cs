@@ -25,17 +25,17 @@ namespace scrum_poker_server.Hubs
       var room = _roomService.FindRoom(roomCode);
       if (room == null)
       {
-        room = new PokingRoom(roomCode, new User(username, "standby", (Role)role, 0), "waiting");
+        room = new PokingRoom(roomCode, new User(username, "standBy", (Role)role, 0), "waiting");
         _roomService.Add(room);
         var users = room.GetUsers();
         await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State });
       }
       else
       {
-        room.AddUser(new User(username, "standby", (Role)role, 0));
+        room.AddUser(new User(username, "standBy", (Role)role, 0));
         var users = room.GetUsers();
         var storyIds = room.GetStoryIds();
-        await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { username, status = "standby", point = 0 });
+        await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { username, status = "standBy", point = 0 });
         await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State });
         await Clients.Caller.SendAsync("initialStories", new { storyIds, currentStoryId = room.CurrentStoryId });
       }
