@@ -3,7 +3,7 @@ import StoriesContainer from './StoriesContainer';
 import BoardContainer from './BoardContainer';
 import style from './style.module.scss';
 import { UserContext } from '@scrpoker/contexts';
-import { GET_STORY } from '@scrpoker/constants/apis';
+import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 
 interface Story {
   id: number;
@@ -22,9 +22,17 @@ interface StoryData {
 }
 
 const Body: React.FC<Props> = ({ className = '' }) => {
-  const { roomConnection } = useContext(UserContext);
+  const { roomConnection, roomId, action } = useContext(UserContext);
   const [stories, setStories] = useState([] as Story[]);
   const [currentStory, setCurrentStory] = useState<Story | undefined>(undefined);
+
+  const getStories = async () => {
+    const response = await fetch(GET_ROOM_STORIES(roomId));
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    setStories(data.stories);
+  };
 
   const storyAddedCallback = async ({ id }: StoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`);
@@ -51,6 +59,12 @@ const Body: React.FC<Props> = ({ className = '' }) => {
     roomConnection.off('currentStoryChanged');
     roomConnection.on('currentStoryChanged', currentStoryChangedCallback);
   }, [currentStoryChangedCallback]);
+
+  useEffect(() => {
+    if (action === 'join') {
+      getStories();
+    }
+  }, []);
 
   return (
     <div className={`${style.body} ${className}`}>

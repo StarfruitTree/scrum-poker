@@ -26,5 +26,5 @@ namespace scrum_poker_server.Models
         public User Assignee { get; set; }
 
         public ICollection<SubmittedPointByUser> SubmittedPointByUsers { get; set; }
-    }   
+    }
 }

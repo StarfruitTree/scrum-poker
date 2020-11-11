@@ -5,3 +5,4 @@ yarn-error.log
 debug.log
 backend/scrum-poker-server/bin
 backend/scrum-poker-server/obj
+backend/scrum-poker-server/Migrations

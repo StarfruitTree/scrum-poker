@@ -36,11 +36,13 @@ const Header: React.FC<Props> = ({ className = '' }) => {
   };
 
   const firstTimeJoinCallback = async ({ users, roomState }: Data) => {
+    console.log(users);
     setUsers([...users]);
     userContext.setGlobalState({ ...userContext, roomState });
   };
 
   const newUserConnectedCallback = async (user: User) => {
+    console.log(user);
     setUsers([...users, user]);
     userContext.setGlobalState({ ...userContext, canBeRevealed: false });
   };

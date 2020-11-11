@@ -36,7 +36,8 @@ const CreateRoom: React.FC = () => {
         alert(data.error);
       } else {
         context.roomCode = data.code;
-        history.push(`/room/${data.code}`);
+        context.roomId = data.roomId;
+        history.push(`/room/${data.roomId}`);
       }
     } catch (err) {
       console.log(err);
@@ -45,7 +46,7 @@ const CreateRoom: React.FC = () => {
 
   const hostNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, host: event.target.value };
-    context.username = event.target.value;
+    context.userName = event.target.value;
   };
 
   const teamNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,14 +72,12 @@ const CreateRoom: React.FC = () => {
         <Input onTextChange={teamNameHandler} placeholder="Your team name" />
         <Input onTextChange={descriptionHandler} placeholder="Description" />
         <div className={style.buttonContainer}>
-          <Button disabled={false} onClick={submit}>
+          <Button fullWidth={true} disabled={false} onClick={submit}>
             Create
           </Button>
-          <Link to="/welcome">
-            <Button disabled={false} secondary>
-              Cancel
-            </Button>
-          </Link>
+          <Button linkTo="/welcome" fullWidth={true} disabled={false} secondary>
+            Cancel
+          </Button>
         </div>
       </div>
     </div>

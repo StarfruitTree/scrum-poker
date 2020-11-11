@@ -23,7 +23,7 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
         <Typo className={style.title} type="h2">
           {story.title}
         </Typo>
-        {story.point !== undefined ? <Typo className={style.point}>{story.point}</Typo> : ''}
+        {story.point ? <Typo className={style.point}>{story.point}</Typo> : ''}
       </div>
       <div className={style.content}>
         <Typo type="span">{story.content}</Typo>
@@ -32,7 +32,7 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
         <div className={style.assign}>
           <Typo type="h3">Assignee</Typo>
           <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.assignee !== undefined ? (
+          {story.assignee ? (
             <div className={style.assignee}>
               <Avatar letter={story.assignee[0]} />
               <Typo>{story.assignee}</Typo>
@@ -44,7 +44,7 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
         <div className={style.submitPoint}>
           <Typo type="h3">Point</Typo>
           <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.point !== undefined ? <Avatar className={style.customPoint} letter={story.point.toString()} /> : ''}
+          {story.point ? <Avatar className={style.customPoint} letter={story.point.toString()} /> : ''}
         </div>
       </div>
     </div>

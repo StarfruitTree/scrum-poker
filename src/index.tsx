@@ -7,7 +7,7 @@ import './index.scss';
 
 function App() {
   const [globalState, setGlobalState] = useState({
-    username: '',
+    userName: '',
     userRole: 0,
     roomCode: '',
     roomName: '',
@@ -19,6 +19,7 @@ function App() {
     isLocked: false,
     submittedUsers: 0,
     canBeRevealed: false,
+    roomId: 0,
   });
 
   return (

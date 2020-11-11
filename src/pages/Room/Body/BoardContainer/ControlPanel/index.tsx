@@ -34,7 +34,7 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
                 roomConnection.send(
                   'ChangeUserStatus',
                   userContext.roomCode,
-                  userContext.username,
+                  userContext.userName,
                   'ready',
                   userContext.point
                 );
@@ -75,7 +75,7 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
             roomConnection.send(
               'ChangeUserStatus',
               userContext.roomCode,
-              userContext.username,
+              userContext.userName,
               'ready',
               userContext.point
             );

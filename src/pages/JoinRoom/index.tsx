@@ -17,7 +17,7 @@ const JoinRoom: React.FC = () => {
 
   const submit = async () => {
     const userData = new FormData();
-    userData.append('username', userInfo.host);
+    userData.append('userName', userInfo.host);
     userData.append('roomCode', userInfo.roomCode);
     userContext.action = 'join';
     userContext.userRole = 1;
@@ -32,10 +32,10 @@ const JoinRoom: React.FC = () => {
       if (response.status === 404 || response.status === 409) {
         alert(data.error);
       } else {
-        console.log(data);
         userContext.roomName = data.roomName;
         userContext.description = data.description;
-        history.push(`/room/${data.code}`);
+        userContext.roomId = data.roomId;
+        history.push(`/room/${data.roomId}`);
       }
     } catch (err) {
       console.log(err);
@@ -44,7 +44,7 @@ const JoinRoom: React.FC = () => {
 
   const nameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     userInfo = { ...userInfo, host: event.target.value };
-    userContext.username = event.target.value;
+    userContext.userName = event.target.value;
   };
 
   const roomCodeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,14 +64,12 @@ const JoinRoom: React.FC = () => {
         <Input onTextChange={nameHandler} placeholder="Your name" />
         <Input onTextChange={roomCodeHandler} placeholder="Room's code" />
         <div className={style.buttonContainer}>
-          <Button disabled={false} onClick={submit}>
+          <Button fullWidth={true} disabled={false} onClick={submit}>
             Join
           </Button>
-          <Link to="/welcome">
-            <Button disabled={false} secondary>
-              Cancel
-            </Button>
-          </Link>
+          <Button linkTo="/welcome" fullWidth={true} disabled={false} secondary>
+            Cancel
+          </Button>
         </div>
       </div>
     </div>
