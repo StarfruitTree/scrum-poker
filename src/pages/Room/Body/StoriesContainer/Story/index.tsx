@@ -8,15 +8,16 @@ interface Props {
   assignee?: string;
   point?: number;
   className?: string;
+  onClick?: (() => void) | undefined;
 }
 
-const Story: React.FC<Props> = ({ title, assignee, point, className = '' }) => {
+const Story: React.FC<Props> = ({ onClick, title, assignee, point, className = '' }) => {
   return (
-    <div className={`${style.story} ${className}`}>
+    <div onClick={onClick} className={`${style.story} ${className} ${onClick !== undefined ? style.clickable : ''}`}>
       <Typo className={style.title}>{title}</Typo>
       <div className={style.details}>
-        {point !== undefined ? <Typo className={style.point}>{point}</Typo> : ''}
-        {assignee !== undefined ? (
+        {point ? <Typo className={style.point}>{point}</Typo> : ''}
+        {assignee ? (
           <div className={style.assignee}>
             <Avatar letter={assignee[0]} />
             <Typo type="span">{assignee}</Typo>

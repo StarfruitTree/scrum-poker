@@ -18,7 +18,7 @@ const UserCard: React.FC<Props> = ({ name, status, point, role, className = '' }
       {role === 0 ? <Icon className={style.host} name="crown" size="lg" /> : ''}
       <Card status={status} point={point} />
       <Avatar className={style.avatar} letter={name[0].toUpperCase()} />
-      <Typo className={style.username}>{name}</Typo>
+      <Typo className={style.userName}>{name}</Typo>
     </div>
   );
 };

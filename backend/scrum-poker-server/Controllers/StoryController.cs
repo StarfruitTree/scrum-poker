@@ -1,83 +1,98 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using scrum_poker_server.Data;
+using scrum_poker_server.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using scrum_poker_server.Models;
 
 namespace scrum_poker_server.Controllers
 {
-  [Route("api/stories")]
-  public class StoryController : ControllerBase
-  {
-    public AppDbContext _dbContext { get; set; }
-
-    public StoryController(AppDbContext dbContext)
+    [Route("api/stories")]
+    public class StoryController : ControllerBase
     {
-      _dbContext = dbContext;
-    }
+        public AppDbContext _dbContext { get; set; }
 
-    [HttpPost, Route("add")]
-    public async Task<IActionResult> Add([FromBody] string roomCode, [FromBody] string title, [FromBody] string content)
-    {
-      if (ModelState.IsValid)
-      {
-        var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == roomCode);
-        if (room == null)
+        public StoryController(AppDbContext dbContext)
         {
-          return StatusCode(422, new { error = "The room code is not existed" });
+            _dbContext = dbContext;
         }
 
-        var story = new Story { Title = title, Content = content };
-
-        if (room.Stories == null)
+        [HttpGet, Route("get/{id}")]
+        public IActionResult Get(int id)
         {
-          room.Stories = new List<Story> { story };
+            if (ModelState.IsValid)
+            {
+                var story = _dbContext.Stories.FirstOrDefault(s => s.Id == id);
+                if (story == null)
+                {
+                    return StatusCode(404, new { error = "The story is not existed" });
+                }
+                return Ok(new { id, title = story.Title, content = story.Content });
+            }
+            else return StatusCode(422);
         }
-        else
+
+        [HttpPost, Route("add")]
+        public async Task<IActionResult> Add([FromForm] string roomCode, [FromForm] string title, [FromForm] string content)
         {
-          room.Stories.Add(story);
+            if (ModelState.IsValid)
+            {
+                var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == roomCode);
+                if (room == null)
+                {
+                    return StatusCode(422, new { error = "The room code is not existed" });
+                }
+
+                var story = new Story { Title = title, Content = content };
+
+                if (room.Stories == null)
+                {
+                    room.Stories = new List<Story> { story };
+                }
+                else
+                {
+                    room.Stories.Add(story);
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                return StatusCode(201, new { id = story.Id });
+            }
+            else return StatusCode(422);
         }
 
-        await _dbContext.SaveChangesAsync();
-
-        return StatusCode(201, new { id = story.Id, title, content });
-      }
-      else return StatusCode(422);
-    }
-
-    [HttpPost, Route("submit")]
-    public async Task<IActionResult> SubmitPoint([FromBody] string roomCode, [FromBody] int id, [FromBody] string username, [FromBody] int point)
-    {
-      if (ModelState.IsValid)
-      {
-        var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == roomCode && s.Id == id);
-        var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == username).User;
-
-        story.SubmittedPointByUsers.Add(new SubmittedPointByUser
+        [HttpPost, Route("submit")]
+        public async Task<IActionResult> SubmitPoint([FromForm] string roomCode, [FromForm] int id, [FromForm] string userName, [FromForm] int point)
         {
-          Point = point,
-          User = user
-        });
+            if (ModelState.IsValid)
+            {
+                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == roomCode && s.Id == id);
+                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == userName).User;
 
-        await _dbContext.SaveChangesAsync();
-        return StatusCode(201);
-      }
-      else return StatusCode(422);
-    }
+                story.SubmittedPointByUsers.Add(new SubmittedPointByUser
+                {
+                    Point = point,
+                    User = user
+                });
 
-    [HttpPost, Route("assign")]
-    public async Task<IActionResult> Assign([FromBody] string roomCode, [FromBody] int id, [FromBody] string username)
-    {
-      if (ModelState.IsValid)
-      {
-        var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == roomCode && s.Id == id);
-        var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == username).User;
-        story.Assignee = user;
-        await _dbContext.SaveChangesAsync();
-        return StatusCode(201, new { storyId = id, username });
-      }
-      else return StatusCode(422);
+                await _dbContext.SaveChangesAsync();
+                return StatusCode(201);
+            }
+            else return StatusCode(422);
+        }
+
+        [HttpPost, Route("assign")]
+        public async Task<IActionResult> Assign([FromForm] string roomCode, [FromForm] int id, [FromForm] string userName)
+        {
+            if (ModelState.IsValid)
+            {
+                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == roomCode && s.Id == id);
+                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == userName).User;
+                story.Assignee = user;
+                await _dbContext.SaveChangesAsync();
+                return StatusCode(201, new { storyId = id, userName });
+            }
+            else return StatusCode(422);
+        }
     }
-  }
 }

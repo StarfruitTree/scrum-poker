@@ -30,13 +30,13 @@ const JoinRoom: React.FC = () => {
 
       const data = await response.json();
 
-      if (response.status == 406) {
+      if (response.status === 404 || response.status === 409) {
         alert(data.error);
       } else {
-        console.log(data);
         userContext.roomName = data.roomName;
         userContext.description = data.description;
-        history.push(`/room/${data.code}`);
+        userContext.roomId = data.roomId;
+        history.push(`/room/${data.roomId}`);
       }
     } catch (err) {
       console.log(err);
@@ -46,7 +46,7 @@ const JoinRoom: React.FC = () => {
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     switch (name) {
       case HOST_NAME:
-        userContext.username = value;
+        userContext.userName = value;
         setHostName(value);
         break;
       default:

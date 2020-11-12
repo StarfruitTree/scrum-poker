@@ -1,8 +1,9 @@
 import React from 'react';
 
 interface Props {
-  username: string;
+  userName: string;
   userRole: number;
+  roomId: number;
   roomCode: string;
   roomName: string;
   roomState: string;
@@ -17,8 +18,9 @@ interface Props {
 }
 
 export const UserContext = React.createContext<Props>({
-  username: '',
+  userName: '',
   userRole: 0,
+  roomId: 0,
   roomCode: '',
   roomName: '',
   roomState: '',

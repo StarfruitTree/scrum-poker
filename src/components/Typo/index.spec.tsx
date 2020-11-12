@@ -13,7 +13,11 @@ describe('<Typo />', () => {
   });
 
   it('should render p tag with className="custom"', () => {
-    const component = renderer.create(<Typo className="custom">hello</Typo>);
+    const component = renderer.create(
+      <Typo id="hello" className="custom">
+        hello
+      </Typo>
+    );
     const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
     expect(tree.type).toBe('p');

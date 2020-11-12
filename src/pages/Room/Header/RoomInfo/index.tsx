@@ -15,6 +15,7 @@ interface Props {
 
 const RoomInfo: React.FC<Props> = ({ data, className = '' }) => {
   const { roomName, description, roomCode, members } = data;
+
   return (
     <div className={`${style.roomInfo} ${className}`}>
       <Typo type="h1">{roomName}</Typo>

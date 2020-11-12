@@ -38,7 +38,8 @@ const CreateRoom: React.FC = () => {
         alert(data.error);
       } else {
         context.roomCode = data.code;
-        history.push(`/room/${data.code}`);
+        context.roomId = data.roomId;
+        history.push(`/room/${data.roomId}`);
       }
     } catch (err) {
       console.log(err);
@@ -48,7 +49,7 @@ const CreateRoom: React.FC = () => {
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     switch (name) {
       case HOST_NAME:
-        context.username = value;
+        context.userName = value;
         setHostName(value);
         break;
       case ROOM_NAME:
