@@ -4,7 +4,7 @@ import Input from './index';
 
 describe('<Input />', () => {
   it('should render an input tag with placeholder="Your name" and className="custom"', () => {
-    const component = renderer.create(<Input placeholder="Your name" className="custom" />);
+    const component = renderer.create(<Input name="name" placeholder="Your name" className="custom" />);
     const tree = component.toJSON() as ReactTestRendererJSON;
 
     expect(tree.type).toBe('input');
@@ -15,7 +15,7 @@ describe('<Input />', () => {
   });
 
   it('should render an input tag with placeholder="Your name" and className=""', () => {
-    const component = renderer.create(<Input placeholder="Your name" />);
+    const component = renderer.create(<Input name="name" placeholder="Your name" />);
     const tree = component.toJSON() as ReactTestRendererJSON;
 
     expect(tree.type).toBe('input');

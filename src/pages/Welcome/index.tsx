@@ -5,7 +5,7 @@ import style from './style.module.scss';
 const Welcome: React.FC = () => {
   return (
     <div className={style.container}>
-      <Card className={style.card}>
+      <Card width={450}>
         <Typo type="h2">Let&apos;s get started</Typo>
         <Typo>So, you want to:</Typo>
         <Button fullWidth linkTo="/room/create">
