@@ -22,8 +22,9 @@ namespace scrum_poker_server.Controllers
             _dbContext = dbContext;
         }
 
+        [Consumes("application/json")]
         [HttpPost, Route("create")]
-        public async Task<IActionResult> Create([FromForm] string hostName, [FromForm] string description, [FromForm] string roomName)
+        public async Task<IActionResult> Create([FromBody] CreateRoomDTO data)
         {
             if (ModelState.IsValid)
             {
@@ -45,13 +46,13 @@ namespace scrum_poker_server.Controllers
                     if (room == null) isRoomExisted = false;
                 }
 
-                var host = new User { Name = hostName };
+                var host = new User { Name = data.UserName };
                 room = new Room
                 {
                     Host = host,
                     Code = roomCode,
-                    Name = roomName,
-                    Description = description
+                    Name = data.RoomName,
+                    Description = data.Description
                 };
 
                 _dbContext.UserRooms.Add(new UserRoom
@@ -86,29 +87,30 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
+        [Consumes("application/json")]
         [HttpPost, Route("join")]
-        public async Task<IActionResult> Join([FromForm] string userName, [FromForm] string roomCode)
+        public async Task<IActionResult> Join([FromBody] JoinRoomDTO data)
         {
             if (ModelState.IsValid)
             {
-                var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == roomCode);
+                var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == data.RoomCode);
 
                 if (room == null) return NotFound(new { error = "The room is not existed" });
 
-                var userRoom = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == userName);
+                var userRoom = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName);
 
                 if (userRoom != null) return StatusCode(409, new { error = "The userName is already existed in this room" });
 
                 _dbContext.UserRooms.Add(new UserRoom
                 {
-                    User = new User { Name = userName },
+                    User = new User { Name = data.UserName },
                     Room = room,
                     Role = Role.player
                 });
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { roomId = room.Id, code = roomCode, roomName = room.Name, description = room.Description });
+                return Ok(new { roomId = room.Id, code = data.RoomCode, roomName = room.Name, description = room.Description });
             }
             else return StatusCode(422);
         }

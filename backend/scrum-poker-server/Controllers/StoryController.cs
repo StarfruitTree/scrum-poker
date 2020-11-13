@@ -4,6 +4,7 @@ using scrum_poker_server.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using scrum_poker_server.DTOs;
 
 namespace scrum_poker_server.Controllers
 {
@@ -32,18 +33,19 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
+        [Consumes("application/json")]
         [HttpPost, Route("add")]
-        public async Task<IActionResult> Add([FromForm] string roomCode, [FromForm] string title, [FromForm] string content)
+        public async Task<IActionResult> Add([FromBody] AddStoryDTO data)
         {
             if (ModelState.IsValid)
             {
-                var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == roomCode);
+                var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == data.RoomCode);
                 if (room == null)
                 {
                     return StatusCode(422, new { error = "The room code is not existed" });
                 }
 
-                var story = new Story { Title = title, Content = content };
+                var story = new Story { Title = data.Title, Content = data.Content };
 
                 if (room.Stories == null)
                 {
@@ -61,17 +63,18 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
+        [Consumes("application/json")]
         [HttpPost, Route("submit")]
-        public async Task<IActionResult> SubmitPoint([FromForm] string roomCode, [FromForm] int id, [FromForm] string userName, [FromForm] int point)
+        public async Task<IActionResult> SubmitPoint([FromBody] SubmitStoryDTO data)
         {
             if (ModelState.IsValid)
             {
-                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == roomCode && s.Id == id);
-                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == userName).User;
+                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
+                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
 
                 story.SubmittedPointByUsers.Add(new SubmittedPointByUser
                 {
-                    Point = point,
+                    Point = data.Point,
                     User = user
                 });
 
@@ -81,16 +84,17 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
+        [Consumes("application/json")]
         [HttpPost, Route("assign")]
-        public async Task<IActionResult> Assign([FromForm] string roomCode, [FromForm] int id, [FromForm] string userName)
+        public async Task<IActionResult> Assign([FromBody] AssignStoryDTO data)
         {
             if (ModelState.IsValid)
             {
-                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == roomCode && s.Id == id);
-                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == roomCode && ur.User.Name == userName).User;
+                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
+                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
                 story.Assignee = user;
                 await _dbContext.SaveChangesAsync();
-                return StatusCode(201, new { storyId = id, userName });
+                return StatusCode(201, new { storyId = data.StoryId, data.UserName });
             }
             else return StatusCode(422);
         }
