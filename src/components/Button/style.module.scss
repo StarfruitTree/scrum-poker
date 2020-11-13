@@ -1,0 +1,37 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  box-shadow: $lightShadow;
+  border-radius: $borderRadius;
+  padding: $base;
+  border: 1px solid $blue;
+  background-color: $blue;
+  color: $white;
+  width: fit-content;
+  cursor: pointer;
+
+  &.secondary {
+    background-color: $white;
+    color: $blue;
+  }
+
+  &[disabled] {
+    border-color: transparent;
+    background-color: $grey;
+    cursor: default;
+  }
+
+  &.fullWidth {
+    width: 100%;
+  }
+
+  i {
+    margin-left: 1rem;
+  }
+
+  span {
+    font-weight: bold;
+  }
+}

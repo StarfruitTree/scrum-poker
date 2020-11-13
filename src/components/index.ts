@@ -1,4 +1,8 @@
 import Button from './Button';
-import Navbar from './Navbar';
+import Typo from './Typo';
+import Icon from './Icon';
+import Input from './Input';
+import Card from './Card';
+import AvatarInput from './AvatarInput';
 
-export { Button, Navbar };
+export { Button, Typo, Icon, Input, Card, AvatarInput };

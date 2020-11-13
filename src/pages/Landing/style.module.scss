@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  div {
+    hr {
+      margin: 1rem 0;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+
+    span {
+      border: 1px solid $black;
+      border-radius: 12px;
+      padding: 0.2rem 0.3rem;
+      font-size: 0.5rem;
+      margin-left: 0.5rem;
+      height: fit-content;
+    }
+  }
+
+  @media only screen and (max-width: $sm) {
+    .container > div {
+      padding: 1.5rem;
+    }
+  }
+}
