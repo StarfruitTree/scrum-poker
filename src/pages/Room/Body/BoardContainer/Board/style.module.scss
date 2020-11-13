@@ -1,0 +1,75 @@
+.board {
+  border: 1px solid #edeaea;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+
+  span {
+    font-weight: 400;
+    word-spacing: 3px;
+  }
+  overflow-y: auto;
+}
+
+.title {
+  width: 750px;
+}
+
+.icon {
+  margin-left: 3px;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+.assign {
+  display: flex;
+  align-items: center;
+}
+
+.assignee {
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.point {
+  border: 2px solid #5e9cff;
+  border-radius: 5px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #5e9cff;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.customPoint {
+  background-color: rgb(34, 103, 442);
+  margin-left: 0.5rem;
+}
+
+.submitPoint {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.submit {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}

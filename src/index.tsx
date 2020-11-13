@@ -1,20 +1,29 @@
 import ReactDOM from 'react-dom';
-import React from 'react';
-import './styles/global.scss';
-import {
-  CreateRoomPage,
-  LandingPage,
-  JoinRoomPage,
-  WelcomePage,
-  RoomPage,
-} from './pages';
+import React, { useState } from 'react';
+import { CreateRoomPage, LandingPage, JoinRoomPage, WelcomePage, RoomPage } from './pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
-export const NameContext = React.createContext({ username: '' });
+import { UserContext } from '@scrpoker/contexts';
+import './index.scss';
 
 function App() {
+  const [globalState, setGlobalState] = useState({
+    userName: '',
+    userRole: 0,
+    roomCode: '',
+    roomName: '',
+    roomState: '',
+    description: '',
+    action: '',
+    point: -1,
+    roomConnection: {},
+    isLocked: false,
+    submittedUsers: 0,
+    canBeRevealed: false,
+    roomId: 0,
+  });
+
   return (
-    <NameContext.Provider value={{ username: '' }}>
+    <UserContext.Provider value={{ ...globalState, setGlobalState }}>
       <Router>
         <Switch>
           <Route path="/" exact>
@@ -34,7 +43,7 @@ function App() {
           </Route>
         </Switch>
       </Router>
-    </NameContext.Provider>
+    </UserContext.Provider>
   );
 }
 

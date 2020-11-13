@@ -1,64 +1,75 @@
-import { Button, Icon, Typo, Input } from '@scrpoker/components';
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { UserContext } from '@scrpoker/contexts';
+import { JOIN_ROOM } from '@scrpoker/constants/apis';
+import { Button, Typo, Input, AvatarInput, Card } from '@scrpoker/components';
 import style from './style.module.scss';
-import React, { useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { NameContext } from '../../';
+
+const HOST_NAME = 'hostName';
+const ROOM_CODE = 'roomCode';
 
 const JoinRoom: React.FC = () => {
-  const context = useContext(NameContext);
+  const [hostName, setHostName] = useState('');
+  const [roomCode, setRoomCode] = useState('');
+  const userContext = useContext(UserContext);
   const history = useHistory();
 
-  let userInfo = {
-    host: '',
-    description: '',
-    roomCode: '',
-  };
+  const goBack = () => history.goBack();
 
   const submit = async () => {
     const userData = new FormData();
-    userData.append('username', userInfo.host);
-    userData.append('roomCode', userInfo.roomCode);
-
+    userData.append('username', hostName);
+    userData.append('roomCode', roomCode);
+    userContext.action = 'join';
+    userContext.userRole = 1;
     try {
-      const response = await fetch('https://localhost:44397/api/rooms/join', {
+      const response = await fetch(JOIN_ROOM, {
         method: 'post',
         body: userData,
-      }).then((response) => response.json());
-      history.push(`/room/${response.code}`);
+      });
+
+      const data = await response.json();
+
+      if (response.status === 404 || response.status === 409) {
+        alert(data.error);
+      } else {
+        userContext.roomName = data.roomName;
+        userContext.description = data.description;
+        userContext.roomId = data.roomId;
+        history.push(`/room/${data.roomId}`);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const nameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, host: event.target.value };
-    context.username = event.target.value;
-  };
-
-  const roomCodeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, roomCode: event.target.value };
+  const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+    switch (name) {
+      case HOST_NAME:
+        userContext.userName = value;
+        setHostName(value);
+        break;
+      default:
+        userContext.roomCode = value;
+        setRoomCode(value);
+    }
   };
 
   return (
     <div className={style.container}>
-      <div className={style.formContainer}>
+      <Card width={450}>
         <Typo type="h2">Almost there!</Typo>
         <Typo>We just need to know some info...</Typo>
-        <div className={style.userPicture}>
-          <Icon className={style.userIcon} name="user-circle" size="fa-3x" />
-          <Icon className={style.cameraIcon} name="camera" size="fa-lg" />
-        </div>
-        <Input onTextChange={nameHandler} placeholder="Your name" />
-        <Input onTextChange={roomCodeHandler} placeholder="Room's code" />
-        <div className={style.buttonContainer}>
-          <Button onclick={submit} type="primary">
-            Join
-          </Button>
-          <Link to="/welcome">
-            <Button type="secondary">Cancel</Button>
-          </Link>
-        </div>
-      </div>
+        <AvatarInput className={style.avatar} />
+        <Input name={HOST_NAME} onTextChange={handleTextChange} placeholder="Your name" />
+        <Input name={ROOM_CODE} onTextChange={handleTextChange} placeholder="Room's code" />
+        <Button fullWidth onClick={submit}>
+          Join
+        </Button>
+        <Button fullWidth secondary onClick={goBack}>
+          Cancel
+        </Button>
+      </Card>
     </div>
   );
 };

@@ -1,0 +1,18 @@
+.avatar {
+  height: 25px;
+  width: 25px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.picture {
+  max-width: 100%;
+}
+
+.noPicture {
+  background-color: #856785;
+}

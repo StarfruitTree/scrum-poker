@@ -1,0 +1,10 @@
+$xs: 0px;
+$sm: 600px;
+$md: 960px;
+$lg: 1280px;
+$xl: 1920px;
+
+$base: 1rem;
+$small: calc(#{$base} / 2);
+$large: calc(#{$base} * 2);
+$borderRadius: calc(#{$base} / 2);
