@@ -15,6 +15,7 @@ interface Props {
 
 const RoomInfo: React.FC<Props> = ({ data, className = '' }) => {
   const { roomName, description, roomCode, members } = data;
+
   return (
     <div className={`${style.roomInfo} ${className}`}>
       <Typo type="h1">{roomName}</Typo>
@@ -25,7 +26,7 @@ const RoomInfo: React.FC<Props> = ({ data, className = '' }) => {
         <Typo type="b" className={style.inline}>
           {roomCode}
         </Typo>
-        <Icon name="copy" size="fa-sm" />
+        <Icon name="copy" size="sm" />
       </Typo>
       <Typo className={`${style.inline} ${style.light}`}>
         &nbsp;- Members:{' '}

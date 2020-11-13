@@ -1,0 +1,9 @@
+.body {
+  overflow-y: hidden;
+  display: flex;
+  justify-content: space-between;
+}
+
+.boardContainer {
+  flex: 1;
+}

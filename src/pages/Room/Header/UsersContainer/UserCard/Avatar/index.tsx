@@ -11,17 +11,9 @@ const Avatar: React.FC<Props> = ({ letter, pictureRef, className = '' }) => {
   const havePictureRef: boolean = pictureRef !== undefined;
   return (
     <div
-      className={
-        havePictureRef
-          ? `${style.avatar} ${className}`
-          : `${style.avatar} ${style.noPicture} ${className}`
-      }
+      className={havePictureRef ? `${style.avatar} ${className}` : `${style.avatar} ${style.noPicture} ${className}`}
     >
-      {havePictureRef ? (
-        <img src={pictureRef} className={style.picture} />
-      ) : (
-        <Typo>{letter}</Typo>
-      )}
+      {havePictureRef ? <img src={pictureRef} className={style.picture} /> : <Typo>{letter}</Typo>}
     </div>
   );
 };

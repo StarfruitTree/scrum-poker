@@ -5,10 +5,7 @@ import Avatar from './index';
 describe('<Avatar />', () => {
   it('should render an avatar component with className="avatar " and name="An"', () => {
     const component = renderer.create(
-      <Avatar
-        letter="A"
-        pictureRef="https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png"
-      />
+      <Avatar letter="A" pictureRef="https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png" />
     );
 
     const tree = component.toJSON() as renderer.ReactTestRendererJSON;

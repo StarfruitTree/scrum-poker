@@ -12,17 +12,7 @@ const config: Configuration = {
   },
 
   resolve: {
-    extensions: [
-      '.ts',
-      '.tsx',
-      '.js',
-      '.json',
-      '.gif',
-      '.png',
-      '.jpg',
-      '.jpeg',
-      '.svg',
-    ],
+    extensions: ['.ts', '.tsx', '.js', '.json', '.gif', '.png', '.jpg', '.jpeg', '.svg'],
     alias: {
       '@scrpoker': resolve(__dirname, 'src'),
     },
@@ -36,29 +26,25 @@ const config: Configuration = {
         loader: 'file-loader',
       },
       {
-        test: /\.css$/,
-        use: [
-          { loader: MiniCssExtractPlugin.loader },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-            },
-          },
-        ],
-      },
-      {
         test: /\.scss$/,
         use: [
           { loader: MiniCssExtractPlugin.loader },
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[local]--[hash:base64:5]',
+              },
             },
           },
           {
             loader: 'sass-loader',
+          },
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              resources: [resolve(__dirname, 'src/styles/_colors.scss'), resolve(__dirname, 'src/styles/_sizes.scss')],
+            },
           },
         ],
       },
@@ -67,9 +53,9 @@ const config: Configuration = {
 
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({ filename: 'style.css' }),
     new HtmlWebpackPlugin({
-      template: './src/assets/index.html',
+      template: resolve(__dirname, 'src/assets/index.html'),
     }),
   ],
 };

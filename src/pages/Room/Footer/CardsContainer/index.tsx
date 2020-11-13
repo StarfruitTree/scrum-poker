@@ -5,6 +5,7 @@ import PlayingCard from './PlayingCard';
 interface PlayingCards {
   point: number;
   enable: boolean;
+  isSelected: boolean;
 }
 
 interface Props {
@@ -15,7 +16,7 @@ const CardsContainer: React.FC<Props> = ({ playingCards }) => {
   return (
     <div className={style.cardsContainer}>
       {playingCards.map((card, index) => (
-        <PlayingCard key={index} point={card.point} enable={card.enable} />
+        <PlayingCard isSelected={card.isSelected} key={index} point={card.point} enable={card.enable} />
       ))}
     </div>
   );

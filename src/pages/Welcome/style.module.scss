@@ -3,55 +3,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.formContainer {
-  box-shadow: 3px 3px 8px #888888;
-  border: 1px solid #dddddd;
-  border-radius: 8px;
 
   h2 {
-    margin: 2rem 0px;
+    margin-bottom: $base;
   }
 
-  p {
-    margin: 2rem 0px;
+  a {
+    margin-top: $base;
   }
 
-  button {
-    margin: 2rem 0px;
-  }
-
-  padding: 1rem 2rem;
-}
-
-.custom-button {
-  width: 350px;
-}
-
-@media only screen and (max-width: 600px) {
-  .form-container {
-    box-shadow: none;
-    border: none;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    button {
-      width: 100%;
-      margin: 1rem 0px;
-    }
-
-    h2 {
-      margin: 1rem 0px;
-    }
-
-    p {
-      margin: 1rem 0px;
-    }
-
-    div {
-      margin-bottom: 1rem;
+  @media only screen and (max-width: $sm) {
+    .card {
+      box-shadow: none;
+      border: none;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
     }
   }
 }

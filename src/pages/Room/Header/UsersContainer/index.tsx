@@ -6,6 +6,7 @@ interface User {
   name: string;
   status: string;
   point?: number;
+  role: number;
 }
 
 interface Props {
@@ -22,6 +23,7 @@ const UsersContainer: React.FC<Props> = ({ users, className = '' }) => {
           name={user.name}
           status={user.status}
           point={user.point}
+          role={user.role}
           className={style.userCard}
         />
       ))}

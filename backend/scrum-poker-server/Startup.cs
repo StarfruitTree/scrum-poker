@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,60 +11,60 @@ using scrum_poker_server.HubServices;
 
 namespace scrum_poker_server
 {
-  public class Startup
-  {
-    public IConfiguration _configuration { get; set; }
-
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-        _configuration = configuration;
-    }
+        public IConfiguration _configuration { get; set; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-          services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-                {
-                  builder.SetIsOriginAllowed(_ => true)
-                         .AllowAnyMethod()
-                         .AllowAnyHeader()
-                         .AllowCredentials();
-                }));
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-          services.AddControllers();
-
-          services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
-
-          services.AddSignalR();
-
-          services.AddSingleton<RoomService>();
-    }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-          if (env.IsDevelopment())
-          {
-            app.UseDeveloperExceptionPage();
-          }
-
-          app.UseHttpsRedirection();
-
-          app.UseCors("MyPolicy");
-
-          app.UseRouting();
-
-          app.UseEndpoints(endpoints =>
-          {
-            endpoints.MapGet("/", async context =>
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                   {
-                    await context.Response.WriteAsync("Web APIs of scrum poker");
-                  });
+                      builder.SetIsOriginAllowed(_ => true)
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                  }));
 
-            endpoints.MapHub<Room>("/room");
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            endpoints.MapControllers();
-          });
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
+
+            services.AddSignalR();
+
+            services.AddSingleton<RoomService>();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseCors("MyPolicy");
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/", async context =>
+                    {
+                        await context.Response.WriteAsync("Web APIs of scrum poker");
+                    });
+
+                endpoints.MapHub<Room>("/room");
+
+                endpoints.MapControllers();
+            });
+        }
     }
-  }
 }

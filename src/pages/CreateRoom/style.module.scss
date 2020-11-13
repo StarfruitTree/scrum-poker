@@ -5,63 +5,18 @@
   height: 100vh;
 
   input {
-    margin: 0.5rem 0px;
+    margin-bottom: $base;
   }
-}
-
-.formContainer {
-  width: 500px;
-  box-shadow: 3px 3px 8px #888888;
-  border: 1px solid #dddddd;
-  border-radius: 8px;
 
   h2 {
-    margin: 2rem 0px;
-  }
-
-  p {
-    margin: 2rem 0px;
+    margin-bottom: $base;
   }
 
   button {
-    margin: 0.5rem 0px;
+    margin-top: $base;
   }
 
-  padding: 1rem 2rem;
-}
-
-.userPicture {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2rem 0;
-}
-
-.userIcon {
-  border: 1px solid #888888;
-  border-radius: 50%;
-  padding: 1.5rem;
-}
-
-.cameraIcon {
-  position: absolute;
-  top: 4.7rem;
-  right: 10.9rem;
-}
-
-.buttonContainer {
-  margin-top: 2rem;
-}
-
-@media only screen and (max-width: 600px) {
-  .formContainer {
-    width: auto;
-    box-shadow: none;
-    border: none;
-  }
-
-  .cameraIcon {
-    display: none;
+  .avatar {
+    align-self: center;
   }
 }

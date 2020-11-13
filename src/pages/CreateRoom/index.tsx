@@ -1,73 +1,83 @@
-import { Button, Icon, Typo, Input } from '@scrpoker/components';
+import React, { useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Button, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
+import { UserContext } from '@scrpoker/contexts';
+import { CREATE_ROOM } from '@scrpoker/constants/apis';
 import style from './style.module.scss';
-import React, { useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { UserContext } from '../../';
-const CreateRoom: React.FC = () => {
-  const context = useContext(UserContext);
 
+const HOST_NAME = 'hostName';
+const ROOM_NAME = 'roomName';
+const DESCRIPTION = 'description';
+
+const CreateRoom: React.FC = () => {
+  const [hostName, setHostName] = useState('');
+  const [roomName, setRoomName] = useState('');
+  const [description, setDescription] = useState('');
+  const context = useContext(UserContext);
   const history = useHistory();
 
-  let userInfo = {
-    host: '',
-    description: '',
-    roomName: '',
-  };
+  const goBack = () => history.goBack();
 
   const submit = async () => {
     const userData = new FormData();
-    userData.append('host', userInfo.host);
-    userData.append('description', userInfo.description);
-    userData.append('roomName', userInfo.roomName);
+    userData.append(HOST_NAME, hostName);
+    userData.append(ROOM_NAME, roomName);
+    userData.append(DESCRIPTION, description);
     context.action = 'create';
+    context.userRole = 0;
+    context.roomState = 'waiting';
     try {
-      const response = await fetch('https://localhost:44397/api/rooms/create', {
+      const response = await fetch(CREATE_ROOM, {
         method: 'post',
         body: userData,
-      }).then((response) => response.json());
-      context.roomCode = response.code;
-      history.push(`/room/${response.code}`);
+      });
+
+      const data = await response.json();
+
+      if (response.status == 406) {
+        alert(data.error);
+      } else {
+        context.roomCode = data.code;
+        context.roomId = data.roomId;
+        history.push(`/room/${data.roomId}`);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const hostNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, host: event.target.value };
-    context.username = event.target.value;
-  };
-
-  const teamNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, roomName: event.target.value };
-    context.roomName = event.target.value;
-  };
-
-  const descriptionHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    userInfo = { ...userInfo, description: event.target.value };
-    context.description = event.target.value;
+  const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
+    switch (name) {
+      case HOST_NAME:
+        context.userName = value;
+        setHostName(value);
+        break;
+      case ROOM_NAME:
+        context.roomName = value;
+        setRoomName(value);
+        break;
+      default:
+        context.description = value;
+        setDescription(value);
+    }
   };
 
   return (
     <div className={style.container}>
-      <div className={style.formContainer}>
+      <Card width={450}>
         <Typo type="h2">Almost there!</Typo>
         <Typo>We just need to know some info...</Typo>
-        <div className={style.userPicture}>
-          <Icon className={style.userIcon} name="user-circle" size="fa-3x" />
-          <Icon className={style.cameraIcon} name="camera" size="fa-lg" />
-        </div>
-        <Input onTextChange={hostNameHandler} placeholder="Your name" />
-        <Input onTextChange={teamNameHandler} placeholder="Your team name" />
-        <Input onTextChange={descriptionHandler} placeholder="Description" />
-        <div className={style.buttonContainer}>
-          <Button type="primary" onclick={submit}>
-            Create
-          </Button>
-          <Link to="/welcome">
-            <Button type="secondary">Cancel</Button>
-          </Link>
-        </div>
-      </div>
+        <AvatarInput className={style.avatar} />
+        <Input name={HOST_NAME} onTextChange={handleTextChange} placeholder="Your name" />
+        <Input name={ROOM_NAME} onTextChange={handleTextChange} placeholder="Your team name" />
+        <Input name={DESCRIPTION} onTextChange={handleTextChange} placeholder="Description" />
+        <Button fullWidth onClick={submit}>
+          Create
+        </Button>
+        <Button fullWidth secondary onClick={goBack}>
+          Cancel
+        </Button>
+      </Card>
     </div>
   );
 };

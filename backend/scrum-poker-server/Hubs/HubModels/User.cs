@@ -1,25 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using scrum_poker_server.Utils;
 
 namespace scrum_poker_server.HubModels
 {
-  public class User
-  {
-    public string Name { get; set; }
-
-    public string Status { get; set; }
-
-    public int Point { get; set; }
-
-    public User(string name, string status, int point = 0)
+    public class User
     {
-      Name = name;
-      Status = status;
-      Point = point;
+        public string Name { get; set; }
+
+        public string Status { get; set; }
+
+        public int Point { get; set; }
+
+        public Role Role { get; set; }
+
+        public User(string name, string status, Role role, int point = 0)
+        {
+            Name = name;
+            Status = status;
+            Point = point;
+            Role = role;
+        }
     }
-  }
 }
