@@ -8,10 +8,17 @@
 
 .avatar {
   position: absolute;
-  top: 70px;
-  left: 26px;
+  top: 75px;
+  left: 30px;
 }
 
-.username {
+.userName {
   margin-top: 20px;
+}
+
+.host {
+  position: absolute;
+  top: 62px;
+  font-size: 13px;
+  color: #ffc043;
 }

@@ -1,31 +1,33 @@
 import React, { useContext } from 'react';
 import { Typo } from '@scrpoker/components';
 import style from './style.module.scss';
-import { RoomContext } from '@scrpoker/pages/Room';
-import { UserContext } from '@scrpoker/index';
+import { UserContext } from '@scrpoker/contexts';
+
 interface Props {
   point: number;
   enable: boolean;
   className?: string;
   styles?: string;
+  isSelected: boolean;
 }
 
-const PlayingCard: React.FC<Props> = ({ point, enable, className = '' }) => {
-  const { connection } = useContext(RoomContext);
-  const { username, roomCode } = useContext(UserContext);
-
-  async function Send() {
-    connection.send('ChangeUserStatus', roomCode, username, 'revealed', point);
-  }
+const PlayingCard: React.FC<Props> = ({ point, enable, className = '', isSelected }) => {
+  const userContext = useContext(UserContext);
 
   return (
     <div
-      className={`${style.playingCard} ${
-        enable ? style.enable : style.disable
-      } ${className}`}
-      onClick={() => {
-        Send();
-      }}
+      className={`${style.playingCard} ${enable ? style.enable : style.disable} ${
+        isSelected ? style.isSelected : ''
+      } ${className} ${userContext.point !== point && userContext.isLocked ? style.disable : ''}`}
+      onClick={
+        userContext.isLocked
+          ? undefined
+          : enable
+          ? () => {
+              userContext.setGlobalState({ ...userContext, point });
+            }
+          : undefined
+      }
     >
       <Typo className={style.smallPointTopLeft}>{point}</Typo>
       <Typo className={style.smallPointBottomRight}>{point}</Typo>

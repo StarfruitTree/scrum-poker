@@ -1,36 +1,24 @@
-using scrum_poker_server.Utils;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace scrum_poker_server.HubModels
 {
     public class PokingRoom
     {
         public string RoomId { get; set; }
+        public int CurrentStoryId { get; set; }
 
-        public string RoomName { get; set; }
-
-        public string Description { get; set; }
-
-        public Story CurrentStory { get; set; }
-
-        public RoomState State { get; set; }
+        public string State { get; set; }
 
         public List<User> Users { get; set; }
 
-        public List<Story> Stories { get; set; }
+        public List<int> StoryIds { get; set; }
 
-        public PokingRoom(string id, string roomName, string description, User host)
+        public PokingRoom(string id, User host, string roomState)
         {
             RoomId = id;
-            RoomName = roomName;
-            Description = description;
+            State = roomState;
             Users = new List<User>();
-            Stories = new List<Story>();
+            StoryIds = new List<int>();
             Users.Add(host);
         }
 
@@ -39,19 +27,14 @@ namespace scrum_poker_server.HubModels
             Users.Add(user);
         }
 
-        public void AddStory(Story story)
+        public void AddStory(int storyId)
         {
-            Stories.Add(story);
+            StoryIds.Add(storyId);
         }
 
         public User[] GetUsers()
         {
             return Users.ToArray();
-        }
-
-        public Story[] GetStories()
-        {
-            return Stories.ToArray();
         }
     }
 }

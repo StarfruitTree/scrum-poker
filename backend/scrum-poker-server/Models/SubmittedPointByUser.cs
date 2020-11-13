@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace scrum_poker_server.Models
 {
@@ -16,7 +12,7 @@ namespace scrum_poker_server.Models
         public int StoryId { get; set; }
 
         public Story Story { get; set; }
-        
+
         [ForeignKey("User")]
         public int UserId { get; set; }
 
