@@ -15,9 +15,6 @@ namespace scrum_poker_server.Models
 
         public string Password { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-
         public User User { get; set; }
 
         public ICollection<Room> Rooms { get; set; }
