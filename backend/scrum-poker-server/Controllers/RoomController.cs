@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs;
@@ -22,6 +23,7 @@ namespace scrum_poker_server.Controllers
             _dbContext = dbContext;
         }
 
+        [Authorize(Policy = "User")]
         [Consumes("application/json")]
         [HttpPost, Route("create")]
         public async Task<IActionResult> Create([FromBody] CreateRoomDTO data)

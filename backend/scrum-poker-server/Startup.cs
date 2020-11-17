@@ -11,6 +11,7 @@ using scrum_poker_server.Data;
 using scrum_poker_server.Hubs;
 using scrum_poker_server.HubServices;
 using System.Text;
+using System.Security.Claims;
 
 namespace scrum_poker_server
 {
@@ -38,18 +39,25 @@ namespace scrum_poker_server
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]))
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("User", policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Email);
+                });
+            });
+
             services.AddControllers();
-
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
-
             services.AddSignalR();
-
             services.AddSingleton<RoomService>();
         }
 
@@ -67,6 +75,8 @@ namespace scrum_poker_server
             app.UseRouting();
 
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

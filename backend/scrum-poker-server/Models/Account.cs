@@ -10,11 +10,6 @@ namespace scrum_poker_server.Models
     {
         public int Id { get; set; }
 
-        [Column(TypeName = "varchar(255)")]
-        public string Email { get; set; }
-
-        public string Password { get; set; }
-
         public User User { get; set; }
 
         public ICollection<Room> Rooms { get; set; }

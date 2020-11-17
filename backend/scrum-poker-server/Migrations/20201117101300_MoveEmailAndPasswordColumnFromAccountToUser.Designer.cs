@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using scrum_poker_server.Data;
@@ -9,9 +10,10 @@ using scrum_poker_server.Data;
 namespace scrum_poker_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201117101300_MoveEmailAndPasswordColumnFromAccountToUser")]
+    partial class MoveEmailAndPasswordColumnFromAccountToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +40,7 @@ namespace scrum_poker_server.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int?>("AccountId")
+                    b.Property<int>("AccountId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Code")
@@ -172,7 +174,9 @@ namespace scrum_poker_server.Migrations
                 {
                     b.HasOne("scrum_poker_server.Models.Account", "Account")
                         .WithMany("Rooms")
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("scrum_poker_server.Models.User", "Host")
                         .WithMany()

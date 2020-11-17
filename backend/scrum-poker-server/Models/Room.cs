@@ -23,7 +23,7 @@ namespace scrum_poker_server.Models
         public User Host { get; set; }
 
         [ForeignKey("Account")]
-        public int AccountId { get; set; }
+        public int? AccountId { get; set; }
 
         public Account Account { get; set; }
 
