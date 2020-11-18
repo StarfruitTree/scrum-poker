@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using scrum_poker_server.Data;
@@ -9,9 +10,10 @@ using scrum_poker_server.Data;
 namespace scrum_poker_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201116045149_AddAccountFKToUserTable")]
+    partial class AddAccountFKToUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,12 @@ namespace scrum_poker_server.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Accounts");
@@ -38,7 +46,7 @@ namespace scrum_poker_server.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int?>("AccountId")
+                    b.Property<int>("AccountId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Code")
@@ -128,18 +136,12 @@ namespace scrum_poker_server.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int?>("AccountId")
+                    b.Property<int>("AccountId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -172,7 +174,9 @@ namespace scrum_poker_server.Migrations
                 {
                     b.HasOne("scrum_poker_server.Models.Account", "Account")
                         .WithMany("Rooms")
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("scrum_poker_server.Models.User", "Host")
                         .WithMany()
@@ -225,7 +229,9 @@ namespace scrum_poker_server.Migrations
                 {
                     b.HasOne("scrum_poker_server.Models.Account", "Account")
                         .WithOne("User")
-                        .HasForeignKey("scrum_poker_server.Models.User", "AccountId");
+                        .HasForeignKey("scrum_poker_server.Models.User", "AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Account");
                 });

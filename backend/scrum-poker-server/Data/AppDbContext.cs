@@ -18,6 +18,8 @@ namespace scrum_poker_server.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Account> Accounts { get; set; }
+
         public DbSet<Story> Stories { get; set; }
 
         public DbSet<UserRoom> UserRooms { get; set; }

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using scrum_poker_server.Data;
 using scrum_poker_server.Hubs;
 using scrum_poker_server.HubServices;
+using System.Text;
+using System.Security.Claims;
 
 namespace scrum_poker_server
 {
@@ -20,7 +24,6 @@ namespace scrum_poker_server
             _configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -31,16 +34,33 @@ namespace scrum_poker_server
                            .AllowCredentials();
                   }));
 
-            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]))
+                };
+            });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("User", policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Email);
+                });
+            });
+
+            services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
-
             services.AddSignalR();
-
             services.AddSingleton<RoomService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -53,6 +73,10 @@ namespace scrum_poker_server
             app.UseCors("MyPolicy");
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
