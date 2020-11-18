@@ -73,12 +73,12 @@ namespace scrum_poker_server.Controllers
 
         private string GenerateJWTToken(SignUpDTO data)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Expires = DateTime.UtcNow.AddHours(3),
+                Expires = DateTime.Now.AddHours(3),
                 Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Email, data.Email)
