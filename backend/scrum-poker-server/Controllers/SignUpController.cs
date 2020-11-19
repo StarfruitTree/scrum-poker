@@ -13,10 +13,12 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace scrum_poker_server.Controllers
 {
     [Route("api/signup")]
+    [ApiController]
     public class SignUpController : ControllerBase
     {
         public AppDbContext _dbContext { get; set; }
@@ -35,7 +37,7 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isEmailExisted = _dbContext.Users.FirstOrDefault(u => u.Email == data.Email) != null;
+                bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
                 if (isEmailExisted) return StatusCode(409, new { error = "The email is already existed" });
 
                 var user = new User()
@@ -60,13 +62,10 @@ namespace scrum_poker_server.Controllers
                     Account = new Account()
                 };
 
-                var tokenString = GenerateJWTToken(data);
-
-                _dbContext.Users.Add(account);
-
+                await _dbContext.Users.AddAsync(account);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { token = tokenString });
+                return Ok(new { token = GenerateJWTToken(data) });
             }
             else return StatusCode(422);
         }
@@ -79,10 +78,7 @@ namespace scrum_poker_server.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Expires = DateTime.Now.AddHours(3),
-                Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Email, data.Email)
-            }),
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email) }),
                 SigningCredentials = credentials
             };
 

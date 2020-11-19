@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using scrum_poker_server.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace scrum_poker_server.Controllers
 {
@@ -19,11 +20,11 @@ namespace scrum_poker_server.Controllers
         }
 
         [HttpGet, Route("get/{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             if (ModelState.IsValid)
             {
-                var story = _dbContext.Stories.FirstOrDefault(s => s.Id == id);
+                var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Id == id);
                 if (story == null)
                 {
                     return StatusCode(404, new { error = "The story is not existed" });
@@ -69,8 +70,8 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
-                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
+                var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
+                var user = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
 
                 story.SubmittedPointByUsers.Add(new SubmittedPointByUser
                 {
@@ -90,8 +91,8 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var story = _dbContext.Stories.FirstOrDefault(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
-                var user = _dbContext.UserRooms.FirstOrDefault(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
+                var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
+                var user = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
                 story.Assignee = user;
                 await _dbContext.SaveChangesAsync();
                 return StatusCode(201, new { storyId = data.StoryId, data.UserName });
