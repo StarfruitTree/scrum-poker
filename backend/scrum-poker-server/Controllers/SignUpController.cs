@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace scrum_poker_server.Controllers
 {
@@ -36,7 +37,7 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isEmailExisted = _dbContext.Users.FirstOrDefault(u => u.Email == data.Email) != null;
+                bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
                 if (isEmailExisted) return StatusCode(409, new { error = "The email is already existed" });
 
                 var user = new User()
@@ -61,7 +62,7 @@ namespace scrum_poker_server.Controllers
                     Account = new Account()
                 };
 
-                _dbContext.Users.Add(account);
+                await _dbContext.Users.AddAsync(account);
                 await _dbContext.SaveChangesAsync();
 
                 return Ok(new { token = GenerateJWTToken(data) });
