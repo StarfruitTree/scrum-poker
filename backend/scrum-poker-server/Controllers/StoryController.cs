@@ -71,7 +71,7 @@ namespace scrum_poker_server.Controllers
             if (ModelState.IsValid)
             {
                 var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
-                var user = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
+                var user = (await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName)).User;
 
                 story.SubmittedPointByUsers.Add(new SubmittedPointByUser
                 {
@@ -92,7 +92,7 @@ namespace scrum_poker_server.Controllers
             if (ModelState.IsValid)
             {
                 var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Room.Code == data.RoomCode && s.Id == data.StoryId);
-                var user = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName).User;
+                var user = (await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName)).User;
                 story.Assignee = user;
                 await _dbContext.SaveChangesAsync();
                 return StatusCode(201, new { storyId = data.StoryId, data.UserName });

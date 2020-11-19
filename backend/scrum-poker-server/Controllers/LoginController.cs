@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,16 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == data.Password);
+                var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
+
+                // Convert byte array to string
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < hash.Length; i++)
+                {
+                    builder.Append(hash[i].ToString("x2"));
+                }
+
+                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == builder.ToString());
                 if (user == null) return Unauthorized();
 
                 return Ok(new { token = GenerateJWTToken(data) });
@@ -59,5 +69,4 @@ namespace scrum_poker_server.Controllers
             return new JwtSecurityTokenHandler().WriteToken(securityToken);
         }
     }
-}
 }
