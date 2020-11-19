@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 namespace scrum_poker_server.Controllers
 {
     [Route("api/signup")]
+    [ApiController]
     public class SignUpController : ControllerBase
     {
         public AppDbContext _dbContext { get; set; }
@@ -60,13 +61,10 @@ namespace scrum_poker_server.Controllers
                     Account = new Account()
                 };
 
-                var tokenString = GenerateJWTToken(data);
-
                 _dbContext.Users.Add(account);
-
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { token = tokenString });
+                return Ok(new { token = GenerateJWTToken(data) });
             }
             else return StatusCode(422);
         }
@@ -79,10 +77,7 @@ namespace scrum_poker_server.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Expires = DateTime.Now.AddHours(3),
-                Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Email, data.Email)
-            }),
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email) }),
                 SigningCredentials = credentials
             };
 
