@@ -46,19 +46,13 @@ namespace scrum_poker_server.Controllers
                 };
 
                 // Compute hash of the password
-                var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
-
-                // Convert byte array to string
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < hash.Length; i++)
-                {
-                    builder.Append(hash[i].ToString("x2"));
-                }
+                var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
+                string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
 
                 var account = new User()
                 {
                     Email = data.Email,
-                    Password = builder.ToString(),
+                    Password = hashedPassword,
                     Account = new Account()
                 };
 

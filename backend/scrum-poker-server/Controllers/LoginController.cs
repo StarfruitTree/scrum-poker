@@ -36,15 +36,9 @@ namespace scrum_poker_server.Controllers
             if (ModelState.IsValid)
             {
                 var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
+                string hashedPassword = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
-                // Convert byte array to string
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < hash.Length; i++)
-                {
-                    builder.Append(hash[i].ToString("x2"));
-                }
-
-                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == builder.ToString());
+                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == hashedPassword);
                 if (user == null) return Unauthorized();
 
                 return Ok(new { token = GenerateJWTToken(data) });
