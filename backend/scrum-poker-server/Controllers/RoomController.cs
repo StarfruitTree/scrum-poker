@@ -8,6 +8,7 @@ using scrum_poker_server.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace scrum_poker_server.Controllers
@@ -48,20 +49,22 @@ namespace scrum_poker_server.Controllers
                     if (room == null) isRoomExisted = false;
                 }
 
-                var host = new User { Name = data.UserName };
+                var user = _dbContext.Users.FirstOrDefault(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Email).Value);
+
                 room = new Room
                 {
-                    Host = host,
+                    Owner = user,
                     Code = roomCode,
                     Name = data.RoomName,
                     Description = data.Description
                 };
 
+                user.Account.Rooms.Add(room);
+
                 await _dbContext.UserRooms.AddAsync(new UserRoom
                 {
-                    User = host,
+                    User = user,
                     Room = room,
-                    Role = Role.host
                 });
 
                 await _dbContext.SaveChangesAsync();
@@ -107,7 +110,6 @@ namespace scrum_poker_server.Controllers
                 {
                     User = new User { Name = data.UserName },
                     Room = room,
-                    Role = Role.player
                 });
 
                 await _dbContext.SaveChangesAsync();

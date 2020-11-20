@@ -35,8 +35,8 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var hash = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
-                string hashedPassword = BitConverter.ToString(hash).Replace("-", "").ToLower();
+                var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
+                string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
 
                 var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == hashedPassword);
                 if (user == null) return Unauthorized();

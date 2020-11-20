@@ -17,10 +17,10 @@ namespace scrum_poker_server.Models
         [MaxLength(100)]
         public string Description { get; set; }
 
-        [ForeignKey("Host")]
-        public int HostId { get; set; }
+        [ForeignKey("Owner")]
+        public int UserId { get; set; }
 
-        public User Host { get; set; }
+        public User Owner { get; set; }
 
         [ForeignKey("Account")]
         public int? AccountId { get; set; }

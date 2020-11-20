@@ -14,8 +14,5 @@ namespace scrum_poker_server.Models
         public int RoomId { get; set; }
 
         public Room Room { get; set; }
-
-        [Column(TypeName = "varchar")]
-        public Role Role { get; set; }
     }
 }
