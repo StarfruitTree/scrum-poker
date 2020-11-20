@@ -24,7 +24,7 @@ namespace scrum_poker_server.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "OfficialUser")]
         [Consumes("application/json")]
         [HttpPost, Route("create")]
         public async Task<IActionResult> Create([FromBody] CreateRoomDTO data)
@@ -74,6 +74,7 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
+        [Authorize(Policy = "AllUser")]
         [HttpGet, Route("{id}/stories")]
         public async Task<IActionResult> GetStories(int id)
         {
@@ -81,13 +82,19 @@ namespace scrum_poker_server.Controllers
             {
                 var room = await _dbContext.Rooms.Include(r => r.Stories).FirstOrDefaultAsync(r => r.Id == id);
                 if (room == null) return NotFound(new { error = "The room doesn't exist" });
+
+                var userRoom = await _dbContext.UserRooms.
+                    FirstOrDefaultAsync(ur => ur.RoomId == room.Id && ur.UserID.ToString() == HttpContext.User.FindFirst("UserId").Value);
+
+                if (userRoom == null) return Forbid();
+
                 var stories = new List<StoryDTO>();
                 room.Stories.ToList().ForEach(s =>
                 {
                     stories.Add(new StoryDTO { Id = s.Id, Title = s.Title, Content = s.Content, Assignee = s.Assignee, Point = s.Point });
                 });
 
-                return Ok(new { stories = stories.ToArray() });
+                return Ok(new { stories });
             }
             else return StatusCode(422);
         }

@@ -41,12 +41,12 @@ namespace scrum_poker_server.Controllers
                 var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == hashedPassword);
                 if (user == null) return Unauthorized();
 
-                return Ok(new { token = GenerateJWTToken(data) });
+                return Ok(new { token = GenerateJWTToken(data, user.Id) });
             }
             else return StatusCode(422);
         }
 
-        private string GenerateJWTToken(LoginDTO data)
+        private string GenerateJWTToken(LoginDTO data, int userId)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -54,7 +54,7 @@ namespace scrum_poker_server.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Expires = DateTime.Now.AddMinutes(30),
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email) }),
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email), new Claim("UserId", userId.ToString()) }),
                 SigningCredentials = credentials
             };
 

@@ -49,9 +49,14 @@ namespace scrum_poker_server
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("User", policy =>
+                options.AddPolicy("OfficialUser", policyBuilder =>
                 {
-                    policy.RequireClaim(ClaimTypes.Email);
+                    policyBuilder.RequireClaim(ClaimTypes.Email);
+                });
+
+                options.AddPolicy("AllUser", policyBuilder =>
+                {
+                    policyBuilder.RequireClaim("UserId");
                 });
             });
 
