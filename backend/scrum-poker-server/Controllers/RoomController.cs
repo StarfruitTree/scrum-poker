@@ -49,7 +49,7 @@ namespace scrum_poker_server.Controllers
                     if (room == null) isRoomExisted = false;
                 }
 
-                var user = _dbContext.Users.FirstOrDefault(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Email).Value);
+                var user = _dbContext.Users.Include(u => u.Account).ThenInclude(a => a.Rooms).FirstOrDefault(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Email).Value);
 
                 room = new Room
                 {

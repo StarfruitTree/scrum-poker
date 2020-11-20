@@ -40,11 +40,6 @@ namespace scrum_poker_server.Controllers
                 bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
                 if (isEmailExisted) return StatusCode(409, new { error = "The email is already existed" });
 
-                var user = new User()
-                {
-                    Name = data.Username
-                };
-
                 // Compute hash of the password
                 var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
                 string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
@@ -53,6 +48,7 @@ namespace scrum_poker_server.Controllers
                 {
                     Email = data.Email,
                     Password = hashedPassword,
+                    Name = data.Username,
                     Account = new Account()
                 };
 
