@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs;
 using scrum_poker_server.Models;
-using scrum_poker_server.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,6 +98,7 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
+        [Authorize(Policy = "AllUser")]
         [Consumes("application/json")]
         [HttpPost, Route("join")]
         public async Task<IActionResult> Join([FromBody] JoinRoomDTO data)
@@ -106,16 +106,17 @@ namespace scrum_poker_server.Controllers
             if (ModelState.IsValid)
             {
                 var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == data.RoomCode);
+                if (room == null) return NotFound(new { error = "The room doesn't exist" });
 
-                if (room == null) return NotFound(new { error = "The room is not existed" });
+                var userId = HttpContext.User.FindFirst("UserId").Value;
 
-                var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Name == data.UserName);
+                var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Id.ToString() == userId);
 
-                if (userRoom != null) return StatusCode(409, new { error = "The userName is already existed in this room" });
+                if (userRoom != null) return StatusCode(409, new { error = "You've already joined this room" });
 
                 await _dbContext.UserRooms.AddAsync(new UserRoom
                 {
-                    User = new User { Name = data.UserName },
+                    User = await _dbContext.Users.FirstAsync(u => u.Id.ToString() == userId),
                     Room = room,
                 });
 
