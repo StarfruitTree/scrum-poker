@@ -37,6 +37,19 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (String.IsNullOrEmpty(data.Email))
+                {
+                    var anonymousUser = new User()
+                    {
+                        Name = data.Username
+                    };
+
+                    await _dbContext.Users.AddAsync(anonymousUser);
+                    await _dbContext.SaveChangesAsync();
+
+                    return Ok(new { token = GenerateJWTToken(data, anonymousUser.Id) });
+                }
+
                 bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
                 if (isEmailExisted) return StatusCode(409, new { error = "The email is already existed" });
 
@@ -67,8 +80,9 @@ namespace scrum_poker_server.Controllers
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Expires = DateTime.Now.AddHours(3),
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email), new Claim("UserId", userId.ToString()) }),
+                Expires = DateTime.Now.AddDays(3),
+                Subject = String.IsNullOrEmpty(data.Email) ? new ClaimsIdentity(new[] { new Claim("UserId", userId.ToString()) })
+                : new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email), new Claim("UserId", userId.ToString()) }),
                 SigningCredentials = credentials
             };
 

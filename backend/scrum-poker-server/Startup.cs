@@ -49,12 +49,12 @@ namespace scrum_poker_server
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("OfficialUser", policyBuilder =>
+                options.AddPolicy("OfficialUsers", policyBuilder =>
                 {
                     policyBuilder.RequireClaim(ClaimTypes.Email);
                 });
 
-                options.AddPolicy("AllUser", policyBuilder =>
+                options.AddPolicy("AllUsers", policyBuilder =>
                 {
                     policyBuilder.RequireClaim("UserId");
                 });

@@ -24,7 +24,7 @@ namespace scrum_poker_server.Controllers
             _dbContext = dbContext;
         }
 
-        [Authorize(Policy = "OfficialUser")]
+        [Authorize(Policy = "OfficialUsers")]
         [Consumes("application/json")]
         [HttpPost, Route("create")]
         public async Task<IActionResult> Create([FromBody] CreateRoomDTO data)
@@ -75,7 +75,7 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
-        [Authorize(Policy = "AllUser")]
+        [Authorize(Policy = "AllUsers")]
         [HttpGet, Route("{id}/stories")]
         public async Task<IActionResult> GetStories(int id)
         {
@@ -100,7 +100,7 @@ namespace scrum_poker_server.Controllers
             else return StatusCode(422);
         }
 
-        [Authorize(Policy = "AllUser")]
+        [Authorize(Policy = "AllUsers")]
         [Consumes("application/json")]
         [HttpPost, Route("join")]
         public async Task<IActionResult> Join([FromBody] JoinRoomDTO data)

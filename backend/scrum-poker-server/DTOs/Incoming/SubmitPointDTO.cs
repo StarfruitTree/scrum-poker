@@ -5,14 +5,12 @@ using System.Threading.Tasks;
 
 namespace scrum_poker_server.DTOs
 {
-    public class SubmitStoryDTO
+    public class SubmitPointDTO
     {
-        public string RoomCode { get; set; }
-
         public int StoryId { get; set; }
 
-        public string UserName { get; set; }
-
         public int Point { get; set; }
+
+        public bool IsFinalPoint { get; set; }
     }
 }
