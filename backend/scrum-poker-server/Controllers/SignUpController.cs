@@ -37,42 +37,52 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (String.IsNullOrEmpty(data.Email))
+                {
+                    var anonymousUser = new User()
+                    {
+                        Name = data.Username
+                    };
+
+                    await _dbContext.Users.AddAsync(anonymousUser);
+                    await _dbContext.SaveChangesAsync();
+
+                    return Ok(new { token = GenerateJWTToken(data, anonymousUser.Id) });
+                }
+
                 bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
                 if (isEmailExisted) return StatusCode(409, new { error = "The email is already existed" });
-
-                var user = new User()
-                {
-                    Name = data.Username
-                };
 
                 // Compute hash of the password
                 var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
                 string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
 
-                var account = new User()
+                var user = new User()
                 {
                     Email = data.Email,
                     Password = hashedPassword,
+                    Name = data.Username,
                     Account = new Account()
                 };
 
-                await _dbContext.Users.AddAsync(account);
+                await _dbContext.Users.AddAsync(user);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { token = GenerateJWTToken(data) });
+                return Ok(new { token = GenerateJWTToken(data, user.Id) });
             }
             else return StatusCode(422);
         }
 
-        private string GenerateJWTToken(SignUpDTO data)
+        private string GenerateJWTToken(SignUpDTO data, int userId)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Expires = DateTime.Now.AddHours(3),
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email) }),
+                Expires = DateTime.Now.AddDays(3),
+                Subject = String.IsNullOrEmpty(data.Email) ? new ClaimsIdentity(new[] { new Claim("UserId", userId.ToString()) })
+                : new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email), new Claim("UserId", userId.ToString()) }),
                 SigningCredentials = credentials
             };
 

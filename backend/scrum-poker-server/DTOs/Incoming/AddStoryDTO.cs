@@ -7,7 +7,7 @@ namespace scrum_poker_server.DTOs
 {
     public class AddStoryDTO
     {
-        public string RoomCode { get; set; }
+        public int RoomId { get; set; }
 
         public string Title { get; set; }
 
