@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using scrum_poker_server.Utils;
 
 namespace scrum_poker_server.Controllers
 {
@@ -64,6 +65,7 @@ namespace scrum_poker_server.Controllers
                 {
                     User = user,
                     Room = room,
+                    Role = Role.host
                 });
 
                 await _dbContext.SaveChangesAsync();
@@ -118,6 +120,7 @@ namespace scrum_poker_server.Controllers
                 {
                     User = await _dbContext.Users.FirstAsync(u => u.Id.ToString() == userId),
                     Room = room,
+                    Role = Role.player
                 });
 
                 await _dbContext.SaveChangesAsync();

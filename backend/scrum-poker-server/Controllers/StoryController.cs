@@ -40,7 +40,7 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var room = _dbContext.Rooms.FirstOrDefault(r => r.Code == data.RoomCode);
+                var room = _dbContext.Rooms.Include(r => r.Stories).FirstOrDefault(r => r.Code == data.RoomCode);
                 if (room == null)
                 {
                     return StatusCode(422, new { error = "The room code is not existed" });
@@ -48,14 +48,7 @@ namespace scrum_poker_server.Controllers
 
                 var story = new Story { Title = data.Title, Content = data.Content };
 
-                if (room.Stories == null)
-                {
-                    room.Stories = new List<Story> { story };
-                }
-                else
-                {
-                    room.Stories.Add(story);
-                }
+                room.Stories.Add(story);
 
                 await _dbContext.SaveChangesAsync();
 
