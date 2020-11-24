@@ -13,8 +13,8 @@ using scrum_poker_server.Utils;
 
 namespace scrum_poker_server.Controllers
 {
-    [Route("api/rooms")]
     [ApiController]
+    [Route("api/rooms")]
     public class RoomController : ControllerBase
     {
         public AppDbContext _dbContext { get; set; }

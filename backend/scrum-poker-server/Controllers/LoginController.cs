@@ -15,8 +15,8 @@ using System.Threading.Tasks;
 
 namespace scrum_poker_server.Controllers
 {
-    [Route("api/login")]
     [ApiController]
+    [Route("api/login")]
     public class LoginController : ControllerBase
     {
         public AppDbContext _dbContext { get; set; }

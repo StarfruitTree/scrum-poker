@@ -12,6 +12,7 @@ using System;
 
 namespace scrum_poker_server.Controllers
 {
+    [ApiController]
     [Route("api/stories")]
     public class StoryController : ControllerBase
     {
