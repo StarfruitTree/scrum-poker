@@ -3,32 +3,30 @@ using scrum_poker_server.Data;
 using scrum_poker_server.DTOs.Incoming;
 using scrum_poker_server.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using scrum_poker_server.Utils.Jwt;
 
 namespace scrum_poker_server.Controllers
 {
-    [Route("api/signup")]
     [ApiController]
+    [Route("api/signup")]
     public class SignUpController : ControllerBase
     {
         public AppDbContext _dbContext { get; set; }
 
         public IConfiguration _configuration { get; set; }
 
+        public JwtTokenGenerator JwtTokenGenerator { get; set; }
+
         public SignUpController(AppDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
             _configuration = configuration;
+            JwtTokenGenerator = new JwtTokenGenerator(_configuration);
         }
 
         [Consumes("application/json")]
@@ -47,7 +45,7 @@ namespace scrum_poker_server.Controllers
                     await _dbContext.Users.AddAsync(anonymousUser);
                     await _dbContext.SaveChangesAsync();
 
-                    return Ok(new { token = GenerateJWTToken(data, anonymousUser.Id) });
+                    return Ok(new { token = JwtTokenGenerator.GenerateToken(new UserData { UserId = anonymousUser.Id }) });
                 }
 
                 bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
@@ -68,27 +66,9 @@ namespace scrum_poker_server.Controllers
                 await _dbContext.Users.AddAsync(user);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { token = GenerateJWTToken(data, user.Id) });
+                return Ok(new { token = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id }) });
             }
             else return StatusCode(422);
-        }
-
-        private string GenerateJWTToken(SignUpDTO data, int userId)
-        {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Expires = DateTime.Now.AddDays(3),
-                Subject = String.IsNullOrEmpty(data.Email) ? new ClaimsIdentity(new[] { new Claim("UserId", userId.ToString()) })
-                : new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, data.Email), new Claim("UserId", userId.ToString()) }),
-                SigningCredentials = credentials
-            };
-
-            var securityToken = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
-
-            return new JwtSecurityTokenHandler().WriteToken(securityToken);
         }
     }
 }
