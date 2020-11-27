@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs.Incoming;
 using scrum_poker_server.Models;
+using scrum_poker_server.Utils.Jwt;
 using System;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
-using scrum_poker_server.Utils.Jwt;
+using System.Threading.Tasks;
 
 namespace scrum_poker_server.Controllers
 {
@@ -22,11 +22,11 @@ namespace scrum_poker_server.Controllers
 
         public JwtTokenGenerator JwtTokenGenerator { get; set; }
 
-        public SignUpController(AppDbContext dbContext, IConfiguration configuration)
+        public SignUpController(AppDbContext dbContext, IConfiguration configuration, JwtTokenGenerator jwtTokenGenerator)
         {
             _dbContext = dbContext;
             _configuration = configuration;
-            JwtTokenGenerator = new JwtTokenGenerator(_configuration);
+            JwtTokenGenerator = jwtTokenGenerator;
         }
 
         [Consumes("application/json")]

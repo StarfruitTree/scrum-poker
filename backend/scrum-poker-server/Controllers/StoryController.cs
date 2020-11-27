@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using scrum_poker_server.Data;
-using scrum_poker_server.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using scrum_poker_server.DTOs;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+using scrum_poker_server.Data;
+using scrum_poker_server.DTOs;
+using scrum_poker_server.Models;
 using scrum_poker_server.Utils;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace scrum_poker_server.Controllers
 {
@@ -52,8 +51,8 @@ namespace scrum_poker_server.Controllers
                     return StatusCode(422, new { error = "The room code is not existed" });
                 }
 
-                var userId = HttpContext.User.FindFirst("UserId").Value;
-                var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.UserID.ToString() == userId && ur.RoomId == data.RoomId);
+                var userId = Int32.Parse(HttpContext.User.FindFirst("UserId").Value);
+                var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.UserID == userId && ur.RoomId == data.RoomId);
 
                 if (userRoom == null) return Forbid();
                 else if (userRoom.Role != Role.host) return Forbid();

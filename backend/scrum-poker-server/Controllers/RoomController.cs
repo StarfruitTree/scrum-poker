@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs;
 using scrum_poker_server.Models;
+using scrum_poker_server.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using scrum_poker_server.Utils;
 
 namespace scrum_poker_server.Controllers
 {
