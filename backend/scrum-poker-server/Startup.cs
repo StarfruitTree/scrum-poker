@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using scrum_poker_server.Data;
 using scrum_poker_server.Hubs;
 using scrum_poker_server.HubServices;
-using System.Text;
+using scrum_poker_server.Utils.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace scrum_poker_server
 {
@@ -64,6 +65,7 @@ namespace scrum_poker_server
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
             services.AddSignalR();
             services.AddSingleton<RoomService>();
+            services.AddSingleton<JwtTokenGenerator>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
