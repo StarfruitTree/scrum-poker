@@ -1,0 +1,3 @@
+interface IGlobalState {
+  testReducer: boolean;
+}
