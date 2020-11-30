@@ -1,3 +1,3 @@
-import * as testActions from './testAction';
+import * as roomActions from './roomAction';
 
-export { testActions };
+export { roomActions };
