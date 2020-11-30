@@ -8,8 +8,8 @@ const Welcome: React.FC = () => {
       <Card width={450}>
         <Typo type="h2">Let&apos;s get started</Typo>
         <Typo>So, you want to:</Typo>
-        <Button fullWidth linkTo="/room/create">
-          Create a new room
+        <Button fullWidth linkTo="/signup">
+          Signup
         </Button>
         <Button fullWidth linkTo="/room/join" secondary>
           Join a room
