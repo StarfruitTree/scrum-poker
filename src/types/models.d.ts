@@ -28,3 +28,35 @@ interface ISubmmitedUsersPayload {
 interface IRoomConnectionPayload {
   roomConnection: any;
 }
+
+interface IUserData {
+  jwtToken: string;
+  userId: number;
+  userName: string;
+  userRole: number;
+  action: string;
+  point: number;
+  isCardLocked: boolean;
+}
+
+interface IUserInfoPayload {
+  jwtToken: string;
+  userId: number;
+  userName: string;
+}
+
+interface IUserActionPayload {
+  action: string;
+}
+
+interface IUserRolePayload {
+  userRole: number;
+}
+
+interface IUserPointPayload {
+  point: number;
+}
+
+interface IIsCardLockedPayload {
+  isCardLocked: boolean;
+}
