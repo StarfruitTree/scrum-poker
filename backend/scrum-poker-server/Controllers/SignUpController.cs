@@ -45,7 +45,7 @@ namespace scrum_poker_server.Controllers
                     await _dbContext.Users.AddAsync(anonymousUser);
                     await _dbContext.SaveChangesAsync();
 
-                    return Ok(new { token = JwtTokenGenerator.GenerateToken(new UserData { UserId = anonymousUser.Id }) });
+                    return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { UserId = anonymousUser.Id }) });
                 }
 
                 bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
@@ -66,7 +66,7 @@ namespace scrum_poker_server.Controllers
                 await _dbContext.Users.AddAsync(user);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { token = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id }), userName = data.Username, userId = user.Id });
+                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id }), expiration = 1740, userName = data.Username, userId = user.Id });
             }
             else return StatusCode(422);
         }

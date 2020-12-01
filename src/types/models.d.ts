@@ -1,3 +1,9 @@
+interface ISignUpData {
+  email: string;
+  userName: string;
+  password: string;
+}
+
 interface IGlobalState {
   testReducer: boolean;
 }

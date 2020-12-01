@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
-import { SIGN_UP } from '@scrpoker/constants/apis';
 import style from './style.module.scss';
 import { Actions, store } from '@scrpoker/store';
 
@@ -18,31 +17,15 @@ const SignUp: React.FC = () => {
   const goBack = () => history.goBack();
 
   const submit = async () => {
-    const userData = {
+    const signUpData: ISignUpData = {
       userName: userName,
       password: password,
       email: email,
     };
 
     try {
-      const response = await fetch(SIGN_UP, {
-        method: 'post',
-        body: JSON.stringify(userData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.status == 406) {
-        alert(data.error);
-      } else {
-        store.dispatch(
-          Actions.userActions.updateUserInfo({ jwtToken: data.token, userName: data.userName, userId: data.userId })
-        );
-        console.log(store.getState());
-      }
+      await store.dispatch<any>(Actions.userActions.signUp(signUpData));
+      console.log(store.getState());
     } catch (err) {
       console.log(err);
     }
