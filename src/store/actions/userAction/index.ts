@@ -1,24 +1,37 @@
 import { Dispatch } from 'redux';
 import { SIGN_UP } from '@scrpoker/constants/apis';
-export function signUp(signUpData: ISignUpData) {
-  return async (dispatch: Dispatch): Promise<IUserAction | void> => {
-    return await fetch(SIGN_UP, {
-      method: 'POST',
-      body: JSON.stringify(signUpData),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) =>
-        dispatch({
-          type: 'UPDATE_USER_INFO',
-          payload: data,
-        })
-      )
-      .catch((err) => console.log(err));
-  };
+
+interface ISignUpResponse {
+  jwtToken: string;
+  userId: number;
+  userName: string;
+  expiration: number;
 }
+
+export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise<IUserAction | void> =>
+  fetch(SIGN_UP, {
+    method: 'POST',
+    body: JSON.stringify(signUpData),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then(({ jwtToken, userId, userName, expiration }: ISignUpResponse) => {
+      const date = new Date();
+      date.setSeconds(expiration);
+      document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+
+      return dispatch({
+        type: 'UPDATE_USER_INFO',
+        payload: {
+          jwtToken: jwtToken,
+          userId: userId,
+          userName: userName,
+        },
+      });
+    })
+    .catch((err) => console.log(err));
 
 export function updateUserRole(payload: IUserRolePayload): IUserAction {
   return {
