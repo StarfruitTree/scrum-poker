@@ -4,6 +4,11 @@ interface ISignUpData {
   password: string;
 }
 
+interface ILoginData {
+  email: string;
+  password: string;
+}
+
 interface IGlobalState {
   testReducer: boolean;
 }

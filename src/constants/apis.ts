@@ -9,3 +9,4 @@ export const ADD_STORY = getUrl('stories/add');
 export const GET_STORY = getUrl('stories/get');
 export const GET_ROOM_STORIES: (roomId: number) => string = (roomId: number) => getUrl(`rooms/${roomId}/stories`);
 export const SIGN_UP = getUrl('signup');
+export const LOGIN = getUrl('login');
