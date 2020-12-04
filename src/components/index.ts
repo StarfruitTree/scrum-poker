@@ -4,5 +4,6 @@ import Icon from './Icon';
 import Input from './Input';
 import Card from './Card';
 import AvatarInput from './AvatarInput';
+import Checkbox from './Checkbox';
 
-export { Button, Typo, Icon, Input, Card, AvatarInput };
+export { Button, Typo, Icon, Input, Card, AvatarInput, Checkbox };

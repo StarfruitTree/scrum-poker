@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
+import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions, store } from '@scrpoker/store';
 
@@ -14,6 +14,7 @@ const SignUp: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isPersistentLogin, setIsPersistentLogin] = useState(false);
   const history = useHistory();
 
   const goBack = () => history.goBack();
@@ -52,6 +53,10 @@ const SignUp: React.FC = () => {
     }
   };
 
+  const handleIsChecked = () => {
+    setIsPersistentLogin(!isPersistentLogin);
+  };
+
   return (
     <div className={style.container}>
       <Card width={450}>
@@ -65,6 +70,10 @@ const SignUp: React.FC = () => {
         <Input name={USER_NAME} onTextChange={handleTextChange} placeholder="Enter your username" />
         <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Enter your password" />
         <Input name={CONFIRM_PASSWORD} onTextChange={handleTextChange} placeholder="Confirm your password" />
+        <div className={style.checkBoxContainer}>
+          <Checkbox isChecked={isPersistentLogin} checkHandler={handleIsChecked} />
+          <Typo>Keep me signed in</Typo>
+        </div>
         <Button fullWidth onClick={submit}>
           Create
         </Button>
