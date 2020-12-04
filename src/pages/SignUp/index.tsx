@@ -7,27 +7,33 @@ import { Actions, store } from '@scrpoker/store';
 const USER_NAME = 'userName';
 const PASSWORD = 'password';
 const EMAIL = 'email';
+const CONFIRM_PASSWORD = 'confirmPassword';
 
 const SignUp: React.FC = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const history = useHistory();
 
   const goBack = () => history.goBack();
 
   const submit = async () => {
-    const signUpData: ISignUpData = {
-      userName: userName,
-      password: password,
-      email: email,
-    };
+    if (confirmPassword !== password) {
+      alert('The password confirmation does not match');
+    } else {
+      const signUpData: ISignUpData = {
+        userName: userName,
+        password: password,
+        email: email,
+      };
 
-    try {
-      await store.dispatch<any>(Actions.userActions.signUp(signUpData));
-      console.log(store.getState());
-    } catch (err) {
-      console.log(err);
+      try {
+        await store.dispatch<any>(Actions.userActions.signUp(signUpData));
+        console.log(store.getState());
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -39,6 +45,8 @@ const SignUp: React.FC = () => {
       case PASSWORD:
         setPassword(value);
         break;
+      case CONFIRM_PASSWORD:
+        setConfirmPassword(value);
       default:
         setEmail(value);
     }
@@ -47,12 +55,16 @@ const SignUp: React.FC = () => {
   return (
     <div className={style.container}>
       <Card width={450}>
-        <Typo type="h2">Almost there!</Typo>
-        <Typo>We just need to know some info...</Typo>
-        <AvatarInput className={style.avatar} />
-        <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Email" />
-        <Input name={USER_NAME} onTextChange={handleTextChange} placeholder="Username" />
-        <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Password" />
+        <div className={style.title}>
+          <Typo type="h2">Sign Up</Typo>
+          <Typo type="a" linkTo="/Login">
+            Sign In
+          </Typo>
+        </div>
+        <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
+        <Input name={USER_NAME} onTextChange={handleTextChange} placeholder="Enter your username" />
+        <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Enter your password" />
+        <Input name={CONFIRM_PASSWORD} onTextChange={handleTextChange} placeholder="Confirm your password" />
         <Button fullWidth onClick={submit}>
           Create
         </Button>
