@@ -3,7 +3,16 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { UserContext } from '@scrpoker/contexts';
-import { CreateRoomPage, LandingPage, JoinRoomPage, WelcomePage, RoomPage, SignUpPage, LoginPage } from './pages';
+import {
+  CreateRoomPage,
+  LandingPage,
+  JoinRoomPage,
+  WelcomePage,
+  RoomPage,
+  SignUpPage,
+  LoginPage,
+  HomePage,
+} from './pages';
 import { store } from './store';
 import './index.scss';
 
@@ -40,6 +49,9 @@ function App() {
             </Route>
             <Route path="/login" exact>
               <LoginPage />
+            </Route>
+            <Route path="/home" exact>
+              <HomePage />
             </Route>
             <Route path="/room/create" exact>
               <CreateRoomPage />

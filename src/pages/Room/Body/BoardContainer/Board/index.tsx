@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './style.module.scss';
 import { Typo, Icon } from '@scrpoker/components';
-import Avatar from '@scrpoker/pages/Room/Header/UsersContainer/UserCard/Avatar';
+import Avatar from '@scrpoker/components/Avatar';
 
 export interface Story {
   id: number;

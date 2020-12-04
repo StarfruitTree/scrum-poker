@@ -11,10 +11,8 @@ interface Props {
 const Typo: React.FC<Props> = ({ type, children, className, id, linkTo }) => {
   const Component = type || 'p';
   return linkTo ? (
-    <Link to={linkTo}>
-      <Component className={className} id={id}>
-        {children}
-      </Component>
+    <Link to={linkTo} className={className} id={id}>
+      {children}
     </Link>
   ) : (
     <Component id={id} className={className}>

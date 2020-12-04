@@ -7,11 +7,11 @@ interface Props {
 }
 
 const Checkbox: React.FC<Props> = ({ isChecked, checkHandler }) => {
-  const isCheckedClass = isChecked
+  const checkBoxClass = isChecked
     ? `${style.checkBox} ${style.isChecked} fas fa-check-square fa-lg`
     : `${style.checkBox} far fa-square fa-lg`;
 
-  return <i className={isCheckedClass} onClick={checkHandler}></i>;
+  return <i className={checkBoxClass} onClick={checkHandler}></i>;
 };
 
 export default Checkbox;

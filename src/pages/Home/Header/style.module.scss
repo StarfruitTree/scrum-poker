@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  align-items: center;
+
+  .avatar {
+    font-size: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .greeting {
+    margin-left: 1rem;
+
+    p {
+      color: #9a9a9a;
+      text-decoration: underline;
+      margin-top: 0.5rem;
+    }
+  }
+}

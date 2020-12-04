@@ -1,7 +1,6 @@
 import React from 'react';
 import style from './style.module.scss';
-import { Typo } from '@scrpoker/components';
-import Avatar from '../../../Header/UsersContainer/UserCard/Avatar';
+import { Typo, Avatar } from '@scrpoker/components';
 
 interface Props {
   title: string;

@@ -62,7 +62,7 @@ const SignUp: React.FC = () => {
       <Card width={450}>
         <div className={style.title}>
           <Typo type="h2">Sign Up</Typo>
-          <Typo type="a" linkTo="/Login">
+          <Typo type="a" linkTo="/login">
             Sign In
           </Typo>
         </div>
