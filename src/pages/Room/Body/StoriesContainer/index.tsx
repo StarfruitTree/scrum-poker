@@ -84,7 +84,7 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
     <div className={style.storiesContainer}>
       <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={modalStyle}>
         <Typo type="h2">Add a story</Typo>
-        <Input placeholder="Story's title" onTextChange={handleTitleChange} />
+        <Input name="Title" placeholder="Story's title" onTextChange={handleTitleChange} />
         <textarea
           className={style.textarea}
           rows={8}

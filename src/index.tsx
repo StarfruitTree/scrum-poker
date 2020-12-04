@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom';
 import React, { useState } from 'react';
-import { CreateRoomPage, LandingPage, JoinRoomPage, WelcomePage, RoomPage } from './pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { UserContext } from '@scrpoker/contexts';
+import { CreateRoomPage, LandingPage, JoinRoomPage, WelcomePage, RoomPage, SignUpPage, LoginPage } from './pages';
+import { store } from './store';
 import './index.scss';
 
 function App() {
@@ -23,27 +25,35 @@ function App() {
   });
 
   return (
-    <UserContext.Provider value={{ ...globalState, setGlobalState }}>
-      <Router>
-        <Switch>
-          <Route path="/" exact>
-            <LandingPage />
-          </Route>
-          <Route path="/welcome">
-            <WelcomePage />
-          </Route>
-          <Route path="/room/create" exact>
-            <CreateRoomPage />
-          </Route>
-          <Route path="/room/join" exact>
-            <JoinRoomPage />
-          </Route>
-          <Route path="/room/:channel" exact>
-            <RoomPage />
-          </Route>
-        </Switch>
-      </Router>
-    </UserContext.Provider>
+    <Provider store={store}>
+      <UserContext.Provider value={{ ...globalState, setGlobalState }}>
+        <Router>
+          <Switch>
+            <Route path="/" exact>
+              <LandingPage />
+            </Route>
+            <Route path="/welcome">
+              <WelcomePage />
+            </Route>
+            <Route path="/signup" exact>
+              <SignUpPage />
+            </Route>
+            <Route path="/login" exact>
+              <LoginPage />
+            </Route>
+            <Route path="/room/create" exact>
+              <CreateRoomPage />
+            </Route>
+            <Route path="/room/join" exact>
+              <JoinRoomPage />
+            </Route>
+            <Route path="/room/:channel" exact>
+              <RoomPage />
+            </Route>
+          </Switch>
+        </Router>
+      </UserContext.Provider>
+    </Provider>
   );
 }
 

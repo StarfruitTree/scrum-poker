@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  input {
+    margin-bottom: $base;
+  }
+
+  h2 {
+    margin-bottom: $base;
+  }
+
+  button {
+    margin-top: $base;
+  }
+
+  .avatar {
+    align-self: center;
+  }
+}
