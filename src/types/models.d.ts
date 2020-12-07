@@ -21,34 +21,26 @@ interface IRoomData {
   roomState: string;
   description: string;
   roomConnection: any;
+  users: IUser[];
   submittedUsers: number;
   canBeRevealed: boolean;
+  point: number;
+  isLocked: boolean;
+  role: number;
 }
 
 interface IRoomInfoPayload {
   roomId: number;
   roomCode: string;
   roomName: string;
-  roomState: string;
   description: string;
-}
-
-interface ISubmmitedUsersPayload {
-  submittedUsers: number;
-}
-
-interface IRoomConnectionPayload {
-  roomConnection: any;
 }
 
 interface IUserData {
   jwtToken: string;
   userId: number;
-  userName: string;
-  userRole: number;
+  name: string;
   action: string;
-  point: number;
-  isCardLocked: boolean;
 }
 
 interface IUserInfoPayload {
@@ -56,19 +48,34 @@ interface IUserInfoPayload {
   userId: number;
   userName: string;
 }
-
-interface IUserActionPayload {
-  action: string;
+interface IUser {
+  id: number;
+  name: string;
+  status: string;
+  point?: number;
+  role: number;
 }
 
-interface IUserRolePayload {
-  userRole: number;
+interface IUsersAndRoomstate {
+  users: IUser[];
+  roomState: string;
 }
 
-interface IUserPointPayload {
+interface IUsersAndSubmittedUsers {
+  users: IUser[];
+  submittedUsers: number;
+}
+
+interface IUsersAndCanBeRevealed {
+  users: IUser[];
+  canBeRevealed: boolean;
+}
+
+interface IResetRoom {
+  roomState: string;
+  users: IUser[];
+  submittedUsers: number;
   point: number;
-}
-
-interface IIsCardLockedPayload {
-  isCardLocked: boolean;
+  isLocked: boolean;
+  canBeRevealed: boolean;
 }

@@ -2,7 +2,6 @@ import { Avatar, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
 import React from 'react';
 import { connect } from 'react-redux';
-import { userActions } from '@scrpoker/store/actions';
 
 interface Props {
   userName: string;
@@ -20,9 +19,9 @@ const Header: React.FC<Props> = ({ userName }) => {
   );
 };
 
-const mapStateToProps = ({ userData }: IGlobalState) => {
+const mapStateToProps = ({ userData: { name } }: IGlobalState) => {
   return {
-    userName: userData.userName,
+    userName: name,
   };
 };
 

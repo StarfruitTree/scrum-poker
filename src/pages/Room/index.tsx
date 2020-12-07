@@ -1,26 +1,29 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import Header from './Header';
 import Footer from './Footer';
 import Body from './Body';
 import style from './style.module.scss';
-import { UserContext } from '@scrpoker/contexts';
 import * as signalR from '@microsoft/signalr';
 import { ROOM_CHANNEL } from '@scrpoker/constants/apis';
 import CookieReader from 'js-cookie';
+import { Actions, store } from '@scrpoker/store';
+
+interface Props {
+  roomCode: string;
+  role: number;
+}
 
 const connection = new signalR.HubConnectionBuilder()
   .withUrl(ROOM_CHANNEL, { accessTokenFactory: () => CookieReader.get('jwtToken') as string })
   .build();
 
-const Room: React.FC = () => {
-  const userContext = useContext(UserContext);
-  userContext.roomConnection = connection;
+store.dispatch(Actions.roomActions.updateRoomConnection({ roomConnection: connection }));
 
-  const { userName, roomCode, userRole } = useContext(UserContext);
-
+const Room: React.FC<Props> = ({ roomCode, role }) => {
   useEffect(() => {
     connection.start().then(() => {
-      connection.send('Combine', roomCode, userName, userRole).catch((err) => console.log(err));
+      connection.send('Combine', roomCode, role).catch((err) => console.log(err));
     });
   }, []);
 
@@ -33,4 +36,11 @@ const Room: React.FC = () => {
   );
 };
 
-export default Room;
+const mapStateToProps = ({ roomData: { roomCode, role } }: IGlobalState) => {
+  return {
+    roomCode: roomCode,
+    role: role,
+  };
+};
+
+export default connect(mapStateToProps)(Room);

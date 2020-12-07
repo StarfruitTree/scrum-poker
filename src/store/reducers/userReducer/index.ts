@@ -1,11 +1,8 @@
 const initialState: IUserData = {
   jwtToken: '',
   userId: 0,
-  userName: '',
-  userRole: 0,
+  name: '',
   action: '',
-  point: -1,
-  isCardLocked: false,
 };
 
 const reducer = (state: IUserData = initialState, action: IUserAction): IUserData => {
@@ -13,13 +10,7 @@ const reducer = (state: IUserData = initialState, action: IUserAction): IUserDat
     case 'UPDATE_USER_INFO':
       return { ...state, ...(action.payload as IUserInfoPayload) };
     case 'UPDATE_USER_ACTION':
-      return { ...state, ...(action.payload as IUserActionPayload) };
-    case 'UPDATE_USER_POINT':
-      return { ...state, ...(action.payload as IUserPointPayload) };
-    case 'UPDATE_USER_ROLE':
-      return { ...state, ...(action.payload as IUserRolePayload) };
-    case 'UPDATE_IS_CARD_LOCKED':
-      return { ...state, ...(action.payload as IIsCardLockedPayload) };
+      return { ...state, action: action.payload as string };
     default:
       return state;
   }
