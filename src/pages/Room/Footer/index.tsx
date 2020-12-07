@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import CardsContainer from './CardsContainer';
 import style from './style.module.scss';
-import { UserContext } from '@scrpoker/contexts';
+import { connect } from 'react-redux';
 
 interface PlayingCards {
   point: number;
@@ -9,10 +9,12 @@ interface PlayingCards {
   isSelected: boolean;
 }
 
-const Footer: React.FC = () => {
-  const { roomState, point } = useContext(UserContext);
+interface Props {
+  roomState: string;
+  point: number;
+}
 
-  console.log(roomState);
+const Footer: React.FC<Props> = ({ roomState, point }) => {
   const enable = roomState === 'playing' || roomState === 'revealed' ? true : false;
 
   const cardsInfo: PlayingCards[] = [
@@ -33,4 +35,11 @@ const Footer: React.FC = () => {
   );
 };
 
-export default Footer;
+const mapStateToProps = ({ roomData: { roomState, point } }: IGlobalState) => {
+  return {
+    roomState,
+    point,
+  };
+};
+
+export default connect(mapStateToProps)(Footer);
