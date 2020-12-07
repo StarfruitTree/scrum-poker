@@ -31,7 +31,9 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
         },
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      throw new Error(err);
+    });
 
 export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IUserAction | void> =>
   fetch(LOGIN, {

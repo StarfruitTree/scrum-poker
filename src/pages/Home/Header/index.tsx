@@ -1,10 +1,14 @@
 import { Avatar, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
 import React from 'react';
+import { connect } from 'react-redux';
+import { userActions } from '@scrpoker/store/actions';
 
-const Header: React.FC = () => {
-  const userName = 'An Pham';
+interface Props {
+  userName: string;
+}
 
+const Header: React.FC<Props> = ({ userName }) => {
   return (
     <div className={style.header}>
       <Avatar letter={userName[0]} className={style.avatar} />
@@ -16,4 +20,10 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+const mapStateToProps = ({ userData }: IGlobalState) => {
+  return {
+    userName: userData.userName,
+  };
+};
+
+export default connect(mapStateToProps)(Header);

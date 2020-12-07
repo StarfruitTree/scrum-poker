@@ -13,10 +13,9 @@ const Room: React.FC = () => {
   const userContext = useContext(UserContext);
   userContext.roomConnection = connection;
 
-  const { userName, roomCode, roomState, userRole } = useContext(UserContext);
+  const { userName, roomCode, userRole } = useContext(UserContext);
 
   useEffect(() => {
-    console.log(roomState);
     connection.start().then(() => {
       connection.send('Combine', roomCode, userName, userRole).catch((err) => console.log(err));
     });

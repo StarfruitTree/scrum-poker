@@ -10,7 +10,8 @@ interface ILoginData {
 }
 
 interface IGlobalState {
-  testReducer: boolean;
+  roomData: IRoomData;
+  userData: IUserData;
 }
 
 interface IRoomData {

@@ -47,8 +47,7 @@ namespace scrum_poker_server
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]))
                 };
-            }).AddJwtBearer(options =>
-            {
+
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
