@@ -4,6 +4,8 @@ namespace scrum_poker_server.HubModels
 {
     public class User
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Status { get; set; }
@@ -12,12 +14,13 @@ namespace scrum_poker_server.HubModels
 
         public Role Role { get; set; }
 
-        public User(string name, string status, Role role, int point = 0)
+        public User(string name, int id, string status, Role role, int point = 0)
         {
             Name = name;
             Status = status;
             Point = point;
             Role = role;
+            Id = id;
         }
     }
 }
