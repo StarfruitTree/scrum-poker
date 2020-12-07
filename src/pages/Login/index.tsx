@@ -51,7 +51,7 @@ const Login: React.FC = () => {
           <Link to="/signup">Sign Up</Link>
         </div>
         <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
-        <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Enter your password" />
+        <Input name={PASSWORD} type="password" onTextChange={handleTextChange} placeholder="Enter your password" />
         <div className={style.checkBoxContainer}>
           <Checkbox isChecked={isPersistentLogin} checkHandler={handleIsChecked} />
           <Typo>Keep me signed in</Typo>
