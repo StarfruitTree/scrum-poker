@@ -1,4 +1,4 @@
-import Avatar from './Avatar';
+import { Avatar } from '@scrpoker/components';
 import Card from './Card';
 import { Icon, Typo } from '@scrpoker/components';
 import React from 'react';

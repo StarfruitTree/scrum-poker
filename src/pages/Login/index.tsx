@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Button, Typo, Input, Card, AvatarInput } from '@scrpoker/components';
+import { useHistory, Link } from 'react-router-dom';
+import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions, store } from '@scrpoker/store';
 
@@ -10,6 +10,7 @@ const PASSWORD = 'password';
 const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [isPersistentLogin, setIsPersistentLogin] = useState(false);
   const history = useHistory();
 
   const goBack = () => history.goBack();
@@ -28,6 +29,10 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleIsChecked = () => {
+    setIsPersistentLogin(!isPersistentLogin);
+  };
+
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     switch (name) {
       case PASSWORD:
@@ -41,11 +46,16 @@ const Login: React.FC = () => {
   return (
     <div className={style.container}>
       <Card width={450}>
-        <Typo type="h2">Almost there!</Typo>
-        <Typo>We just need to know some info...</Typo>
-        <AvatarInput className={style.avatar} />
-        <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Email" />
-        <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Password" />
+        <div className={style.title}>
+          <Typo type="h2">Sign In</Typo>
+          <Link to="/signup">Sign Up</Link>
+        </div>
+        <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
+        <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Enter your password" />
+        <div className={style.checkBoxContainer}>
+          <Checkbox isChecked={isPersistentLogin} checkHandler={handleIsChecked} />
+          <Typo>Keep me signed in</Typo>
+        </div>
         <Button fullWidth onClick={submit}>
           Login
         </Button>

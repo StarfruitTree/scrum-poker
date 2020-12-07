@@ -1,0 +1,8 @@
+.boxContainer {
+  display: flex;
+  flex-wrap: wrap;
+
+  .box {
+    margin: 1rem;
+  }
+}
