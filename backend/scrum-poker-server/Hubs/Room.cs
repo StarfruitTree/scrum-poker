@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using scrum_poker_server.HubModels;
 using scrum_poker_server.HubServices;
 using scrum_poker_server.Utils;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace scrum_poker_server.Hubs
 {
+    [Authorize(Policy = "AllUsers")]
     public class Room : Hub
     {
         public RoomService _roomService { get; set; }
