@@ -48,8 +48,10 @@ const SignUp: React.FC = () => {
         break;
       case CONFIRM_PASSWORD:
         setConfirmPassword(value);
+        break;
       default:
         setEmail(value);
+        break;
     }
   };
 
@@ -66,8 +68,13 @@ const SignUp: React.FC = () => {
         </div>
         <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
         <Input name={USER_NAME} onTextChange={handleTextChange} placeholder="Enter your username" />
-        <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Enter your password" />
-        <Input name={CONFIRM_PASSWORD} onTextChange={handleTextChange} placeholder="Confirm your password" />
+        <Input name={PASSWORD} type="password" onTextChange={handleTextChange} placeholder="Enter your password" />
+        <Input
+          name={CONFIRM_PASSWORD}
+          type="password"
+          onTextChange={handleTextChange}
+          placeholder="Confirm your password"
+        />
         <div className={style.checkBoxContainer}>
           <Checkbox isChecked={isPersistentLogin} checkHandler={handleIsChecked} />
           <Typo>Keep me signed in</Typo>

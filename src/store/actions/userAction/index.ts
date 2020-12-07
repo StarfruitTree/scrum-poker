@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { SIGN_UP, LOGIN } from '@scrpoker/constants/apis';
+import { SIGN_UP, LOGIN, CREATE_ROOM } from '@scrpoker/constants/apis';
 
 interface IUserInfoResponse {
   jwtToken: string;
@@ -21,6 +21,20 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+
+      const createRoomData = {
+        roomName: `${userName}'s room`,
+        description: `Change room description here`,
+      };
+
+      fetch(CREATE_ROOM, {
+        method: 'POST',
+        body: JSON.stringify(createRoomData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
 
       return dispatch({
         type: 'UPDATE_USER_INFO',
