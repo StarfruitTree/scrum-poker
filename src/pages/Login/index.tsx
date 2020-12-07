@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions, store } from '@scrpoker/store';
@@ -48,9 +48,7 @@ const Login: React.FC = () => {
       <Card width={450}>
         <div className={style.title}>
           <Typo type="h2">Sign In</Typo>
-          <Typo type="a" linkTo="/signup">
-            Sign Up
-          </Typo>
+          <Link to="/signup">Sign Up</Link>
         </div>
         <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
         <Input name={PASSWORD} onTextChange={handleTextChange} placeholder="Enter your password" />

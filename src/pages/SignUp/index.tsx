@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions, store } from '@scrpoker/store';
@@ -62,9 +62,7 @@ const SignUp: React.FC = () => {
       <Card width={450}>
         <div className={style.title}>
           <Typo type="h2">Sign Up</Typo>
-          <Typo type="a" linkTo="/login">
-            Sign In
-          </Typo>
+          <Link to="/login">Sign In</Link>
         </div>
         <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
         <Input name={USER_NAME} onTextChange={handleTextChange} placeholder="Enter your username" />

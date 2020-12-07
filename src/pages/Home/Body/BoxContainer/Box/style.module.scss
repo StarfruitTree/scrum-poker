@@ -1,0 +1,61 @@
+.box {
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 170px;
+  height: 130px;
+  padding: 20px;
+  box-shadow: $mediumShadow;
+  border-radius: 6px;
+  background: #fff;
+
+  .upper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .description {
+      font-size: 0.9rem;
+      margin-top: 1.2rem;
+    }
+  }
+
+  .actionName {
+    font-weight: 600;
+    color: #276ef1;
+  }
+}
+
+@keyframes onHover {
+  from {
+    box-shadow: $mediumShadow;
+  }
+  to {
+    box-shadow: $shadow;
+  }
+}
+
+@keyframes onMouseLeft {
+  from {
+    box-shadow: $shadow;
+  }
+  to {
+    box-shadow: $mediumShadow;
+  }
+}
+
+.box:hover {
+  .actionName {
+    text-decoration: underline;
+  }
+
+  animation: onHover 0.5s forwards;
+}
+
+.box:not(:hover) {
+  animation: onMouseLeft 0.5s forwards;
+}
