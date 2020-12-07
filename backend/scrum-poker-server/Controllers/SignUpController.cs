@@ -66,7 +66,7 @@ namespace scrum_poker_server.Controllers
                 await _dbContext.Users.AddAsync(user);
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id }), expiration = 1740, userName = data.Username, userId = user.Id });
+                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.Username }), expiration = 1740, userName = data.Username, userId = user.Id });
             }
             else return StatusCode(422);
         }

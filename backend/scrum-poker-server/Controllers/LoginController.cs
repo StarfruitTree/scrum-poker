@@ -40,7 +40,7 @@ namespace scrum_poker_server.Controllers
                 var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == hashedPassword);
                 if (user == null) return Unauthorized();
 
-                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id }), expiration = 1740, userName = user.Name, userId = user.Id });
+                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = user.Name }), expiration = 1740, userName = user.Name, userId = user.Id });
             }
             else return StatusCode(422);
         }
