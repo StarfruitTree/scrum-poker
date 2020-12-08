@@ -4,8 +4,12 @@ using Microsoft.Extensions.Configuration;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs.Incoming;
 using scrum_poker_server.Models;
+using scrum_poker_server.Utils;
 using scrum_poker_server.Utils.Jwt;
+using scrum_poker_server.Utils.RoomUtils;
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,10 +67,28 @@ namespace scrum_poker_server.Controllers
                     Account = new Account()
                 };
 
-                await _dbContext.Users.AddAsync(user);
+                var roomCode = await new RoomCodeGenerator(_dbContext).Generate();
+
+                var room = new Room
+                {
+                    Owner = user,
+                    Code = roomCode,
+                    Name = $"{user.Name}'s room",
+                    Description = "Change room description here"
+                };
+
+                user.Account.Rooms = new List<Room> { room };
+
+                await _dbContext.UserRooms.AddAsync(new UserRoom
+                {
+                    User = user,
+                    Room = room,
+                    Role = Role.host
+                });
+
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.Username }), expiration = 1740, userName = data.Username, userId = user.Id });
+                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.Username }), expiration = 1740, userName = data.Username, userId = user.Id, userRoomCode = roomCode });
             }
             else return StatusCode(422);
         }

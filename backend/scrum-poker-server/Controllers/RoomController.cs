@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using scrum_poker_server.Utils.RoomUtils;
 
 namespace scrum_poker_server.Controllers
 {
@@ -31,27 +32,11 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var random = new Random();
-                Room room = null;
-                bool isRoomExisted = true;
-                string randomResult, prefix, roomCode = "";
-
-                while (isRoomExisted)
-                {
-                    randomResult = random.Next(0, 999999).ToString();
-
-                    prefix = new string('0', 6 - randomResult.Length);
-
-                    roomCode = prefix + randomResult;
-
-                    room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == roomCode);
-
-                    if (room == null) isRoomExisted = false;
-                }
+                var roomCode = await new RoomCodeGenerator(_dbContext).Generate();
 
                 var user = _dbContext.Users.Include(u => u.Account).ThenInclude(a => a.Rooms).FirstOrDefault(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Email).Value);
 
-                room = new Room
+                var room = new Room
                 {
                     Owner = user,
                     Code = roomCode,
@@ -114,7 +99,7 @@ namespace scrum_poker_server.Controllers
 
                 var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Id.ToString() == userId);
 
-                if (userRoom != null) return StatusCode(409, new { error = "You've already joined this room" });
+                if (userRoom != null) return Ok(new { roomId = userRoom.RoomId, code = data.RoomCode, roomName = userRoom.Room.Name, description = room.Description });
 
                 await _dbContext.UserRooms.AddAsync(new UserRoom
                 {
@@ -125,7 +110,7 @@ namespace scrum_poker_server.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { roomId = room.Id, code = data.RoomCode, roomName = room.Name, description = room.Description });
+                return StatusCode(201, new { roomId = room.Id, code = data.RoomCode, roomName = room.Name, description = room.Description });
             }
             else return StatusCode(422);
         }
