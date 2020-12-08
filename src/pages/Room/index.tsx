@@ -11,7 +11,9 @@ import { Actions, store } from '@scrpoker/store';
 
 interface Props {
   roomCode: string;
+  userRoomCode: string;
   role: number;
+  userAction: number;
 }
 
 const connection = new signalR.HubConnectionBuilder()
@@ -20,10 +22,10 @@ const connection = new signalR.HubConnectionBuilder()
 
 store.dispatch(Actions.roomActions.updateRoomConnection({ roomConnection: connection }));
 
-const Room: React.FC<Props> = ({ roomCode, role }) => {
+const Room: React.FC<Props> = ({ roomCode, userRoomCode, userAction, role }) => {
   useEffect(() => {
     connection.start().then(() => {
-      connection.send('Combine', roomCode, role).catch((err) => console.log(err));
+      connection.send('Combine', userAction === 0 ? userRoomCode : roomCode, role).catch((err) => console.log(err));
     });
   }, []);
 
@@ -36,10 +38,12 @@ const Room: React.FC<Props> = ({ roomCode, role }) => {
   );
 };
 
-const mapStateToProps = ({ roomData: { roomCode, role } }: IGlobalState) => {
+const mapStateToProps = ({ roomData: { roomCode, role }, userData: { action, userRoomCode } }: IGlobalState) => {
   return {
     roomCode: roomCode,
     role: role,
+    userAction: action,
+    userRoomCode,
   };
 };
 

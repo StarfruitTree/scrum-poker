@@ -14,6 +14,14 @@ interface IGlobalState {
   userData: IUserData;
 }
 
+interface IStory {
+  id: number;
+  title: string;
+  content: string;
+  assignee?: string;
+  point?: number;
+}
+
 interface IRoomData {
   roomId: number;
   roomCode: string;
@@ -27,6 +35,7 @@ interface IRoomData {
   point: number;
   isLocked: boolean;
   role: number;
+  currentStory: IStory | undefined;
 }
 
 interface IRoomInfoPayload {
@@ -40,13 +49,15 @@ interface IUserData {
   jwtToken: string;
   userId: number;
   name: string;
-  action: string;
+  action: number;
+  userRoomCode: string;
 }
 
 interface IUserInfoPayload {
   jwtToken: string;
   userId: number;
   userName: string;
+  userRoomCode: string;
 }
 interface IUser {
   id: number;

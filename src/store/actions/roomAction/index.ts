@@ -61,6 +61,20 @@ export function updateCanBeRevealed(canBeRevealed: boolean): IRoomAction {
   };
 }
 
+export function updateIsLocked(isLocked: boolean): IRoomAction {
+  return {
+    type: 'UPDATE_IS_LOCKED',
+    payload: isLocked,
+  };
+}
+
+export function updateCurrentStory(story: IStory): IRoomAction {
+  return {
+    type: 'UPDATE_CURRENT_STORY',
+    payload: story,
+  };
+}
+
 export function resetRoom(payload: IResetRoom): IRoomAction {
   return {
     type: 'RESET_ROOM',

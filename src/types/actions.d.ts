@@ -9,6 +9,7 @@ interface IRoomAction extends IAction {
     | IUsersAndSubmittedUsers
     | IUsersAndCanBeRevealed
     | IResetRoom
+    | IStory
     | string
     | boolean
     | number

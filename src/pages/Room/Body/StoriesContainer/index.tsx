@@ -1,21 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import style from './style.module.scss';
 import { Typo, Icon, Input, Button } from '@scrpoker/components';
-import { UserContext } from '@scrpoker/contexts';
 import { ADD_STORY } from '@scrpoker/constants/apis';
 import Story from './Story';
-
-interface Story {
-  id: number;
-  title: string;
-  content: string;
-  assignee?: string;
-  point?: number;
-}
+import { connect } from 'react-redux';
 
 interface Props {
-  stories: Story[];
+  stories: IStory[];
+  roomCode: string;
+  roomConnection: any;
+  roomState: string;
+  role: number;
 }
 
 const modalStyle = {
@@ -29,9 +25,7 @@ const modalStyle = {
   },
 };
 
-const StoriesContainer: React.FC<Props> = ({ stories }) => {
-  const { roomCode, roomConnection, roomState, userRole } = useContext(UserContext);
-
+const StoriesContainer: React.FC<Props> = ({ stories, roomCode, roomConnection, roomState, role }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);
@@ -64,6 +58,9 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
       const response = await fetch(ADD_STORY, {
         method: 'post',
         body: storyData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
@@ -98,7 +95,7 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
       </ReactModal>
       <div className={style.firstColumn}>
         <Typo type="h3">Stories</Typo>
-        {userRole === 0 ? (
+        {role === 0 ? (
           <Icon
             onClick={roomState === 'waiting' ? openModal : undefined}
             name="plus"
@@ -113,7 +110,7 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
         {stories.map((s) => (
           <Story
             onClick={
-              roomState === 'waiting' && userRole === 0
+              roomState === 'waiting' && role === 0
                 ? () => {
                     roomConnection.send('ChangeCurrentStory', roomCode, s.id);
                   }
@@ -131,4 +128,13 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
   );
 };
 
-export default StoriesContainer;
+const mapStateToProps = ({ roomData: { roomCode, roomConnection, roomState, role } }: IGlobalState) => {
+  return {
+    roomCode,
+    roomConnection,
+    roomState,
+    role,
+  };
+};
+
+export default connect(mapStateToProps)(StoriesContainer);

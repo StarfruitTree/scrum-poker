@@ -5,6 +5,7 @@ interface IUserInfoResponse {
   jwtToken: string;
   userId: number;
   userName: string;
+  userRoomCode: string;
   expiration: number;
 }
 
@@ -17,24 +18,10 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
     },
   })
     .then((response) => response.json())
-    .then(({ jwtToken, userId, userName, expiration }: IUserInfoResponse) => {
+    .then(({ jwtToken, userId, userName, userRoomCode, expiration }: IUserInfoResponse) => {
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
-
-      const createRoomData = {
-        roomName: `${userName}'s room`,
-        description: `Change room description here`,
-      };
-
-      fetch(CREATE_ROOM, {
-        method: 'POST',
-        body: JSON.stringify(createRoomData),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      });
 
       return dispatch({
         type: 'UPDATE_USER_INFO',
@@ -42,6 +29,7 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
           jwtToken: jwtToken,
           userId: userId,
           userName: userName,
+          userRoomCode: userRoomCode,
         },
       });
     })
@@ -58,7 +46,7 @@ export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IU
     },
   })
     .then((response) => response.json())
-    .then(({ jwtToken, userId, userName, expiration }: IUserInfoResponse) => {
+    .then(({ jwtToken, userId, userName, userRoomCode, expiration }: IUserInfoResponse) => {
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
@@ -69,35 +57,8 @@ export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IU
           jwtToken: jwtToken,
           userId: userId,
           userName: userName,
+          userRoomCode: userRoomCode,
         },
       });
     })
     .catch((err) => console.log(err));
-
-export function updateUserRole(payload: IUserRolePayload): IUserAction {
-  return {
-    type: 'UPDATE_USER_ROLE',
-    payload: payload,
-  };
-}
-
-export function updateUserAction(payload: IUserActionPayload): IUserAction {
-  return {
-    type: 'UPDATE_USER_ACTION',
-    payload: payload,
-  };
-}
-
-export function updateUserPoint(payload: IUserPointPayload): IUserAction {
-  return {
-    type: 'UPDATE_USER_POINT',
-    payload: payload,
-  };
-}
-
-export function updateIsCardLocked(payload: IIsCardLockedPayload): IUserAction {
-  return {
-    type: 'UPDATE_IS_CARD_LOCKED',
-    payload: payload,
-  };
-}

@@ -2,7 +2,8 @@ const initialState: IUserData = {
   jwtToken: '',
   userId: 0,
   name: '',
-  action: '',
+  action: -1,
+  userRoomCode: '',
 };
 
 const reducer = (state: IUserData = initialState, action: IUserAction): IUserData => {
@@ -10,7 +11,7 @@ const reducer = (state: IUserData = initialState, action: IUserAction): IUserDat
     case 'UPDATE_USER_INFO':
       return { ...state, ...(action.payload as IUserInfoPayload) };
     case 'UPDATE_USER_ACTION':
-      return { ...state, action: action.payload as string };
+      return { ...state, action: action.payload as number };
     default:
       return state;
   }

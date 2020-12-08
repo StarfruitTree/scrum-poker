@@ -1,20 +1,38 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button } from '@scrpoker/components';
 import style from './style.module.scss';
-import { UserContext } from '@scrpoker/contexts';
+import { Actions } from '@scrpoker/store';
+import { updateIsLocked } from '@scrpoker/store/actions/roomAction';
+import { connect } from 'react-redux';
 
 interface Props {
   className?: string;
-  currentStoryIsPicked: boolean;
+  currentStory: IStory | undefined;
+  roomCode: string;
+  roomConnection: any;
+  point: number;
+  role: number;
+  isLocked: boolean;
+  roomState: string;
+  canBeRevealed: boolean;
+  updateIsLocked: (isLocked: boolean) => IRoomAction;
 }
 
-const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' }) => {
-  const { roomConnection, point, userRole, roomCode, roomState } = useContext(UserContext);
-  const userContext = useContext(UserContext);
-  console.log(roomState);
+const ControlPanel: React.FC<Props> = ({
+  roomConnection,
+  point,
+  role,
+  roomState,
+  roomCode,
+  isLocked,
+  currentStory,
+  canBeRevealed,
+  className = '',
+}) => {
+  const currentStoryIsPicked = currentStory !== undefined ? true : false;
   return (
     <div className={`${style.controlPanel} ${className}`}>
-      {userRole === 0 ? (
+      {role === 0 ? (
         roomState === 'waiting' ? (
           <Button
             className={style.button}
@@ -29,25 +47,19 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
           <React.Fragment>
             <Button
               className={style.button}
-              disabled={point === -1 || userContext.isLocked ? true : false}
+              disabled={point === -1 || isLocked ? true : false}
               onClick={() => {
-                roomConnection.send(
-                  'ChangeUserStatus',
-                  userContext.roomCode,
-                  userContext.userName,
-                  'ready',
-                  userContext.point
-                );
-                userContext.setGlobalState({ ...userContext, isLocked: true });
+                roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
+                updateIsLocked(true);
               }}
             >
               Lock
             </Button>
             <Button
               className={style.button}
-              disabled={!userContext.canBeRevealed}
+              disabled={!canBeRevealed}
               onClick={() => {
-                roomConnection.send('ChangeRoomState', userContext.roomCode, 'revealed');
+                roomConnection.send('ChangeRoomState', roomCode, 'revealed');
               }}
             >
               Reveal
@@ -70,16 +82,10 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
       ) : (
         <Button
           className={style.button}
-          disabled={point === -1 || userContext.isLocked ? true : false}
+          disabled={point === -1 || isLocked ? true : false}
           onClick={() => {
-            roomConnection.send(
-              'ChangeUserStatus',
-              userContext.roomCode,
-              userContext.userName,
-              'ready',
-              userContext.point
-            );
-            userContext.setGlobalState({ ...userContext, isLocked: true });
+            roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
+            updateIsLocked(true);
           }}
         >
           Lock
@@ -89,4 +95,23 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
   );
 };
 
-export default ControlPanel;
+const mapStateToProps = ({
+  roomData: { roomCode, roomState, roomConnection, point, isLocked, currentStory, canBeRevealed, role },
+}: IGlobalState) => {
+  return {
+    roomCode,
+    roomState,
+    roomConnection,
+    point,
+    isLocked,
+    currentStory,
+    canBeRevealed,
+    role,
+  };
+};
+
+const mapDispatchToProps = {
+  updateIsLocked: Actions.roomActions.updateIsLocked,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);

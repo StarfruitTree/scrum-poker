@@ -1,36 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StoriesContainer from './StoriesContainer';
 import BoardContainer from './BoardContainer';
 import style from './style.module.scss';
-import { UserContext } from '@scrpoker/contexts';
+import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
-
-interface Story {
-  id: number;
-  title: string;
-  content: string;
-  assignee?: string;
-  point?: number;
-}
+import { Actions } from '@scrpoker/store';
 
 interface Props {
   className?: string;
+  roomConnection: any;
+  roomId: number;
+  action: string;
+  updateCurrentStory: (story: IStory) => IRoomAction;
 }
 
 interface StoryData {
   id: number;
 }
 
-const Body: React.FC<Props> = ({ className = '' }) => {
-  const { roomConnection, roomId, action } = useContext(UserContext);
-  const [stories, setStories] = useState([] as Story[]);
-  const [currentStory, setCurrentStory] = useState<Story | undefined>(undefined);
+const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentStory, className = '' }) => {
+  const [stories, setStories] = useState([] as IStory[]);
 
   const getStories = async () => {
     const response = await fetch(GET_ROOM_STORIES(roomId));
-    console.log(response);
     const data = await response.json();
-    console.log(data);
     setStories(data.stories);
   };
 
@@ -47,7 +40,7 @@ const Body: React.FC<Props> = ({ className = '' }) => {
 
   const currentStoryChangedCallback = ({ id }: StoryData) => {
     const story = stories.find((s) => s.id === id);
-    setCurrentStory(story);
+    updateCurrentStory(story as IStory);
   };
 
   useEffect(() => {
@@ -69,9 +62,21 @@ const Body: React.FC<Props> = ({ className = '' }) => {
   return (
     <div className={`${style.body} ${className}`}>
       <StoriesContainer stories={stories} />
-      <BoardContainer className={style.boardContainer} currentStory={currentStory} />
+      <BoardContainer className={style.boardContainer} />
     </div>
   );
 };
 
-export default Body;
+const mapStateToProps = ({ roomData: { roomConnection, roomId }, userData: { action } }: IGlobalState) => {
+  return {
+    roomConnection,
+    roomId,
+    action,
+  };
+};
+
+const mapDispatchToProps = {
+  updateCurrentStory: Actions.roomActions.updateCurrentStory,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Body);

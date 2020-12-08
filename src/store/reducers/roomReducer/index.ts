@@ -11,6 +11,7 @@ const initialState: IRoomData = {
   point: -1,
   isLocked: false,
   role: 0,
+  currentStory: undefined,
 };
 
 const reducer = (state: IRoomData = initialState, action: IRoomAction): IRoomData => {
@@ -31,6 +32,10 @@ const reducer = (state: IRoomData = initialState, action: IRoomAction): IRoomDat
       return { ...state, canBeRevealed: action.payload as boolean };
     case 'UPDATE_POINT':
       return { ...state, point: action.payload as number };
+    case 'UPDATE_IS_LOCKED':
+      return { ...state, isLocked: action.payload as boolean };
+    case 'UPDATE_CURRENT_STORY':
+      return { ...state, currentStory: action.payload as IStory };
     case 'RESET_ROOM':
       return { ...state, ...(action.payload as IResetRoom) };
     default:

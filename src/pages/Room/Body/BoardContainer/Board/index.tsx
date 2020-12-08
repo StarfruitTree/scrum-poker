@@ -2,40 +2,33 @@ import React from 'react';
 import style from './style.module.scss';
 import { Typo, Icon } from '@scrpoker/components';
 import Avatar from '@scrpoker/components/Avatar';
-
-export interface Story {
-  id: number;
-  title: string;
-  content: string;
-  assignee?: string;
-  point?: number;
-}
+import { connect } from 'react-redux';
 
 interface Props {
-  story?: Story;
+  currentStory: IStory | undefined;
   className?: string;
 }
 
-const Board: React.FC<Props> = ({ story, className = '' }) => {
-  return story !== undefined ? (
+const Board: React.FC<Props> = ({ currentStory, className = '' }) => {
+  return currentStory !== undefined ? (
     <div className={`${style.board} ${className}`}>
       <div className={style.header}>
         <Typo className={style.title} type="h2">
-          {story.title}
+          {currentStory.title}
         </Typo>
-        {story.point ? <Typo className={style.point}>{story.point}</Typo> : ''}
+        {currentStory.point ? <Typo className={style.point}>{currentStory.point}</Typo> : ''}
       </div>
       <div className={style.content}>
-        <Typo type="span">{story.content}</Typo>
+        <Typo type="span">{currentStory.content}</Typo>
       </div>
       <div className={style.submit}>
         <div className={style.assign}>
           <Typo type="h3">Assignee</Typo>
           <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.assignee ? (
+          {currentStory.assignee ? (
             <div className={style.assignee}>
-              <Avatar letter={story.assignee[0]} />
-              <Typo>{story.assignee}</Typo>
+              <Avatar letter={currentStory.assignee[0]} />
+              <Typo>{currentStory.assignee}</Typo>
             </div>
           ) : (
             ''
@@ -44,7 +37,7 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
         <div className={style.submitPoint}>
           <Typo type="h3">Point</Typo>
           <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.point ? <Avatar className={style.customPoint} letter={story.point.toString()} /> : ''}
+          {currentStory.point ? <Avatar className={style.customPoint} letter={currentStory.point.toString()} /> : ''}
         </div>
       </div>
     </div>
@@ -53,4 +46,10 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
   );
 };
 
-export default Board;
+const mapStateToProps = ({ roomData: { currentStory } }: IGlobalState) => {
+  return {
+    currentStory,
+  };
+};
+
+export default connect(mapStateToProps)(Board);
