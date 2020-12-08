@@ -67,6 +67,7 @@ namespace scrum_poker_server.Controllers
                     Account = new Account()
                 };
 
+                // Create a room for user
                 var roomCode = await new RoomCodeGenerator(_dbContext).Generate();
 
                 var room = new Room
@@ -88,7 +89,7 @@ namespace scrum_poker_server.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.Username }), expiration = 1740, userName = data.Username, userId = user.Id, userRoomCode = roomCode });
+                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.Username }), expiration = 1740, name = data.Username, userId = user.Id, userRoomCode = roomCode });
             }
             else return StatusCode(422);
         }
