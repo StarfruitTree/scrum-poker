@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux';
-import { SIGN_UP, LOGIN, CREATE_ROOM } from '@scrpoker/constants/apis';
+import { SIGN_UP, LOGIN } from '@scrpoker/constants/apis';
 
 interface IUserInfoResponse {
   jwtToken: string;
   userId: number;
-  userName: string;
+  name: string;
   userRoomCode: string;
   expiration: number;
 }
@@ -18,7 +18,7 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
     },
   })
     .then((response) => response.json())
-    .then(({ jwtToken, userId, userName, userRoomCode, expiration }: IUserInfoResponse) => {
+    .then(({ jwtToken, userId, name, userRoomCode, expiration }: IUserInfoResponse) => {
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
@@ -26,10 +26,10 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
       return dispatch({
         type: 'UPDATE_USER_INFO',
         payload: {
-          jwtToken: jwtToken,
-          userId: userId,
-          userName: userName,
-          userRoomCode: userRoomCode,
+          jwtToken,
+          userId,
+          name,
+          userRoomCode,
         },
       });
     })
@@ -46,7 +46,7 @@ export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IU
     },
   })
     .then((response) => response.json())
-    .then(({ jwtToken, userId, userName, userRoomCode, expiration }: IUserInfoResponse) => {
+    .then(({ jwtToken, userId, name, userRoomCode, expiration }: IUserInfoResponse) => {
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
@@ -54,11 +54,18 @@ export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IU
       return dispatch({
         type: 'UPDATE_USER_INFO',
         payload: {
-          jwtToken: jwtToken,
-          userId: userId,
-          userName: userName,
-          userRoomCode: userRoomCode,
+          jwtToken,
+          userId,
+          name,
+          userRoomCode,
         },
       });
     })
     .catch((err) => console.log(err));
+
+export const updateUserAction = (action: string): IUserAction => {
+  return {
+    type: 'UPDATE_USER_ACTION',
+    payload: action,
+  };
+};

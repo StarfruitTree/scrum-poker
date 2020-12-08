@@ -5,9 +5,11 @@ import { Typo, Icon, Input, Button } from '@scrpoker/components';
 import { ADD_STORY } from '@scrpoker/constants/apis';
 import Story from './Story';
 import { connect } from 'react-redux';
+import CookieReader from 'js-cookie';
 
 interface Props {
   stories: IStory[];
+  roomId: number;
   roomCode: string;
   roomConnection: any;
   roomState: string;
@@ -25,7 +27,7 @@ const modalStyle = {
   },
 };
 
-const StoriesContainer: React.FC<Props> = ({ stories, roomCode, roomConnection, roomState, role }) => {
+const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConnection, roomState, role }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);
@@ -49,17 +51,19 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomCode, roomConnection, 
   };
 
   const submit = async () => {
-    const storyData = new FormData();
-    storyData.append('roomCode', roomCode);
-    storyData.append('title', story.title);
-    storyData.append('content', story.content);
+    const storyData = {
+      roomId,
+      title: story.title,
+      content: story.content,
+    };
 
     try {
       const response = await fetch(ADD_STORY, {
         method: 'post',
-        body: storyData,
+        body: JSON.stringify(storyData),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${CookieReader.get('jwtToken') as string}`,
         },
       });
 
@@ -128,8 +132,9 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomCode, roomConnection, 
   );
 };
 
-const mapStateToProps = ({ roomData: { roomCode, roomConnection, roomState, role } }: IGlobalState) => {
+const mapStateToProps = ({ roomData: { roomId, roomCode, roomConnection, roomState, role } }: IGlobalState) => {
   return {
+    roomId,
     roomCode,
     roomConnection,
     roomState,

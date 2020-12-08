@@ -5,12 +5,13 @@ import style from './style.module.scss';
 import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 import { Actions } from '@scrpoker/store';
+import CookieReader from 'js-cookie';
 
 interface Props {
   className?: string;
   roomConnection: any;
   roomId: number;
-  action: string;
+  action: number;
   updateCurrentStory: (story: IStory) => IRoomAction;
 }
 
@@ -22,13 +23,21 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
   const [stories, setStories] = useState([] as IStory[]);
 
   const getStories = async () => {
-    const response = await fetch(GET_ROOM_STORIES(roomId));
+    const response = await fetch(GET_ROOM_STORIES(roomId), {
+      headers: {
+        Authorization: `Bearer ${CookieReader.get('jwtToken')}`,
+      },
+    });
     const data = await response.json();
     setStories(data.stories);
   };
 
   const storyAddedCallback = async ({ id }: StoryData) => {
-    const response = await fetch(`${GET_STORY}/${id}`);
+    const response = await fetch(`${GET_STORY}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${CookieReader.get('jwtToken')}`,
+      },
+    });
     const data = await response.json();
 
     if (response.status === 404) {
@@ -54,7 +63,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
   }, [currentStoryChangedCallback]);
 
   useEffect(() => {
-    if (action === 'join') {
+    if (action === 0) {
       getStories();
     }
   }, []);

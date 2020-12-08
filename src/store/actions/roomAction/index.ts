@@ -1,9 +1,38 @@
-export function updateRoomInfo(roomInfo: IRoomInfoPayload): IRoomAction {
-  return {
-    type: 'UPDATE_ROOM_INFO',
-    payload: roomInfo,
+import { Dispatch } from 'redux';
+import { JOIN_ROOM } from '@scrpoker/constants/apis';
+import { ThunkAction } from 'redux-thunk';
+import CookieReader from 'js-cookie';
+
+export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
+  dispatch: Dispatch
+) => {
+  const joinRoomData = {
+    roomCode,
   };
-}
+  return fetch(JOIN_ROOM, {
+    method: 'POST',
+    body: JSON.stringify(joinRoomData),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${CookieReader.get('jwtToken') as string}`,
+    },
+  })
+    .then((response) => response.json())
+    .then(({ roomId, roomCode, roomName, description }: IRoomInfoPayload) => {
+      dispatch({
+        type: 'UPDATE_ROOM_INFO',
+        payload: {
+          roomId,
+          roomCode,
+          roomName,
+          description,
+        },
+      });
+    })
+    .catch((err) => {
+      throw new Error(err);
+    });
+};
 
 export function updateRoomConnection(roomConnection: any): IRoomAction {
   return {
