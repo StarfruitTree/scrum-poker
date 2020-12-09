@@ -13,6 +13,7 @@ interface IRoomAction extends IAction {
     | string
     | boolean
     | number
+    | undefined
     | IUser[];
 }
 

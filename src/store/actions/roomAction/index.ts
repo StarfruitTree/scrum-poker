@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import { JOIN_ROOM } from '@scrpoker/constants/apis';
 import { ThunkAction } from 'redux-thunk';
-import CookieReader from 'js-cookie';
+import { getAuthHeader } from '@scrpoker/utils';
 
 export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
   dispatch: Dispatch
@@ -14,7 +14,7 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     body: JSON.stringify(joinRoomData),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${CookieReader.get('jwtToken') as string}`,
+      Authorization: getAuthHeader(),
     },
   })
     .then((response) => response.json())
@@ -97,7 +97,7 @@ export function updateIsLocked(isLocked: boolean): IRoomAction {
   };
 }
 
-export function updateCurrentStory(story: IStory): IRoomAction {
+export function updateCurrentStory(story: IStory | undefined): IRoomAction {
   return {
     type: 'UPDATE_CURRENT_STORY',
     payload: story,

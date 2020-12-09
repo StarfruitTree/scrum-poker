@@ -5,7 +5,7 @@ import { Typo, Icon, Input, Button } from '@scrpoker/components';
 import { ADD_STORY } from '@scrpoker/constants/apis';
 import Story from './Story';
 import { connect } from 'react-redux';
-import CookieReader from 'js-cookie';
+import { getAuthHeader } from '@scrpoker/utils';
 
 interface Props {
   stories: IStory[];
@@ -63,7 +63,7 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
         body: JSON.stringify(storyData),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${CookieReader.get('jwtToken') as string}`,
+          Authorization: getAuthHeader(),
         },
       });
 

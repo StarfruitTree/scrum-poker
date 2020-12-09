@@ -5,14 +5,14 @@ import style from './style.module.scss';
 import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 import { Actions } from '@scrpoker/store';
-import CookieReader from 'js-cookie';
+import { getAuthHeader } from '@scrpoker/utils';
 
 interface Props {
   className?: string;
   roomConnection: any;
   roomId: number;
   action: number;
-  updateCurrentStory: (story: IStory) => IRoomAction;
+  updateCurrentStory: (story: IStory | undefined) => IRoomAction;
 }
 
 interface StoryData {
@@ -25,7 +25,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
   const getStories = async () => {
     const response = await fetch(GET_ROOM_STORIES(roomId), {
       headers: {
-        Authorization: `Bearer ${CookieReader.get('jwtToken')}`,
+        Authorization: getAuthHeader(),
       },
     });
     const data = await response.json();
@@ -35,7 +35,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
   const storyAddedCallback = async ({ id }: StoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`, {
       headers: {
-        Authorization: `Bearer ${CookieReader.get('jwtToken')}`,
+        Authorization: getAuthHeader(),
       },
     });
     const data = await response.json();
@@ -49,7 +49,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
 
   const currentStoryChangedCallback = ({ id }: StoryData) => {
     const story = stories.find((s) => s.id === id);
-    updateCurrentStory(story as IStory);
+    updateCurrentStory(story);
   };
 
   useEffect(() => {

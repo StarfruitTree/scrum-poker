@@ -23,7 +23,7 @@ const Login: React.FC = () => {
 
     try {
       await store.dispatch<any>(Actions.userActions.login(loginData));
-      console.log(store.getState());
+      history.push('/home');
     } catch (err) {
       console.log(err);
     }
