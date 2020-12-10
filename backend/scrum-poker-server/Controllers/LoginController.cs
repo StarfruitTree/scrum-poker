@@ -44,7 +44,7 @@ namespace scrum_poker_server.Controllers
                 {
                     jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = userRoom.UserID, Name = userRoom.User.Name }),
                     expiration = 1740,
-                    named = userRoom.User.Name,
+                    name = userRoom.User.Name,
                     userId = userRoom.UserID,
                     userRoomCode = userRoom.Room.Code
                 });
