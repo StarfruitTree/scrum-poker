@@ -43,13 +43,13 @@ namespace scrum_poker_server.Controllers
                 {
                     var anonymousUser = new User()
                     {
-                        Name = data.Username
+                        Name = data.UserName
                     };
 
                     await _dbContext.Users.AddAsync(anonymousUser);
                     await _dbContext.SaveChangesAsync();
 
-                    return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { UserId = anonymousUser.Id }) });
+                    return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { UserId = anonymousUser.Id, Name = data.UserName }) });
                 }
 
                 bool isEmailExisted = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email) != null;
@@ -63,7 +63,7 @@ namespace scrum_poker_server.Controllers
                 {
                     Email = data.Email,
                     Password = hashedPassword,
-                    Name = data.Username,
+                    Name = data.UserName,
                     Account = new Account()
                 };
 
@@ -89,7 +89,7 @@ namespace scrum_poker_server.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.Username }), expiration = 1740, name = data.Username, userId = user.Id, userRoomCode = roomCode });
+                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id, Name = data.UserName }), expiration = 1740, name = data.UserName, userId = user.Id, userRoomCode = roomCode });
             }
             else return StatusCode(422);
         }

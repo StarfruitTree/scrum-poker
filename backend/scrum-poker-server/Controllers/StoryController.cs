@@ -70,7 +70,7 @@ namespace scrum_poker_server.Controllers
 
         [Authorize(Policy = "AllUsers")]
         [Consumes("application/json")]
-        [HttpPost, Route("submit")]
+        [HttpPost, Route("submitpoint")]
         public async Task<IActionResult> SubmitPoint([FromBody] SubmitPointDTO data)
         {
             if (ModelState.IsValid)

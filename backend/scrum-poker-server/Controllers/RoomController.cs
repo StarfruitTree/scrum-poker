@@ -99,7 +99,7 @@ namespace scrum_poker_server.Controllers
 
                 var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Id.ToString() == userId);
 
-                if (userRoom != null) return Ok(new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description });
+                if (userRoom != null) return Ok(new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = userRoom.Role });
 
                 await _dbContext.UserRooms.AddAsync(new UserRoom
                 {
@@ -110,7 +110,7 @@ namespace scrum_poker_server.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(201, new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description });
+                return StatusCode(201, new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = Role.player });
             }
             else return StatusCode(422);
         }

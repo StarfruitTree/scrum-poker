@@ -39,7 +39,7 @@ namespace scrum_poker_server.Hubs
             {
                 room.AddUser(new User(userName, int.Parse(Context.User.FindFirst("UserId").Value), "standBy", (Role)role, 0));
                 var users = room.GetUsers();
-                await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { name = userName, id = userId, status = "standBy", point = 0 });
+                await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { name = userName, id = userId, status = "standBy", point = 0, role });
                 await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State });
                 await Clients.Caller.SendAsync("currentStoryChanged", new { id = room.CurrentStoryId });
             }
