@@ -1,15 +1,18 @@
 import { Dispatch } from 'redux';
 import { SIGN_UP, LOGIN } from '@scrpoker/constants/apis';
+import { ThunkAction } from 'redux-thunk';
 
 interface IUserInfoResponse {
   jwtToken: string;
   userId: number;
   name: string;
-  userRoomCode: string;
+  userRoomCode?: string;
   expiration: number;
 }
 
-export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise<IUserAction | void> =>
+export const signUp = (signUpData: ISignUpData): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
+  dispatch: Dispatch
+) =>
   fetch(SIGN_UP, {
     method: 'POST',
     body: JSON.stringify(signUpData),
@@ -23,7 +26,7 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
 
-      return dispatch({
+      dispatch({
         type: 'UPDATE_USER_INFO',
         payload: {
           jwtToken,
@@ -37,7 +40,9 @@ export const signUp = (signUpData: ISignUpData) => (dispatch: Dispatch): Promise
       throw new Error(err);
     });
 
-export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IUserAction | void> =>
+export const login = (loginData: ILoginData): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
+  dispatch: Dispatch
+) =>
   fetch(LOGIN, {
     method: 'POST',
     body: JSON.stringify(loginData),
@@ -51,7 +56,7 @@ export const login = (loginData: ILoginData) => (dispatch: Dispatch): Promise<IU
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
 
-      return dispatch({
+      dispatch({
         type: 'UPDATE_USER_INFO',
         payload: {
           jwtToken,

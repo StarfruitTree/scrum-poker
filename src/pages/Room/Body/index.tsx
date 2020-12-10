@@ -11,7 +11,6 @@ interface Props {
   className?: string;
   roomConnection: any;
   roomId: number;
-  action: number;
   updateCurrentStory: (story: IStory | undefined) => IRoomAction;
 }
 
@@ -19,7 +18,7 @@ interface StoryData {
   id: number;
 }
 
-const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentStory, className = '' }) => {
+const Body: React.FC<Props> = ({ roomConnection, roomId, updateCurrentStory, className = '' }) => {
   const [stories, setStories] = useState([] as IStory[]);
 
   const getStories = async () => {
@@ -63,9 +62,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
   }, [currentStoryChangedCallback]);
 
   useEffect(() => {
-    if (action === 0) {
-      getStories();
-    }
+    getStories();
   }, []);
 
   return (
@@ -76,11 +73,10 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, action, updateCurrentSt
   );
 };
 
-const mapStateToProps = ({ roomData: { roomConnection, roomId }, userData: { action } }: IGlobalState) => {
+const mapStateToProps = ({ roomData: { roomConnection, roomId } }: IGlobalState) => {
   return {
     roomConnection,
     roomId,
-    action,
   };
 };
 

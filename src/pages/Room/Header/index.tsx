@@ -58,8 +58,9 @@ const Header: React.FC<Props> = ({
   };
 
   const newUserConnectedCallback = async (user: IUser) => {
-    users.push(user);
-    updateUsersAndCanBeRevealed({ users, canBeRevealed: false });
+    const newUers = users.splice(0);
+    newUers.push(user);
+    updateUsersAndCanBeRevealed({ users: newUers, canBeRevealed: false });
   };
 
   const userStatusChangedCallback = async (user: IUser) => {
@@ -71,7 +72,8 @@ const Header: React.FC<Props> = ({
       return u;
     });
 
-    updateUsersAndSubmittedUsers({ users: newUsers, submittedUsers: submittedUsers++ });
+    submittedUsers++;
+    updateUsersAndSubmittedUsers({ users: newUsers, submittedUsers });
     if (submittedUsers === users.length) {
       updateCanBeRevealed(true);
     }
@@ -81,7 +83,9 @@ const Header: React.FC<Props> = ({
     if (users === undefined) {
       updateRoomState(roomState);
     } else {
-      if (roomState === 'waiting') {
+      if (roomState === 'revealed') {
+        updateUsersAndRoomState({ roomState, users });
+      } else if (roomState === 'waiting') {
         resetRoom({ point: -1, isLocked: false, canBeRevealed: false, submittedUsers: 0, users, roomState });
       }
     }

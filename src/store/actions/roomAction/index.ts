@@ -18,7 +18,7 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     },
   })
     .then((response) => response.json())
-    .then(({ roomId, roomCode, roomName, description }: IRoomInfoPayload) => {
+    .then(({ roomId, roomCode, roomName, description, role }: IRoomInfoPayload) => {
       dispatch({
         type: 'UPDATE_ROOM_INFO',
         payload: {
@@ -26,6 +26,7 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
           roomCode,
           roomName,
           description,
+          role,
         },
       });
     })

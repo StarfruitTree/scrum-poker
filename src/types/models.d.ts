@@ -1,7 +1,7 @@
 interface ISignUpData {
-  email: string;
+  email?: string;
   userName: string;
-  password: string;
+  password?: string;
 }
 
 interface ILoginData {
@@ -43,6 +43,7 @@ interface IRoomInfoPayload {
   roomCode: string;
   roomName: string;
   description: string;
+  role: number;
 }
 
 interface IUserData {

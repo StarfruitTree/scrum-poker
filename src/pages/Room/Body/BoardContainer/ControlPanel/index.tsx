@@ -2,8 +2,9 @@ import React from 'react';
 import { Button } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
-import { updateIsLocked } from '@scrpoker/store/actions/roomAction';
 import { connect } from 'react-redux';
+import { SUBMIT_POINT } from '@scrpoker/constants/apis';
+import { getAuthHeader } from '@scrpoker/utils';
 
 interface Props {
   className?: string;
@@ -27,9 +28,25 @@ const ControlPanel: React.FC<Props> = ({
   isLocked,
   currentStory,
   canBeRevealed,
+  updateIsLocked,
   className = '',
 }) => {
   const currentStoryIsPicked = currentStory !== undefined ? true : false;
+  const submitPoint = () => {
+    const submitPointData = {
+      storyId: currentStory?.id,
+      point: point,
+      isFinalPoint: false,
+    };
+    fetch(SUBMIT_POINT, {
+      method: 'POST',
+      body: JSON.stringify(submitPointData),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: getAuthHeader(),
+      },
+    });
+  };
   return (
     <div className={`${style.controlPanel} ${className}`}>
       {role === 0 ? (
@@ -51,6 +68,7 @@ const ControlPanel: React.FC<Props> = ({
               onClick={() => {
                 roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
                 updateIsLocked(true);
+                submitPoint();
               }}
             >
               Lock
@@ -86,6 +104,7 @@ const ControlPanel: React.FC<Props> = ({
           onClick={() => {
             roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
             updateIsLocked(true);
+            submitPoint();
           }}
         >
           Lock

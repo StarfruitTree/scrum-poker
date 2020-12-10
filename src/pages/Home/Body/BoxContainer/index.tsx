@@ -4,9 +4,6 @@ import style from './style.module.scss';
 import Box from './Box';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
-import { AnyAction, bindActionCreators, Dispatch } from 'redux';
-import { joinRoom } from '@scrpoker/store/actions/roomAction';
-
 interface Box {
   iconName: string;
   actionName: string;
@@ -73,6 +70,8 @@ const mapStateToProps = ({ userData: { userRoomCode } }: IGlobalState) => {
   };
 };
 
-export default connect(mapStateToProps, {
+const mapDispatchToProps = {
   joinRoom: Actions.roomActions.joinRoom,
-})(BoxContainer);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BoxContainer);
