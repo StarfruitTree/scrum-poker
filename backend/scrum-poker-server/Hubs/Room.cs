@@ -26,7 +26,7 @@ namespace scrum_poker_server.Hubs
 
             var room = _roomService.FindRoom(roomCode);
             var userName = Context.User.FindFirst(ClaimTypes.Name).Value;
-            var userId = Int32.Parse(Context.User.FindFirst("UserId").Value);
+            var userId = int.Parse(Context.User.FindFirst("UserId").Value);
 
             if (room == null)
             {
@@ -37,7 +37,7 @@ namespace scrum_poker_server.Hubs
             }
             else
             {
-                room.AddUser(new User(userName, Int32.Parse(Context.User.FindFirst("UserId").Value), "standBy", (Role)role, 0));
+                room.AddUser(new User(userName, int.Parse(Context.User.FindFirst("UserId").Value), "standBy", (Role)role, 0));
                 var users = room.GetUsers();
                 await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { name = userName, id = userId, status = "standBy", point = 0 });
                 await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State });
@@ -64,7 +64,7 @@ namespace scrum_poker_server.Hubs
             {
                 room.Users.ForEach(u => u.Status = "revealed");
                 var users = room.GetUsers();
-                await Clients.Group(roomCode).SendAsync("roomStateChanged", new { users, roomState });
+                await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState, users });
             }
             else if (roomState == "waiting")
             {
@@ -74,7 +74,7 @@ namespace scrum_poker_server.Hubs
                     u.Point = -1;
                 });
                 var users = room.GetUsers();
-                await Clients.Group(roomCode).SendAsync("roomStateChanged", new { users, roomState });
+                await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState, users });
             }
             else await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState });
         }
@@ -100,9 +100,11 @@ namespace scrum_poker_server.Hubs
 
         public async Task RemoveFromGroup(string roomCode)
         {
-            var userId = Context.User.FindFirst(ClaimTypes.Name).Value;
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomCode);
+            var userId = int.Parse(Context.User.FindFirst(ClaimTypes.Name).Value);
+            var room = _roomService.FindRoom(roomCode);
+            room.RemoveUser(userId);
 
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomCode);
             await Clients.Group(roomCode).SendAsync("userLeft", new { id = userId });
         }
     }
