@@ -13,3 +13,19 @@ export const reactModalStyle = {
     background: 'rgba(0, 0, 0, 0.3)',
   },
 };
+
+export const initialRoomData: IRoomData = {
+  roomId: 0,
+  roomCode: '',
+  roomName: '',
+  roomState: '',
+  description: '',
+  roomConnection: {},
+  users: [],
+  submittedUsers: 0,
+  canBeRevealed: false,
+  point: -1,
+  isLocked: false,
+  role: 0,
+  currentStory: undefined,
+};

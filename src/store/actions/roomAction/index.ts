@@ -49,6 +49,13 @@ export const updateRoomState = (roomState: string): IRoomAction => {
   };
 };
 
+export const updateUsers = (users: IUser[]): IRoomAction => {
+  return {
+    type: 'UPDATE_USERS',
+    payload: users,
+  };
+};
+
 export const updateUsersAndRoomState = (payload: IUsersAndRoomstate): IRoomAction => {
   return {
     type: 'UPDATE_USERS_AND_ROOM_STATE',
@@ -108,6 +115,13 @@ export const updateCurrentStory = (story: IStory | undefined): IRoomAction => {
 export const resetRoom = (payload: IResetRoom): IRoomAction => {
   return {
     type: 'RESET_ROOM',
+    payload: payload,
+  };
+};
+
+export const cleanUpRoomData = (payload: IRoomData): IRoomAction => {
+  return {
+    type: 'CLEAN_UP_ROOM_DATA',
     payload: payload,
   };
 };

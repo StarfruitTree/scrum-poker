@@ -1,20 +1,6 @@
-const initialState: IRoomData = {
-  roomId: 0,
-  roomCode: '',
-  roomName: '',
-  roomState: '',
-  description: '',
-  roomConnection: {},
-  users: [],
-  submittedUsers: 0,
-  canBeRevealed: false,
-  point: -1,
-  isLocked: false,
-  role: 0,
-  currentStory: undefined,
-};
+import { initialRoomData } from '@scrpoker/constants/objects';
 
-const reducer = (state: IRoomData = initialState, action: IRoomAction): IRoomData => {
+const reducer = (state: IRoomData = initialRoomData, action: IRoomAction): IRoomData => {
   switch (action.type) {
     case 'UPDATE_ROOM_INFO':
       return { ...state, ...(action.payload as IRoomInfoPayload) };
@@ -22,6 +8,8 @@ const reducer = (state: IRoomData = initialState, action: IRoomAction): IRoomDat
       return { ...state, roomConnection: action.payload as string };
     case 'UPDATE_ROOM_STATE':
       return { ...state, roomState: action.payload as string };
+    case 'UPDATE_USERS':
+      return { ...state, users: action.payload as IUser[] };
     case 'UPDATE_USERS_AND_ROOM_STATE':
       return { ...state, ...(action.payload as IUsersAndRoomstate) };
     case 'UPDATE_USERS_AND_SUBMITTED_USERS':
@@ -38,6 +26,8 @@ const reducer = (state: IRoomData = initialState, action: IRoomAction): IRoomDat
       return { ...state, currentStory: action.payload as IStory };
     case 'RESET_ROOM':
       return { ...state, ...(action.payload as IResetRoom) };
+    case 'CLEAN_UP_ROOM_DATA':
+      return { ...state, ...(action.payload as IRoomData) };
     default:
       return state;
   }
