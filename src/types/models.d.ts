@@ -31,7 +31,6 @@ interface IRoomData {
   roomConnection: any;
   users: IUser[];
   submittedUsers: number;
-  canBeRevealed: boolean;
   point: number;
   isLocked: boolean;
   role: number;
@@ -78,16 +77,10 @@ interface IUsersAndSubmittedUsers {
   submittedUsers: number;
 }
 
-interface IUsersAndCanBeRevealed {
-  users: IUser[];
-  canBeRevealed: boolean;
-}
-
 interface IResetRoom {
   roomState: string;
   users: IUser[];
   submittedUsers: number;
   point: number;
   isLocked: boolean;
-  canBeRevealed: boolean;
 }

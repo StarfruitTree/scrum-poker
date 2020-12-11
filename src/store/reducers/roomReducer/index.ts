@@ -14,10 +14,6 @@ const reducer = (state: IRoomData = initialRoomData, action: IRoomAction): IRoom
       return { ...state, ...(action.payload as IUsersAndRoomstate) };
     case 'UPDATE_USERS_AND_SUBMITTED_USERS':
       return { ...state, ...(action.payload as IUsersAndSubmittedUsers) };
-    case 'UPDATE_USERS_AND_CAN_BE_REVEALED':
-      return { ...state, ...(action.payload as IUsersAndCanBeRevealed) };
-    case 'UPDATE_CAN_BE_REVEALED':
-      return { ...state, canBeRevealed: action.payload as boolean };
     case 'UPDATE_POINT':
       return { ...state, point: action.payload as number };
     case 'UPDATE_IS_LOCKED':

@@ -70,13 +70,6 @@ export const updatePoint = (point: number): IRoomAction => {
   };
 };
 
-export const updateUsersAndCanBeRevealed = (payload: IUsersAndCanBeRevealed): IRoomAction => {
-  return {
-    type: 'UPDATE_USERS_AND_CAN_BE_REVEALED',
-    payload: payload,
-  };
-};
-
 export const updateUsersAndSubmittedUsers = (payload: IUsersAndSubmittedUsers): IRoomAction => {
   return {
     type: 'UPDATE_USERS_AND_SUBMITTED_USERS',
@@ -88,13 +81,6 @@ export const updateSubmittedUsers = (submittedUsers: number): IRoomAction => {
   return {
     type: 'UPDATE_SUBMITTED_USERS',
     payload: submittedUsers,
-  };
-};
-
-export const updateCanBeRevealed = (canBeRevealed: boolean): IRoomAction => {
-  return {
-    type: 'UPDATE_CAN_BE_REVEALED',
-    payload: canBeRevealed,
   };
 };
 

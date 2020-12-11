@@ -25,10 +25,8 @@ interface Props {
   submittedUsers: number;
   updateUsers: (data: IUser[]) => IRoomAction;
   updateUsersAndRoomState: (data: IUsersAndRoomstate) => IRoomAction;
-  updateUsersAndCanBeRevealed: (data: IUsersAndCanBeRevealed) => IRoomAction;
   updateUsersAndSubmittedUsers: (data: IUsersAndSubmittedUsers) => IRoomAction;
   updateRoomState: (roomState: string) => IRoomAction;
-  updateCanBeRevealed: (canBeRevealed: boolean) => IRoomAction;
   resetRoom: (data: IResetRoom) => IRoomAction;
 }
 
@@ -42,9 +40,7 @@ const Header: React.FC<Props> = ({
   submittedUsers,
   updateUsers,
   updateUsersAndRoomState,
-  updateUsersAndCanBeRevealed,
   updateRoomState,
-  updateCanBeRevealed,
   updateUsersAndSubmittedUsers,
   resetRoom,
 }) => {
@@ -57,12 +53,14 @@ const Header: React.FC<Props> = ({
 
   const firstTimeJoinCallback = async ({ users, roomState }: Data) => {
     updateUsersAndRoomState({ users, roomState });
+    console.log(users);
   };
 
   const newUserConnectedCallback = async (user: IUser) => {
     const newUers = users.splice(0);
     newUers.push(user);
-    updateUsersAndCanBeRevealed({ users: newUers, canBeRevealed: false });
+    console.log(newUers);
+    updateUsers(newUers);
   };
 
   const userStatusChangedCallback = async (user: IUser) => {
@@ -76,9 +74,6 @@ const Header: React.FC<Props> = ({
 
     submittedUsers++;
     updateUsersAndSubmittedUsers({ users: newUsers, submittedUsers });
-    if (submittedUsers === users.length) {
-      updateCanBeRevealed(true);
-    }
   };
 
   const roomStateChangedCallback = async ({ roomState, users }: RoomState) => {
@@ -88,7 +83,7 @@ const Header: React.FC<Props> = ({
       if (roomState === 'revealed') {
         updateUsersAndRoomState({ roomState, users });
       } else if (roomState === 'waiting') {
-        resetRoom({ point: -1, isLocked: false, canBeRevealed: false, submittedUsers: 0, users, roomState });
+        resetRoom({ point: -1, isLocked: false, submittedUsers: 0, users, roomState });
       }
     }
   };
@@ -96,7 +91,8 @@ const Header: React.FC<Props> = ({
   const userLeftCallback = async (userId: number) => {
     const newUsers = users.splice(0);
     console.log(newUsers);
-    const user = newUsers.find((u) => u.id === userId);
+    const user = newUsers.find(({ id }) => id === userId);
+    console.log(user);
     newUsers.splice(newUsers.indexOf(user as IUser), 1);
     console.log(newUsers);
 
@@ -156,10 +152,8 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   updateUsers: Actions.roomActions.updateUsers,
   updateUsersAndRoomState: Actions.roomActions.updateUsersAndRoomState,
-  updateUsersAndCanBeRevealed: Actions.roomActions.updateUsersAndCanBeRevealed,
   updateUsersAndSubmittedUsers: Actions.roomActions.updateUsersAndSubmittedUsers,
   updateRoomState: Actions.roomActions.updateRoomState,
-  updateCanBeRevealed: Actions.roomActions.updateCanBeRevealed,
   updateSubmittedUsers: Actions.roomActions.updateSubmittedUsers,
   resetRoom: Actions.roomActions.resetRoom,
 };

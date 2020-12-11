@@ -13,13 +13,16 @@ interface Props {
   roomConnection: any;
   point: number;
   role: number;
+  users: IUser[];
+  submittedUsers: number;
   isLocked: boolean;
   roomState: string;
-  canBeRevealed: boolean;
   updateIsLocked: (isLocked: boolean) => IRoomAction;
 }
 
 const ControlPanel: React.FC<Props> = ({
+  users,
+  submittedUsers,
   roomConnection,
   point,
   role,
@@ -27,7 +30,6 @@ const ControlPanel: React.FC<Props> = ({
   roomCode,
   isLocked,
   currentStory,
-  canBeRevealed,
   updateIsLocked,
   className = '',
 }) => {
@@ -75,7 +77,7 @@ const ControlPanel: React.FC<Props> = ({
             </Button>
             <Button
               className={style.button}
-              disabled={!canBeRevealed}
+              disabled={users.length !== submittedUsers}
               onClick={() => {
                 roomConnection.send('ChangeRoomState', roomCode, 'revealed');
               }}
@@ -115,7 +117,7 @@ const ControlPanel: React.FC<Props> = ({
 };
 
 const mapStateToProps = ({
-  roomData: { roomCode, roomState, roomConnection, point, isLocked, currentStory, canBeRevealed, role },
+  roomData: { roomCode, roomState, roomConnection, point, isLocked, currentStory, users, submittedUsers, role },
 }: IGlobalState) => {
   return {
     roomCode,
@@ -124,8 +126,9 @@ const mapStateToProps = ({
     point,
     isLocked,
     currentStory,
-    canBeRevealed,
     role,
+    users,
+    submittedUsers,
   };
 };
 

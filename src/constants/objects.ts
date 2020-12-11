@@ -23,7 +23,6 @@ export const initialRoomData: IRoomData = {
   roomConnection: {},
   users: [],
   submittedUsers: 0,
-  canBeRevealed: false,
   point: -1,
   isLocked: false,
   role: 0,
