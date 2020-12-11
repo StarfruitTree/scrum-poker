@@ -8,23 +8,36 @@ import * as signalR from '@microsoft/signalr';
 import { ROOM_CHANNEL } from '@scrpoker/constants/apis';
 import CookieReader from 'js-cookie';
 import { Actions, store } from '@scrpoker/store';
+import { initialRoomData } from '@scrpoker/constants/objects';
 
 interface Props {
   roomCode: string;
   role: number;
+  updateRoomConnection: (roomConnection: any) => IRoomAction;
+  cleanUpRoomData: (data: IRoomData) => IRoomAction;
 }
 
 const connection = new signalR.HubConnectionBuilder()
   .withUrl(ROOM_CHANNEL, { accessTokenFactory: () => CookieReader.get('jwtToken') as string })
   .build();
 
-store.dispatch(Actions.roomActions.updateRoomConnection(connection));
+const Room: React.FC<Props> = ({ roomCode, role, updateRoomConnection, cleanUpRoomData }) => {
+  updateRoomConnection(connection);
 
-const Room: React.FC<Props> = ({ roomCode, role }) => {
   useEffect(() => {
     connection.start().then(() => {
       connection.send('Combine', roomCode, role).catch((err) => console.log(err));
     });
+
+    window.addEventListener('beforeunload', () => {
+      connection.send('RemoveFromChannel', roomCode);
+    });
+
+    return () => {
+      connection.send('RemoveFromChannel', roomCode);
+      connection.stop();
+      cleanUpRoomData(initialRoomData);
+    };
   }, []);
 
   return (
@@ -43,4 +56,9 @@ const mapStateToProps = ({ roomData: { roomCode, role } }: IGlobalState) => {
   };
 };
 
-export default connect(mapStateToProps)(Room);
+const mapDispatchToProps = {
+  updateRoomConnection: Actions.roomActions.updateRoomConnection,
+  cleanUpRoomData: Actions.roomActions.cleanUpRoomData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Room);

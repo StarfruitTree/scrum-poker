@@ -98,12 +98,11 @@ namespace scrum_poker_server.Hubs
             await Clients.Group(roomCode).SendAsync("currentStoryChanged", new { id });
         }
 
-        public async Task RemoveFromGroup(string roomCode)
+        public async Task RemoveFromChannel(string roomCode)
         {
             var userId = int.Parse(Context.User.FindFirst("UserId").Value);
             var room = _roomService.FindRoom(roomCode);
             room.RemoveUser(userId);
-
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomCode);
             await Clients.Group(roomCode).SendAsync("userLeft", new { id = userId });
         }

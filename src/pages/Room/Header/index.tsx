@@ -23,6 +23,7 @@ interface Props {
   roomName: string;
   description: string;
   submittedUsers: number;
+  updateUsers: (data: IUser[]) => IRoomAction;
   updateUsersAndRoomState: (data: IUsersAndRoomstate) => IRoomAction;
   updateUsersAndCanBeRevealed: (data: IUsersAndCanBeRevealed) => IRoomAction;
   updateUsersAndSubmittedUsers: (data: IUsersAndSubmittedUsers) => IRoomAction;
@@ -39,6 +40,7 @@ const Header: React.FC<Props> = ({
   roomName,
   description,
   submittedUsers,
+  updateUsers,
   updateUsersAndRoomState,
   updateUsersAndCanBeRevealed,
   updateRoomState,
@@ -91,6 +93,21 @@ const Header: React.FC<Props> = ({
     }
   };
 
+  const userLeftCallback = async (userId: number) => {
+    const newUsers = users.splice(0);
+    console.log(newUsers);
+    const user = newUsers.find((u) => u.id === userId);
+    newUsers.splice(newUsers.indexOf(user as IUser), 1);
+    console.log(newUsers);
+
+    if (user?.status === 'ready') {
+      submittedUsers--;
+      updateUsersAndSubmittedUsers({ users: newUsers, submittedUsers });
+    } else {
+      updateUsers(newUsers);
+    }
+  };
+
   useEffect(() => {
     roomConnection.on('firstTimeJoin', firstTimeJoinCallback);
   }, []);
@@ -109,6 +126,11 @@ const Header: React.FC<Props> = ({
     roomConnection.off('roomStateChanged');
     roomConnection.on('roomStateChanged', roomStateChangedCallback);
   }, [roomStateChangedCallback]);
+
+  useEffect(() => {
+    roomConnection.off('userLeft');
+    roomConnection.on('userLeft', userLeftCallback);
+  }, [userLeftCallback]);
 
   return (
     <div className={`${style.header} ${className}`}>
@@ -132,6 +154,7 @@ const mapStateToProps = ({
 };
 
 const mapDispatchToProps = {
+  updateUsers: Actions.roomActions.updateUsers,
   updateUsersAndRoomState: Actions.roomActions.updateUsersAndRoomState,
   updateUsersAndCanBeRevealed: Actions.roomActions.updateUsersAndCanBeRevealed,
   updateUsersAndSubmittedUsers: Actions.roomActions.updateUsersAndSubmittedUsers,
