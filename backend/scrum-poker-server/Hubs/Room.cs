@@ -100,7 +100,7 @@ namespace scrum_poker_server.Hubs
 
         public async Task RemoveFromGroup(string roomCode)
         {
-            var userId = int.Parse(Context.User.FindFirst(ClaimTypes.Name).Value);
+            var userId = int.Parse(Context.User.FindFirst("UserId").Value);
             var room = _roomService.FindRoom(roomCode);
             room.RemoveUser(userId);
 
