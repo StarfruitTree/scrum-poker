@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
-import { Actions, store } from '@scrpoker/store';
+import { Actions } from '@scrpoker/store';
 
 const USER_NAME = 'userName';
 const PASSWORD = 'password';
 const EMAIL = 'email';
 const CONFIRM_PASSWORD = 'confirmPassword';
 
-const SignUp: React.FC = () => {
+interface Props {
+  signUp: (data: ISignUpData) => Promise<void>;
+}
+
+const SignUp: React.FC<Props> = ({ signUp }) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,7 +35,7 @@ const SignUp: React.FC = () => {
       };
 
       try {
-        await store.dispatch<any>(Actions.userActions.signUp(signUpData));
+        await signUp(signUpData);
         history.push('/home');
       } catch (err) {
         console.log(err);
@@ -90,4 +95,8 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+const mapDispatchToProps = {
+  signUp: Actions.userActions.signUp,
+};
+
+export default connect(null, mapDispatchToProps)(SignUp);

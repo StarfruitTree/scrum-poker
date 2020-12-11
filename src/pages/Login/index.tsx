@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
 import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
-import { Actions, store } from '@scrpoker/store';
+import { Actions } from '@scrpoker/store';
 
 const EMAIL = 'email';
 const PASSWORD = 'password';
 
-const Login: React.FC = () => {
+interface Props {
+  login: (data: ILoginData) => Promise<void>;
+}
+
+const Login: React.FC<Props> = ({ login }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [isPersistentLogin, setIsPersistentLogin] = useState(false);
@@ -22,10 +27,10 @@ const Login: React.FC = () => {
     };
 
     try {
-      await store.dispatch<any>(Actions.userActions.login(loginData));
+      await login(loginData);
       history.push('/home');
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   };
 
@@ -67,4 +72,8 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+const mapDispatchToProps = {
+  login: Actions.userActions.login,
+};
+
+export default connect(null, mapDispatchToProps)(Login);
