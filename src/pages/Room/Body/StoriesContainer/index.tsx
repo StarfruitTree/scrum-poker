@@ -3,6 +3,7 @@ import ReactModal from 'react-modal';
 import style from './style.module.scss';
 import { Typo, Icon, Input, Button } from '@scrpoker/components';
 import { ADD_STORY } from '@scrpoker/constants/apis';
+import { reactModalStyle } from '@scrpoker/constants/objects';
 import Story from './Story';
 import { connect } from 'react-redux';
 import { getAuthHeader } from '@scrpoker/utils';
@@ -15,17 +16,6 @@ interface Props {
   roomState: string;
   role: number;
 }
-
-const modalStyle = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
 
 const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConnection, roomState, role }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -83,9 +73,9 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
 
   return (
     <div className={style.storiesContainer}>
-      <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={modalStyle}>
+      <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={reactModalStyle}>
         <Typo type="h2">Add a story</Typo>
-        <Input name="Title" placeholder="Story's title" onTextChange={handleTitleChange} />
+        <Input className={style.input} name="Title" placeholder="Story's title" onTextChange={handleTitleChange} />
         <textarea
           className={style.textarea}
           rows={8}
