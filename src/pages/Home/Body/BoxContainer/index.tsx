@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactModal from 'react-modal';
 import { useHistory } from 'react-router-dom';
+import { Button, Typo, Input } from '@scrpoker/components';
 import style from './style.module.scss';
 import Box from './Box';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
+import { reactModalStyle } from '@scrpoker/constants/objects';
+
 interface Box {
   iconName: string;
   actionName: string;
@@ -16,7 +20,26 @@ interface Props {
 }
 
 const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [roomCode, setRoomCode] = useState('');
   const history = useHistory();
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleRoomCodeChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    setRoomCode(value);
+  };
+
+  const join = async () => {
+    await joinRoom(roomCode);
+    history.push('/room/' + roomCode);
+  };
 
   const boxes: Box[] = [
     {
@@ -31,7 +54,7 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
       iconName: 'arrow-right',
       actionName: 'Join a room',
       onClick: () => {
-        alert(`Yeah ^^`);
+        openModal();
       },
     },
     {
@@ -49,8 +72,16 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
       },
     },
   ];
+
   return (
     <div className={style.boxContainer}>
+      <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={reactModalStyle}>
+        <Typo type="h2">Join a room</Typo>
+        <Input className={style.input} name="roomCode" placeholder="Room code" onTextChange={handleRoomCodeChange} />
+        <div className={style.submit}>
+          <Button onClick={join}>Submit</Button>
+        </div>
+      </ReactModal>
       {boxes.map((box, key) => (
         <Box
           className={style.box}
