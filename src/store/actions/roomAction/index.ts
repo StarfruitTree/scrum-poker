@@ -35,79 +35,79 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     });
 };
 
-export function updateRoomConnection(roomConnection: any): IRoomAction {
+export const updateRoomConnection = (roomConnection: any): IRoomAction => {
   return {
     type: 'UPDATE_ROOM_CONNECTION',
     payload: roomConnection,
   };
-}
+};
 
-export function updateRoomState(roomState: string): IRoomAction {
+export const updateRoomState = (roomState: string): IRoomAction => {
   return {
     type: 'UPDATE_ROOM_STATE',
     payload: roomState,
   };
-}
+};
 
-export function updateUsersAndRoomState(payload: IUsersAndRoomstate): IRoomAction {
+export const updateUsersAndRoomState = (payload: IUsersAndRoomstate): IRoomAction => {
   return {
     type: 'UPDATE_USERS_AND_ROOM_STATE',
     payload: payload,
   };
-}
+};
 
-export function updatePoint(point: number): IRoomAction {
+export const updatePoint = (point: number): IRoomAction => {
   return {
     type: 'UPDATE_POINT',
     payload: point,
   };
-}
+};
 
-export function updateUsersAndCanBeRevealed(payload: IUsersAndCanBeRevealed): IRoomAction {
+export const updateUsersAndCanBeRevealed = (payload: IUsersAndCanBeRevealed): IRoomAction => {
   return {
     type: 'UPDATE_USERS_AND_CAN_BE_REVEALED',
     payload: payload,
   };
-}
+};
 
-export function updateUsersAndSubmittedUsers(payload: IUsersAndSubmittedUsers): IRoomAction {
+export const updateUsersAndSubmittedUsers = (payload: IUsersAndSubmittedUsers): IRoomAction => {
   return {
     type: 'UPDATE_USERS_AND_SUBMITTED_USERS',
     payload: payload,
   };
-}
+};
 
-export function updateSubmittedUsers(submittedUsers: number): IRoomAction {
+export const updateSubmittedUsers = (submittedUsers: number): IRoomAction => {
   return {
     type: 'UPDATE_SUBMITTED_USERS',
     payload: submittedUsers,
   };
-}
+};
 
-export function updateCanBeRevealed(canBeRevealed: boolean): IRoomAction {
+export const updateCanBeRevealed = (canBeRevealed: boolean): IRoomAction => {
   return {
     type: 'UPDATE_CAN_BE_REVEALED',
     payload: canBeRevealed,
   };
-}
+};
 
-export function updateIsLocked(isLocked: boolean): IRoomAction {
+export const updateIsLocked = (isLocked: boolean): IRoomAction => {
   return {
     type: 'UPDATE_IS_LOCKED',
     payload: isLocked,
   };
-}
+};
 
-export function updateCurrentStory(story: IStory | undefined): IRoomAction {
+export const updateCurrentStory = (story: IStory | undefined): IRoomAction => {
   return {
     type: 'UPDATE_CURRENT_STORY',
     payload: story,
   };
-}
+};
 
-export function resetRoom(payload: IResetRoom): IRoomAction {
+export const resetRoom = (payload: IResetRoom): IRoomAction => {
   return {
     type: 'RESET_ROOM',
     payload: payload,
   };
-}
+};
