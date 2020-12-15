@@ -104,7 +104,7 @@ namespace scrum_poker_server.Hubs
             var room = _roomService.FindRoom(roomCode);
             room.RemoveUser(userId);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomCode);
-            await Clients.Group(roomCode).SendAsync("userLeft", new { id = userId });
+            await Clients.Group(roomCode).SendAsync("userLeft", new { userId });
         }
     }
 }

@@ -15,6 +15,10 @@ interface RoomState {
   users?: IUser[];
 }
 
+interface IUserLeft {
+  userId: number;
+}
+
 interface Props {
   className?: string;
   roomConnection: signalR.HubConnection;
@@ -57,9 +61,8 @@ const Header: React.FC<Props> = ({
   };
 
   const newUserConnectedCallback = async (user: IUser) => {
-    const newUers = users.splice(0);
+    const newUers = users.slice(0);
     newUers.push(user);
-    console.log(newUers);
     updateUsers(newUers);
   };
 
@@ -88,13 +91,10 @@ const Header: React.FC<Props> = ({
     }
   };
 
-  const userLeftCallback = async (userId: number) => {
-    const newUsers = users.splice(0);
-    console.log(newUsers);
+  const userLeftCallback = async ({ userId }: IUserLeft) => {
+    const newUsers = users.slice(0);
     const user = newUsers.find(({ id }) => id === userId);
-    console.log(user);
     newUsers.splice(newUsers.indexOf(user as IUser), 1);
-    console.log(newUsers);
 
     if (user?.status === 'ready') {
       submittedUsers--;
