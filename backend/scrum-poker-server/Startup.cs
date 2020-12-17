@@ -79,7 +79,7 @@ namespace scrum_poker_server
             });
 
             services.AddControllers();
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("ScrumPokerConnection")));
             services.AddSignalR();
             services.AddSingleton<RoomService>();
             services.AddSingleton<JwtTokenGenerator>();

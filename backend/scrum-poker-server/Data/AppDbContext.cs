@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Models;
+using System.Linq;
 
 namespace scrum_poker_server.Data
 {
@@ -12,6 +13,10 @@ namespace scrum_poker_server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserRoom>().HasKey(userRoom => new { userRoom.UserID, userRoom.RoomId });
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
 
         public DbSet<Room> Rooms { get; set; }

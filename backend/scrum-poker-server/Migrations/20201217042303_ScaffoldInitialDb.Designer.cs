@@ -2,31 +2,31 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using scrum_poker_server.Data;
 
 namespace scrum_poker_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201117125420_MakeAccountIdInRoomTableNullable")]
-    partial class MakeAccountIdInRoomTableNullable
+    [Migration("20201217042303_ScaffoldInitialDb")]
+    partial class ScaffoldInitialDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityByDefaultColumns()
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .UseIdentityColumns()
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("scrum_poker_server.Models.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.HasKey("Id");
 
@@ -37,31 +37,31 @@ namespace scrum_poker_server.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int?>("AccountId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Code")
                         .HasColumnType("char(6)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("HostId")
-                        .HasColumnType("integer");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("HostId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Rooms");
                 });
@@ -70,24 +70,24 @@ namespace scrum_poker_server.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("Content")
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Point")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("RoomId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -102,17 +102,17 @@ namespace scrum_poker_server.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int>("Point")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("StoryId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -127,18 +127,18 @@ namespace scrum_poker_server.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<int?>("AccountId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Password")
                         .HasColumnType("varchar(255)");
@@ -146,7 +146,8 @@ namespace scrum_poker_server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.ToTable("Users");
                 });
@@ -154,14 +155,13 @@ namespace scrum_poker_server.Migrations
             modelBuilder.Entity("scrum_poker_server.Models.UserRoom", b =>
                 {
                     b.Property<int>("UserID")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("RoomId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("varchar");
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("UserID", "RoomId");
 
@@ -174,17 +174,18 @@ namespace scrum_poker_server.Migrations
                 {
                     b.HasOne("scrum_poker_server.Models.Account", "Account")
                         .WithMany("Rooms")
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("scrum_poker_server.Models.User", "Host")
+                    b.HasOne("scrum_poker_server.Models.User", "Owner")
                         .WithMany()
-                        .HasForeignKey("HostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Account");
 
-                    b.Navigation("Host");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("scrum_poker_server.Models.Story", b =>
@@ -192,12 +193,13 @@ namespace scrum_poker_server.Migrations
                     b.HasOne("scrum_poker_server.Models.Room", "Room")
                         .WithMany("Stories")
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("scrum_poker_server.Models.User", "Assignee")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Assignee");
 
@@ -209,13 +211,13 @@ namespace scrum_poker_server.Migrations
                     b.HasOne("scrum_poker_server.Models.Story", "Story")
                         .WithMany("SubmittedPointByUsers")
                         .HasForeignKey("StoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("scrum_poker_server.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Story");
@@ -227,7 +229,8 @@ namespace scrum_poker_server.Migrations
                 {
                     b.HasOne("scrum_poker_server.Models.Account", "Account")
                         .WithOne("User")
-                        .HasForeignKey("scrum_poker_server.Models.User", "AccountId");
+                        .HasForeignKey("scrum_poker_server.Models.User", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
                 });
@@ -237,13 +240,13 @@ namespace scrum_poker_server.Migrations
                     b.HasOne("scrum_poker_server.Models.Room", "Room")
                         .WithMany("UserRooms")
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("scrum_poker_server.Models.User", "User")
                         .WithMany("UserRooms")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Room");

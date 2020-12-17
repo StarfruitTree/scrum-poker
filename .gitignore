@@ -3,10 +3,12 @@ node_modules
 coverage
 yarn-error.log
 debug.log
+# backend/scrum-poker-server/Hubs
 backend/scrum-poker-server/bin
 backend/scrum-poker-server/obj
-<<<<<<< Updated upstream
-=======
-backend/scrum-poker-server/Migrations
->>>>>>> Stashed changes
 backend/.vs
+backend/scrum-poker-server/Properties/PublishProfiles
+backend/scrum-poker-server/Properties/ServiceDependencies/scrum-poker-server20201215111154 - Web Deploy
+backend/scrum-poker-server/Properties/ServiceDependencies.json
+backend/scrum-poker-server/Properties/serviceDependencies.scrum-poker-server20201215111154 - Web Deploy.json
+serviceDependencies.scrum-poker-server20201215111154 - Web Deploy.json.user
