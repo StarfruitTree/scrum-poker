@@ -5,7 +5,10 @@ namespace scrum_poker_server.HubModels
     public class PokingRoom
     {
         public string RoomCode { get; set; }
+
         public int CurrentStoryId { get; set; }
+
+        public int CurrentStoryPoint { get; set; }
 
         public string State { get; set; }
 
