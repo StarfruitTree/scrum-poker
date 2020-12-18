@@ -19,7 +19,7 @@ interface IStory {
   title: string;
   content: string;
   assignee?: string;
-  point?: number;
+  point: number;
 }
 
 interface IRoomData {
@@ -35,6 +35,7 @@ interface IRoomData {
   isLocked: boolean;
   role: number;
   currentStory: IStory | undefined;
+  currentStoryPoint: number;
 }
 
 interface IRoomInfoPayload {

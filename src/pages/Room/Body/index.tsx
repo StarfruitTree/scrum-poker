@@ -42,7 +42,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, updateCurrentStory, cla
     if (response.status === 404) {
       console.log(data.error);
     } else {
-      setStories([...stories, { id, title: data.title, content: data.content }]);
+      setStories([...stories, { id, title: data.title, content: data.content, point: data.point }]);
     }
   };
 

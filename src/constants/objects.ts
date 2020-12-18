@@ -27,4 +27,5 @@ export const initialRoomData: IRoomData = {
   isLocked: false,
   role: 0,
   currentStory: undefined,
+  currentStoryPoint: -1,
 };
