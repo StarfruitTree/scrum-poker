@@ -15,7 +15,7 @@ const Story: React.FC<Props> = ({ onClick, title, assignee, point, className = '
     <div onClick={onClick} className={`${style.story} ${className} ${onClick !== undefined ? style.clickable : ''}`}>
       <Typo className={style.title}>{title}</Typo>
       <div className={style.details}>
-        {point ? <Typo className={style.point}>{point}</Typo> : ''}
+        {point !== -1 ? <Typo className={style.point}>{point}</Typo> : ''}
         {assignee ? (
           <div className={style.assignee}>
             <Avatar letter={assignee[0]} />

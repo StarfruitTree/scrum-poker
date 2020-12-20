@@ -98,6 +98,13 @@ export const updateCurrentStory = (story: IStory | undefined): IRoomAction => {
   };
 };
 
+export const updateCurrentStoryPoint = (point: number): IRoomAction => {
+  return {
+    type: 'UPDATE_CURRENT_STORY_POINT',
+    payload: point,
+  };
+};
+
 export const resetRoom = (payload: IResetRoom): IRoomAction => {
   return {
     type: 'RESET_ROOM',

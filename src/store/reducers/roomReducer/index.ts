@@ -20,6 +20,8 @@ const reducer = (state: IRoomData = initialRoomData, action: IRoomAction): IRoom
       return { ...state, isLocked: action.payload as boolean };
     case 'UPDATE_CURRENT_STORY':
       return { ...state, currentStory: action.payload as IStory };
+    case 'UPDATE_CURRENT_STORY_POINT':
+      return { ...state, currentStoryPoint: action.payload as number };
     case 'RESET_ROOM':
       return { ...state, ...(action.payload as IResetRoom) };
     case 'CLEAN_UP_ROOM_DATA':
