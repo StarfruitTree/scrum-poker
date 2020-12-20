@@ -12,13 +12,24 @@ interface Props {
   roomConnection: any;
   roomId: number;
   updateCurrentStory: (story: IStory | undefined) => IRoomAction;
+  updateCurrentStoryPoint: (point: number) => IRoomAction;
 }
 
-interface StoryData {
+interface IStoryData {
   id: number;
 }
 
-const Body: React.FC<Props> = ({ roomConnection, roomId, updateCurrentStory, className = '' }) => {
+interface ICurrentStoryPointData {
+  point: number;
+}
+
+const Body: React.FC<Props> = ({
+  roomConnection,
+  roomId,
+  updateCurrentStory,
+  updateCurrentStoryPoint,
+  className = '',
+}) => {
   const [stories, setStories] = useState([] as IStory[]);
 
   const getStories = async () => {
@@ -31,7 +42,7 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, updateCurrentStory, cla
     setStories(data.stories);
   };
 
-  const storyAddedCallback = async ({ id }: StoryData) => {
+  const storyAddedCallback = async ({ id }: IStoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`, {
       headers: {
         Authorization: getAuthHeader(),
@@ -46,9 +57,13 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, updateCurrentStory, cla
     }
   };
 
-  const currentStoryChangedCallback = ({ id }: StoryData) => {
+  const currentStoryChangedCallback = ({ id }: IStoryData) => {
     const story = stories.find((s) => s.id === id);
     updateCurrentStory(story);
+  };
+
+  const currentStoryPointChangedCallback = ({ point }: ICurrentStoryPointData) => {
+    updateCurrentStoryPoint(point);
   };
 
   useEffect(() => {
@@ -60,6 +75,11 @@ const Body: React.FC<Props> = ({ roomConnection, roomId, updateCurrentStory, cla
     roomConnection.off('currentStoryChanged');
     roomConnection.on('currentStoryChanged', currentStoryChangedCallback);
   }, [currentStoryChangedCallback]);
+
+  useEffect(() => {
+    roomConnection.off('currentStoryPointChanged');
+    roomConnection.on('currentStoryPointChanged', currentStoryPointChangedCallback);
+  }, [currentStoryPointChangedCallback]);
 
   useEffect(() => {
     getStories();
@@ -82,6 +102,7 @@ const mapStateToProps = ({ roomData: { roomConnection, roomId } }: IGlobalState)
 
 const mapDispatchToProps = {
   updateCurrentStory: Actions.roomActions.updateCurrentStory,
+  updateCurrentStoryPoint: Actions.roomActions.updateCurrentStoryPoint,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Body);
