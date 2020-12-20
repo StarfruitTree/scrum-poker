@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>scrum_poker_server</RootNamespace>
+    <UserSecretsId>0b4c963b-d653-4953-a25c-a298f1fa790d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
