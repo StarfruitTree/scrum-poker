@@ -26,6 +26,8 @@ const reducer = (state: IRoomData = initialRoomData, action: IRoomAction): IRoom
       return { ...state, ...(action.payload as IResetRoom) };
     case 'CLEAN_UP_ROOM_DATA':
       return { ...state, ...(action.payload as IRoomData) };
+    case 'UPDATE_USERS_AND_ROOM_STATE_AND_CURRENT_STORY_POINT':
+      return { ...state, ...(action.payload as IUsersAndRoomStateAndCurrentStoryPoint) };
     default:
       return state;
   }

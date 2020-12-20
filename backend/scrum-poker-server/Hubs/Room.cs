@@ -34,14 +34,14 @@ namespace scrum_poker_server.Hubs
                 room.CurrentStoryPoint = -1;
                 _roomService.Add(room);
                 var users = room.GetUsers();
-                await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State, currentStoryPoint = room.CurrentStoryPoint });
+                await Clients.Caller.SendAsync("joinRoom", new { users, roomState = room.State, currentStoryPoint = room.CurrentStoryPoint });
             }
             else
             {
                 room.AddUser(new User(userName, int.Parse(Context.User.FindFirst("UserId").Value), "standBy", (Role)role, 0));
                 var users = room.GetUsers();
                 await Clients.GroupExcept(roomCode, Context.ConnectionId).SendAsync("newUserConnected", new { name = userName, id = userId, status = "standBy", point = 0, role });
-                await Clients.Caller.SendAsync("firstTimeJoin", new { users, roomState = room.State, currentStoryPoint = room.CurrentStoryPoint });
+                await Clients.Caller.SendAsync("joinRoom", new { users, roomState = room.State, currentStoryPoint = room.CurrentStoryPoint });
                 await Clients.Caller.SendAsync("currentStoryChanged", new { id = room.CurrentStoryId });
             }
         }

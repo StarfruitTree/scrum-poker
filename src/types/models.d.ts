@@ -85,3 +85,9 @@ interface IResetRoom {
   point: number;
   isLocked: boolean;
 }
+
+interface IUsersAndRoomStateAndCurrentStoryPoint {
+  users: IUser[];
+  roomState: string;
+  currentStoryPoint: number;
+}

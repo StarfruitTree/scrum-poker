@@ -118,3 +118,12 @@ export const cleanUpRoomData = (payload: IRoomData): IRoomAction => {
     payload: payload,
   };
 };
+
+export const updateUsersAndRoomStateAndCurrentStoryPoint = (
+  payload: IUsersAndRoomStateAndCurrentStoryPoint
+): IRoomAction => {
+  return {
+    type: 'UPDATE_USERS_AND_ROOM_STATE_AND_CURRENT_STORY_POINT',
+    payload: payload,
+  };
+};
