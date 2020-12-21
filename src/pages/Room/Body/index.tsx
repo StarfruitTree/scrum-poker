@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 import { Actions } from '@scrpoker/store';
 import { getAuthHeader } from '@scrpoker/utils';
+import { debug } from 'webpack';
 
 interface Props {
   className?: string;

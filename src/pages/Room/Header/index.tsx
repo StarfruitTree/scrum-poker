@@ -14,6 +14,12 @@ interface IUserLeft {
   userId: number;
 }
 
+interface IUserStatusChanged {
+  userId: number;
+  status: string;
+  point: number;
+}
+
 interface Props {
   className?: string;
   roomConnection: signalR.HubConnection;
@@ -62,11 +68,11 @@ const Header: React.FC<Props> = ({
     updateUsers(newUers);
   };
 
-  const userStatusChangedCallback = async (user: IUser) => {
+  const userStatusChangedCallback = async ({ userId, status, point }: IUserStatusChanged) => {
     const newUsers = users.map((u) => {
-      if (u.name == user.name) {
-        u.point = user.point;
-        u.status = user.status;
+      if (u.id == userId) {
+        u.point = point;
+        u.status = status;
       }
       return u;
     });
