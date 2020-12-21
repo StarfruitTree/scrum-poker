@@ -57,6 +57,28 @@ const Body: React.FC<Props> = ({
     }
   };
 
+  const storyUpdatedCallback = async ({ id }: IStoryData) => {
+    const response = await fetch(`${GET_STORY}/${id}`, {
+      headers: {
+        Authorization: getAuthHeader(),
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status === 404) {
+      console.log(data.error);
+    } else {
+      const updatedStories = stories.slice(0);
+      updatedStories.forEach((s) => {
+        if (s.id === data.id) {
+          s.point = data.point;
+        }
+      });
+      setStories(updatedStories);
+    }
+  };
+
   const currentStoryChangedCallback = ({ id }: IStoryData) => {
     const story = stories.find((s) => s.id === id);
     updateCurrentStory(story);
@@ -70,6 +92,11 @@ const Body: React.FC<Props> = ({
     roomConnection.off('storyAdded');
     roomConnection.on('storyAdded', storyAddedCallback);
   }, [storyAddedCallback]);
+
+  useEffect(() => {
+    roomConnection.off('storyUpdated');
+    roomConnection.on('storyUpdated', storyUpdatedCallback);
+  }, [storyUpdatedCallback]);
 
   useEffect(() => {
     roomConnection.off('currentStoryChanged');
