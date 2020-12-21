@@ -12,6 +12,7 @@ interface Props {
   roomCode: string;
   roomConnection: any;
   point: number;
+  currentStoryPoint: number;
   role: number;
   users: IUser[];
   submittedUsers: number;
@@ -25,6 +26,7 @@ const ControlPanel: React.FC<Props> = ({
   submittedUsers,
   roomConnection,
   point,
+  currentStoryPoint,
   role,
   roomState,
   roomCode,
@@ -33,8 +35,9 @@ const ControlPanel: React.FC<Props> = ({
   updateIsLocked,
   className = '',
 }) => {
-  const currentStoryIsPicked = currentStory !== undefined ? true : false;
-  const submitPoint = () => {
+  const currentStoryIsPicked = currentStory ? true : false;
+
+  const submitPoint = async () => {
     const submitPointData = {
       storyId: currentStory?.id,
       point: point,
@@ -49,6 +52,23 @@ const ControlPanel: React.FC<Props> = ({
       },
     });
   };
+
+  const submitFinalPoint = async () => {
+    const submitPointData = {
+      storyId: currentStory?.id,
+      point: currentStoryPoint,
+      isFinalPoint: true,
+    };
+    fetch(SUBMIT_POINT, {
+      method: 'POST',
+      body: JSON.stringify(submitPointData),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: getAuthHeader(),
+      },
+    });
+  };
+
   return (
     <div className={`${style.controlPanel} ${className}`}>
       {role === 0 ? (
@@ -67,7 +87,7 @@ const ControlPanel: React.FC<Props> = ({
             <Button
               className={style.button}
               disabled={point === -1 || isLocked ? true : false}
-              onClick={() => {
+              onClick={async () => {
                 roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
                 updateIsLocked(true);
                 submitPoint();
@@ -88,9 +108,13 @@ const ControlPanel: React.FC<Props> = ({
         ) : (
           <Button
             className={style.button}
-            onClick={() => {
+            onClick={async () => {
               roomConnection.send('ChangeRoomState', roomCode, 'waiting');
               roomConnection.send('ChangeCurrentStory', roomCode, -1);
+              if (currentStoryPoint !== -1) {
+                await submitFinalPoint();
+                roomConnection.send('UpdateStory', roomCode, currentStory?.id);
+              }
             }}
             disabled={false}
           >
@@ -117,13 +141,25 @@ const ControlPanel: React.FC<Props> = ({
 };
 
 const mapStateToProps = ({
-  roomData: { roomCode, roomState, roomConnection, point, isLocked, currentStory, users, submittedUsers, role },
+  roomData: {
+    roomCode,
+    roomState,
+    roomConnection,
+    point,
+    currentStoryPoint,
+    isLocked,
+    currentStory,
+    users,
+    submittedUsers,
+    role,
+  },
 }: IGlobalState) => {
   return {
     roomCode,
     roomState,
     roomConnection,
     point,
+    currentStoryPoint,
     isLocked,
     currentStory,
     role,

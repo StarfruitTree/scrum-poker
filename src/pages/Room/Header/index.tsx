@@ -82,7 +82,7 @@ const Header: React.FC<Props> = ({
       if (roomState === 'revealed') {
         updateUsersAndRoomState({ roomState, users });
       } else if (roomState === 'waiting') {
-        resetRoom({ point: -1, isLocked: false, submittedUsers: 0, users, roomState });
+        resetRoom({ point: -1, currentStoryPoint: -1, isLocked: false, submittedUsers: 0, users, roomState });
       }
     }
   };
