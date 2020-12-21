@@ -75,6 +75,9 @@ namespace scrum_poker_server.Hubs
                     u.Point = -1;
                 });
                 var users = room.GetUsers();
+
+                room.CurrentStoryPoint = -1;
+
                 await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState, users });
             }
             else await Clients.Group(roomCode).SendAsync("roomStateChanged", new { roomState });

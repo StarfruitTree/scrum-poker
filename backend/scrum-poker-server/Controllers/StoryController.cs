@@ -91,6 +91,9 @@ namespace scrum_poker_server.Controllers
                 }
                 else
                 {
+                    var submittedPoint = story.SubmittedPointByUsers.FirstOrDefault(i => i.UserId == userId);
+                    if (submittedPoint != null) _dbContext.Remove(submittedPoint);
+
                     story.SubmittedPointByUsers.Add(new SubmittedPointByUser
                     {
                         Point = data.Point,
