@@ -1,7 +1,8 @@
 const getUrl = (path: string): string => `${HOST}/api/${path}`;
 const getChannel = (path: string): string => `${HOST}/${path}`;
 
-export const HOST = process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : 'https://somewhere.com';
+export const HOST =
+  process.env.NODE_ENV === 'development' ? 'https://localhost:5001' : 'https://scrumpokerserver.azurewebsites.net';
 export const CREATE_ROOM = getUrl('rooms/create');
 export const JOIN_ROOM = getUrl('rooms/join');
 export const ROOM_CHANNEL = getChannel('room');
