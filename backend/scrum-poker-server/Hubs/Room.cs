@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.SignalR;
 using scrum_poker_server.HubModels;
 using scrum_poker_server.HubServices;
 using scrum_poker_server.Utils;
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
