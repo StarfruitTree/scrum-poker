@@ -86,15 +86,7 @@ namespace scrum_poker_server
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<RoomService>();
             services.AddSingleton<JwtTokenGenerator>();
-
-            if (_env.IsProduction())
-            {
-                services.AddSignalR().AddAzureSignalR();
-            }
-            else
-            {
-                services.AddSignalR();
-            }
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -113,14 +105,6 @@ namespace scrum_poker_server
             app.UseAuthentication();
 
             app.UseAuthorization();
-
-            if (_env.IsProduction())
-            {
-                app.UseAzureSignalR(route =>
-                {
-                    route.MapHub<Room>("/room");
-                });
-            }
 
             app.UseEndpoints(endpoints =>
             {
