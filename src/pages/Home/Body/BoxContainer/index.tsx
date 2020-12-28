@@ -15,7 +15,7 @@ interface Box {
 }
 
 interface Props {
-  userRoomCode: string;
+  userRoomCode?: string;
   joinRoom: (roomCode: string) => Promise<void>;
 }
 
@@ -46,7 +46,7 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
       iconName: 'house-user',
       actionName: 'Join your room',
       onClick: async () => {
-        await joinRoom(userRoomCode);
+        await joinRoom(userRoomCode as string);
         history.push('/room/' + userRoomCode);
       },
     },

@@ -8,6 +8,7 @@ interface IUserInfoResponse {
   name: string;
   userRoomCode?: string;
   expiration: number;
+  email?: string;
 }
 
 export const signUp = (signUpData: ISignUpData): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
@@ -21,7 +22,7 @@ export const signUp = (signUpData: ISignUpData): ThunkAction<Promise<void>, IGlo
     },
   })
     .then((response) => response.json())
-    .then(({ jwtToken, userId, name, userRoomCode, expiration }: IUserInfoResponse) => {
+    .then(({ jwtToken, userId, name, userRoomCode, expiration, email }: IUserInfoResponse) => {
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
@@ -33,6 +34,7 @@ export const signUp = (signUpData: ISignUpData): ThunkAction<Promise<void>, IGlo
           userId,
           name,
           userRoomCode,
+          email,
         },
       });
     })
@@ -51,7 +53,7 @@ export const login = (loginData: ILoginData): ThunkAction<Promise<void>, IGlobal
     },
   })
     .then((response) => response.json())
-    .then(({ jwtToken, userId, name, userRoomCode, expiration }: IUserInfoResponse) => {
+    .then(({ jwtToken, userId, name, userRoomCode, expiration, email }: IUserInfoResponse) => {
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
@@ -63,6 +65,7 @@ export const login = (loginData: ILoginData): ThunkAction<Promise<void>, IGlobal
           userId,
           name,
           userRoomCode,
+          email,
         },
       });
     })

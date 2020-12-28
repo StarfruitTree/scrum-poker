@@ -51,14 +51,16 @@ interface IUserData {
   userId: number;
   name: string;
   action: number;
-  userRoomCode: string;
+  userRoomCode: string | undefined;
+  email: string | undefined;
 }
 
 interface IUserInfoPayload {
   jwtToken: string;
   userId: number;
   name: string;
-  userRoomCode: string;
+  userRoomCode: string | undefined;
+  email: string | undefined;
 }
 interface IUser {
   id: number;
