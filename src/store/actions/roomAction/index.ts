@@ -35,6 +35,13 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     });
 };
 
+export const updateRoomInfo = (data: IRoomInfoPayload): IRoomAction => {
+  return {
+    type: 'UPDATE_ROOM_INFO',
+    payload: data,
+  };
+};
+
 export const updateRoomConnection = (roomConnection: any): IRoomAction => {
   return {
     type: 'UPDATE_ROOM_CONNECTION',

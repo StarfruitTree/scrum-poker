@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 import { Actions } from '@scrpoker/store';
 import { getAuthHeader } from '@scrpoker/utils';
-import { debug } from 'webpack';
 
 interface Props {
   className?: string;
@@ -34,13 +33,15 @@ const Body: React.FC<Props> = ({
   const [stories, setStories] = useState([] as IStory[]);
 
   const getStories = async () => {
-    const response = await fetch(GET_ROOM_STORIES(roomId), {
-      headers: {
-        Authorization: getAuthHeader(),
-      },
-    });
-    const data = await response.json();
-    setStories(data.stories);
+    if (roomId !== 0) {
+      const response = await fetch(GET_ROOM_STORIES(roomId), {
+        headers: {
+          Authorization: getAuthHeader(),
+        },
+      });
+      const data = await response.json();
+      setStories(data.stories);
+    }
   };
 
   const storyAddedCallback = async ({ id }: IStoryData) => {
@@ -111,7 +112,7 @@ const Body: React.FC<Props> = ({
 
   useEffect(() => {
     getStories();
-  }, []);
+  }, [roomId]);
 
   return (
     <div className={`${style.body} ${className}`}>

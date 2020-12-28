@@ -12,3 +12,4 @@ export const SUBMIT_POINT = getUrl('stories/submitpoint');
 export const GET_ROOM_STORIES: (roomId: number) => string = (roomId: number) => getUrl(`rooms/${roomId}/stories`);
 export const SIGN_UP = getUrl('signup');
 export const LOGIN = getUrl('login');
+export const AUTHENTICATE = getUrl('authenticate');

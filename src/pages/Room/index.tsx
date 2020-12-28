@@ -25,20 +25,23 @@ const Room: React.FC<Props> = ({ roomCode, role, updateRoomConnection, cleanUpRo
   updateRoomConnection(connection);
 
   useEffect(() => {
-    connection.start().then(() => {
-      connection.send('Combine', roomCode, role).catch((err) => console.log(err));
-    });
+    if (roomCode) {
+      connection.start().then(() => {
+        connection.send('Combine', roomCode, role).catch((err) => console.log(err));
+      });
 
-    window.addEventListener('beforeunload', () => {
-      connection.send('RemoveFromChannel', roomCode);
-    });
+      window.addEventListener('beforeunload', () => {
+        connection.send('RemoveFromChannel', roomCode);
+        connection.stop();
+      });
 
-    return () => {
-      connection.send('RemoveFromChannel', roomCode);
-      connection.stop();
-      cleanUpRoomData(initialRoomData);
-    };
-  }, []);
+      return () => {
+        connection.send('RemoveFromChannel', roomCode);
+        connection.stop();
+        cleanUpRoomData(initialRoomData);
+      };
+    }
+  }, [roomCode]);
 
   return (
     <div className={style.pokingRoom}>
