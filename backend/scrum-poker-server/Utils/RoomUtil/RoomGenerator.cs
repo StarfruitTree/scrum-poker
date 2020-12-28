@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using scrum_poker_server.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace scrum_poker_server.Utils.RoomUtils
 {
