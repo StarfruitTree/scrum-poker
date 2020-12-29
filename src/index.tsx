@@ -75,8 +75,7 @@ const App = () => {
 
   useEffect(() => {
     if (isTokenValid) {
-      const refreshTime = new Date(CookieReader.get('tokenExpiration') as string).getTime() - new Date().getTime();
-      setTimeout(authenticate, refreshTime - 5000);
+      authenticate();
       if (currentPath.includes('/room')) {
         joinRoom();
       }
