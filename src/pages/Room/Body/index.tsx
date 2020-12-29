@@ -10,7 +10,7 @@ import { getAuthHeader } from '@scrpoker/utils';
 interface Props {
   className?: string;
   roomConnection: any;
-  roomId: number;
+  roomId?: number;
   updateCurrentStory: (story: IStory | undefined) => IRoomAction;
   updateCurrentStoryPoint: (point: number) => IRoomAction;
 }
@@ -33,10 +33,10 @@ const Body: React.FC<Props> = ({
   const [stories, setStories] = useState([] as IStory[]);
 
   const getStories = async () => {
-    if (roomId !== 0) {
+    if (roomId) {
       const response = await fetch(GET_ROOM_STORIES(roomId), {
         headers: {
-          Authorization: getAuthHeader(),
+          Authorization: getAuthHeader() as string,
         },
       });
       const data = await response.json();
@@ -47,7 +47,7 @@ const Body: React.FC<Props> = ({
   const storyAddedCallback = async ({ id }: IStoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`, {
       headers: {
-        Authorization: getAuthHeader(),
+        Authorization: getAuthHeader() as string,
       },
     });
     const data = await response.json();
@@ -62,7 +62,7 @@ const Body: React.FC<Props> = ({
   const storyUpdatedCallback = async ({ id }: IStoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`, {
       headers: {
-        Authorization: getAuthHeader(),
+        Authorization: getAuthHeader() as string,
       },
     });
 

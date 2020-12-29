@@ -12,9 +12,10 @@ const CONFIRM_PASSWORD = 'confirmPassword';
 
 interface Props {
   signUp: (data: ISignUpData) => Promise<void>;
+  setIsTokenValid: (isValid: boolean) => void;
 }
 
-const SignUp: React.FC<Props> = ({ signUp }) => {
+const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,7 +28,7 @@ const SignUp: React.FC<Props> = ({ signUp }) => {
   const submit = async () => {
     if (confirmPassword !== password) {
       alert('The password confirmation does not match');
-    } else {
+    } else if (userName && password && confirmPassword && email) {
       const signUpData: ISignUpData = {
         userName: userName,
         password: password,
@@ -36,11 +37,12 @@ const SignUp: React.FC<Props> = ({ signUp }) => {
 
       try {
         await signUp(signUpData);
+        setIsTokenValid(true);
         history.push('/home');
       } catch (err) {
         console.log(err);
       }
-    }
+    } else alert('Please fill up empty fields');
   };
 
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {

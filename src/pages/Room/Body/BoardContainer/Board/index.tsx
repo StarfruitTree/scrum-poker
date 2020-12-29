@@ -9,7 +9,7 @@ interface Props {
   roomConnection: any;
   roomState: string;
   roomCode: string;
-  role: number;
+  role?: number;
   className?: string;
 }
 

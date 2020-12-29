@@ -27,6 +27,7 @@ export const signUp = (signUpData: ISignUpData): ThunkAction<Promise<void>, IGlo
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+      document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
 
       dispatch({
         type: 'UPDATE_USER_INFO',
@@ -58,6 +59,7 @@ export const login = (loginData: ILoginData): ThunkAction<Promise<void>, IGlobal
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+      document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
 
       dispatch({
         type: 'UPDATE_USER_INFO',
@@ -78,7 +80,7 @@ export const authenticate = (): ThunkAction<Promise<void>, IGlobalState, unknown
   fetch(AUTHENTICATE, {
     method: 'POST',
     headers: {
-      Authorization: getAuthHeader(),
+      Authorization: getAuthHeader() as string,
     },
   })
     .then((response) => response.json())
@@ -86,6 +88,7 @@ export const authenticate = (): ThunkAction<Promise<void>, IGlobalState, unknown
       const date = new Date();
       date.setSeconds(expiration);
       document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+      document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
 
       dispatch({
         type: 'UPDATE_USER_INFO',

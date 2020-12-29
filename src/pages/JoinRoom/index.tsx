@@ -18,20 +18,22 @@ const JoinRoom: React.FC<Props> = ({ signUp, joinRoom }) => {
   const [roomCode, setRoomCode] = useState('');
   const history = useHistory();
 
-  const goBack = () => history.goBack();
+  const goBack = () => history.push('/welcome');
 
   const submit = async () => {
-    const userData: ISignUpData = {
-      userName: userName,
-    };
+    if (userName) {
+      const userData: ISignUpData = {
+        userName: userName,
+      };
 
-    try {
-      await signUp(userData);
-      await joinRoom(roomCode);
-      history.push('/room/' + roomCode);
-    } catch (err) {
-      console.log(err);
-    }
+      try {
+        await signUp(userData);
+        await joinRoom(roomCode);
+        history.push('/room/' + roomCode);
+      } catch (err) {
+        console.log(err);
+      }
+    } else alert('Username cannot be empty');
   };
 
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {

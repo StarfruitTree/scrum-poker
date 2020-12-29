@@ -10,28 +10,32 @@ const PASSWORD = 'password';
 
 interface Props {
   login: (data: ILoginData) => Promise<void>;
+  setIsTokenValid: (isValid: boolean) => void;
 }
 
-const Login: React.FC<Props> = ({ login }) => {
+const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [isPersistentLogin, setIsPersistentLogin] = useState(false);
   const history = useHistory();
 
-  const goBack = () => history.goBack();
+  const goBack = () => history.push('/welcome');
 
   const submit = async () => {
-    const loginData: ILoginData = {
-      password: password,
-      email: email,
-    };
+    if (email && password) {
+      const loginData: ILoginData = {
+        password: password,
+        email: email,
+      };
 
-    try {
-      await login(loginData);
-      history.push('/home');
-    } catch (err) {
-      alert(err);
-    }
+      try {
+        await login(loginData);
+        setIsTokenValid(true);
+        history.push('/home');
+      } catch (err) {
+        alert(err);
+      }
+    } else alert('Please fill up empty fields');
   };
 
   const handleIsChecked = () => {

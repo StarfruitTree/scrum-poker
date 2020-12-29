@@ -23,7 +23,7 @@ interface IStory {
 }
 
 interface IRoomData {
-  roomId: number;
+  roomId: number | undefined;
   roomCode: string;
   roomName: string;
   roomState: string;
@@ -33,7 +33,7 @@ interface IRoomData {
   submittedUsers: number;
   point: number;
   isLocked: boolean;
-  role: number;
+  role: number | undefined;
   currentStory: IStory | undefined;
   currentStoryPoint: number;
 }

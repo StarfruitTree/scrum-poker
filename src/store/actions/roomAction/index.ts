@@ -14,7 +14,7 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     body: JSON.stringify(joinRoomData),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: getAuthHeader(),
+      Authorization: getAuthHeader() as string,
     },
   })
     .then((response) => response.json())

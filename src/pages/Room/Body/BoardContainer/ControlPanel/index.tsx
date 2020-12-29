@@ -13,7 +13,7 @@ interface Props {
   roomConnection: any;
   point: number;
   currentStoryPoint: number;
-  role: number;
+  role?: number;
   users: IUser[];
   submittedUsers: number;
   isLocked: boolean;
@@ -48,7 +48,7 @@ const ControlPanel: React.FC<Props> = ({
       body: JSON.stringify(submitPointData),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: getAuthHeader(),
+        Authorization: getAuthHeader() as string,
       },
     });
   };
@@ -64,7 +64,7 @@ const ControlPanel: React.FC<Props> = ({
       body: JSON.stringify(submitPointData),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: getAuthHeader(),
+        Authorization: getAuthHeader() as string,
       },
     });
   };

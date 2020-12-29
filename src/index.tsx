@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { LandingPage, JoinRoomPage, WelcomePage, RoomPage, SignUpPage, LoginPage, HomePage } from './pages';
 import { store } from './store';
@@ -8,7 +8,7 @@ import './index.scss';
 import { AUTHENTICATE, JOIN_ROOM } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
 import { Actions } from '@scrpoker/store';
-
+import CookieReader from 'js-cookie';
 interface IUserInfoResponse {
   jwtToken: string;
   userId: number;
@@ -19,12 +19,14 @@ interface IUserInfoResponse {
 }
 
 const App = () => {
-  const isTokenValid = getAuthHeader() ? true : false;
+  const [isTokenValid, setIsTokenValid] = useState(getAuthHeader() ? true : false);
+
+  const currentPath = window.location.pathname;
   const authenticate = async () => {
     fetch(AUTHENTICATE, {
       method: 'POST',
       headers: {
-        Authorization: getAuthHeader(),
+        Authorization: getAuthHeader() as string,
       },
     })
       .then((response) => {
@@ -34,6 +36,7 @@ const App = () => {
         const date = new Date();
         date.setSeconds(expiration);
         document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+        document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
 
         const userInfo: IUserInfoPayload = {
           jwtToken,
@@ -58,7 +61,7 @@ const App = () => {
       body: JSON.stringify(joinRoomData),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: getAuthHeader(),
+        Authorization: getAuthHeader() as string,
       },
     })
       .then((response) => response.json())
@@ -72,8 +75,9 @@ const App = () => {
 
   useEffect(() => {
     if (isTokenValid) {
-      authenticate();
-      if (window.location.pathname.includes('/room')) {
+      const refreshTime = new Date(CookieReader.get('tokenExpiration') as string).getTime() - new Date().getTime();
+      setTimeout(authenticate, refreshTime - 5000);
+      if (currentPath.includes('/room')) {
         joinRoom();
       }
     }
@@ -84,25 +88,23 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
-            <LandingPage />
+            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <LandingPage />}
           </Route>
-          <Route path="/welcome">
-            <WelcomePage />
-          </Route>
+          <Route path="/welcome">{isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <WelcomePage />}</Route>
           <Route path="/signup" exact>
-            <SignUpPage />
+            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <SignUpPage setIsTokenValid={setIsTokenValid} />}
           </Route>
           <Route path="/login" exact>
-            <LoginPage />
+            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <LoginPage setIsTokenValid={setIsTokenValid} />}
           </Route>
           <Route path="/home" exact>
-            <HomePage />
+            {isTokenValid ? <HomePage /> : <Redirect to={{ pathname: '/login' }} />}
           </Route>
           <Route path="/room/join" exact>
-            <JoinRoomPage />
+            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <JoinRoomPage />}
           </Route>
           <Route path="/room/:channel" exact>
-            <RoomPage />
+            {isTokenValid ? <RoomPage /> : <Redirect to={{ pathname: '/login' }} />}
           </Route>
         </Switch>
       </Router>

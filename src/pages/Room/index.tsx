@@ -7,12 +7,12 @@ import style from './style.module.scss';
 import * as signalR from '@microsoft/signalr';
 import { ROOM_CHANNEL } from '@scrpoker/constants/apis';
 import CookieReader from 'js-cookie';
-import { Actions, store } from '@scrpoker/store';
+import { Actions } from '@scrpoker/store';
 import { initialRoomData } from '@scrpoker/constants/objects';
 
 interface Props {
   roomCode: string;
-  role: number;
+  role?: number;
   updateRoomConnection: (roomConnection: any) => IRoomAction;
   cleanUpRoomData: (data: IRoomData) => IRoomAction;
 }

@@ -10,11 +10,11 @@ import { getAuthHeader } from '@scrpoker/utils';
 
 interface Props {
   stories: IStory[];
-  roomId: number;
+  roomId?: number;
   roomCode: string;
   roomConnection: any;
   roomState: string;
-  role: number;
+  role?: number;
 }
 
 const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConnection, roomState, role }) => {
@@ -53,7 +53,7 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
         body: JSON.stringify(storyData),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: getAuthHeader(),
+          Authorization: getAuthHeader() as string,
         },
       });
 
