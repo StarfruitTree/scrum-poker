@@ -9,6 +9,7 @@ import { AUTHENTICATE, JOIN_ROOM } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
 import { Actions } from '@scrpoker/store';
 import CookieReader from 'js-cookie';
+
 interface IUserInfoResponse {
   jwtToken: string;
   userId: number;
@@ -100,7 +101,7 @@ const App = () => {
             {isTokenValid ? <HomePage /> : <Redirect to={{ pathname: '/login' }} />}
           </Route>
           <Route path="/room/join" exact>
-            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <JoinRoomPage />}
+            <JoinRoomPage />
           </Route>
           <Route path="/room/:channel" exact>
             {isTokenValid ? <RoomPage /> : <Redirect to={{ pathname: '/login' }} />}
