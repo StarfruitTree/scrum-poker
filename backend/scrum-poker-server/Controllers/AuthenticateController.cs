@@ -22,7 +22,7 @@ namespace scrum_poker_server.Controllers
             JwtTokenGenerator = jwtTokenGenerator;
         }
 
-        [Authorize(Policy = "OfficialUsers")]
+        [Authorize(Policy = "AllUsers")]
         public async Task<IActionResult> Authenticate()
         {
             var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
@@ -30,12 +30,11 @@ namespace scrum_poker_server.Controllers
 
             return Ok(new
             {
-                jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = userRoom.User.Email, UserId = userRoom.UserID, Name = userRoom.User.Name }),
-                expiration = 1740,
                 name = userRoom.User.Name,
                 userId = userRoom.UserID,
-                userRoomCode = userRoom.Room.Code
-            });
+                userRoomCode = userRoom.Room.Code,
+                email = userRoom.User.Email
+            }); ;
         }
     }
 }
