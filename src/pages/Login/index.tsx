@@ -9,7 +9,7 @@ const EMAIL = 'email';
 const PASSWORD = 'password';
 
 interface Props {
-  login: (data: ILoginData) => Promise<void>;
+  login: (data: ILoginData) => Promise<void | boolean>;
   setIsTokenValid: (isValid: boolean) => void;
 }
 
@@ -29,9 +29,11 @@ const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
       };
 
       try {
-        await login(loginData);
-        setIsTokenValid(true);
-        history.push('/home');
+        const isLoginSuccessful = await login(loginData);
+        if (isLoginSuccessful) {
+          setIsTokenValid(true);
+          history.push('/home');
+        } else alert('Invalid username or password');
       } catch (err) {
         alert(err);
       }

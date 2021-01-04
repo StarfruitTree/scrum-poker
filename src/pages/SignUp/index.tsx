@@ -11,7 +11,7 @@ const EMAIL = 'email';
 const CONFIRM_PASSWORD = 'confirmPassword';
 
 interface Props {
-  signUp: (data: ISignUpData) => Promise<void>;
+  signUp: (data: ISignUpData) => Promise<void | boolean>;
   setIsTokenValid: (isValid: boolean) => void;
 }
 
@@ -36,9 +36,11 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
       };
 
       try {
-        await signUp(signUpData);
-        setIsTokenValid(true);
-        history.push('/home');
+        const isSignUpSuccessful = await signUp(signUpData);
+        if (isSignUpSuccessful) {
+          setIsTokenValid(true);
+          history.push('/home');
+        } else alert('Something went wrong');
       } catch (err) {
         console.log(err);
       }

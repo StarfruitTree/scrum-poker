@@ -9,11 +9,12 @@ const USER_NAME = 'userName';
 const ROOM_CODE = 'roomCode';
 
 interface Props {
-  signUp: (data: ISignUpData) => Promise<void>;
+  signUp: (data: ISignUpData) => Promise<void | boolean>;
   joinRoom: (roomCode: string) => Promise<void>;
+  setIsTokenValid: (isValid: boolean) => void;
 }
 
-const JoinRoom: React.FC<Props> = ({ signUp, joinRoom }) => {
+const JoinRoom: React.FC<Props> = ({ signUp, joinRoom, setIsTokenValid }) => {
   const [userName, setUserName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const history = useHistory();
@@ -29,6 +30,7 @@ const JoinRoom: React.FC<Props> = ({ signUp, joinRoom }) => {
       try {
         await signUp(userData);
         await joinRoom(roomCode);
+        setIsTokenValid(true);
         history.push('/room/' + roomCode);
       } catch (err) {
         console.log(err);

@@ -56,7 +56,6 @@ interface IUserData {
 }
 
 interface IUserInfoPayload {
-  jwtToken: string;
   userId: number;
   name: string;
   userRoomCode: string | undefined;

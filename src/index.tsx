@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { LandingPage, JoinRoomPage, WelcomePage, RoomPage, SignUpPage, LoginPage, HomePage } from './pages';
 import { store } from './store';
 import './index.scss';
-import { AUTHENTICATE, JOIN_ROOM } from '@scrpoker/constants/apis';
+import { AUTHENTICATE, JOIN_ROOM, REFRESH_TOKEN } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
 import { Actions } from '@scrpoker/store';
 import CookieReader from 'js-cookie';
@@ -21,8 +21,29 @@ interface IUserInfoResponse {
 
 const App = () => {
   const [isTokenValid, setIsTokenValid] = useState(getAuthHeader() ? true : false);
-
   const currentPath = window.location.pathname;
+  const isOfficialUser = CookieReader.get('officialUser') ? true : false;
+
+  const refreshToken = async () => {
+    fetch(REFRESH_TOKEN, {
+      method: 'POST',
+      headers: {
+        Authorization: getAuthHeader() as string,
+      },
+    })
+      .then((response) => response.json())
+      .then(({ jwtToken, expiration, email }: IUserInfoResponse) => {
+        const date = new Date();
+        date.setMinutes(date.getMinutes() + expiration);
+        document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+        document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
+        if (email) {
+          document.cookie = `officialUser=thisuserhasemail;expires=${date};path=/`;
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   const authenticate = async () => {
     fetch(AUTHENTICATE, {
       method: 'POST',
@@ -33,14 +54,8 @@ const App = () => {
       .then((response) => {
         return response.json();
       })
-      .then(({ jwtToken, userId, name, userRoomCode, expiration, email }: IUserInfoResponse) => {
-        const date = new Date();
-        date.setSeconds(expiration);
-        document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
-        document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
-
+      .then(({ userId, name, userRoomCode, email }: IUserInfoResponse) => {
         const userInfo: IUserInfoPayload = {
-          jwtToken,
           userId,
           name,
           userRoomCode,
@@ -80,6 +95,13 @@ const App = () => {
       if (currentPath.includes('/room')) {
         joinRoom();
       }
+      const expiration = new Date(CookieReader.get('tokenExpiration') as string);
+      if (expiration.getDate() - new Date().getDate() <= 300000) {
+        refreshToken();
+      } else {
+        expiration.setMinutes(expiration.getMinutes() - 5);
+        setTimeout(refreshToken, expiration.getTime() - new Date().getTime());
+      }
     }
   }, []);
 
@@ -88,23 +110,35 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
-            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <LandingPage />}
+            {isTokenValid && isOfficialUser ? <Redirect to={{ pathname: '/home' }} /> : <LandingPage />}
           </Route>
-          <Route path="/welcome">{isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <WelcomePage />}</Route>
+          <Route path="/welcome">{isOfficialUser ? <Redirect to={{ pathname: '/home' }} /> : <WelcomePage />}</Route>
           <Route path="/signup" exact>
-            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <SignUpPage setIsTokenValid={setIsTokenValid} />}
+            {isTokenValid && isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : (
+              <SignUpPage setIsTokenValid={setIsTokenValid} />
+            )}
           </Route>
           <Route path="/login" exact>
-            {isTokenValid ? <Redirect to={{ pathname: '/home' }} /> : <LoginPage setIsTokenValid={setIsTokenValid} />}
+            {isTokenValid && isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : (
+              <LoginPage setIsTokenValid={setIsTokenValid} />
+            )}
           </Route>
           <Route path="/home" exact>
-            {isTokenValid ? <HomePage /> : <Redirect to={{ pathname: '/login' }} />}
+            {isTokenValid && isOfficialUser ? <HomePage /> : <Redirect to={{ pathname: '/login' }} />}
           </Route>
           <Route path="/room/join" exact>
-            <JoinRoomPage />
+            {isTokenValid && isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : (
+              <JoinRoomPage setIsTokenValid={setIsTokenValid} />
+            )}
           </Route>
           <Route path="/room/:channel" exact>
-            {isTokenValid ? <RoomPage /> : <Redirect to={{ pathname: '/login' }} />}
+            {isTokenValid ? <RoomPage /> : <Redirect to={{ pathname: '/room/join' }} />}
           </Route>
         </Switch>
       </Router>
