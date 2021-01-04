@@ -43,10 +43,11 @@ namespace scrum_poker_server.Controllers
                 return Ok(new
                 {
                     jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = userRoom.UserID, Name = userRoom.User.Name }),
-                    expiration = 1740,
+                    expiration = 29,
                     name = userRoom.User.Name,
                     userId = userRoom.UserID,
-                    userRoomCode = userRoom.Room.Code
+                    userRoomCode = userRoom.Room.Code,
+                    email = data.Email
                 });
             }
             else return StatusCode(422);
