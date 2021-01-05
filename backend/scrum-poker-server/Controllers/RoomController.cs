@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs;
+using scrum_poker_server.HubServices;
 using scrum_poker_server.Models;
 using scrum_poker_server.Utils;
 using scrum_poker_server.Utils.RoomUtils;
@@ -19,9 +20,12 @@ namespace scrum_poker_server.Controllers
     {
         public AppDbContext _dbContext { get; set; }
 
-        public RoomController(AppDbContext dbContext)
+        public RoomService _roomService { get; set; }
+
+        public RoomController(AppDbContext dbContext, RoomService roomService)
         {
             _dbContext = dbContext;
+            _roomService = roomService;
         }
 
         [Authorize(Policy = "OfficialUsers")]
@@ -112,6 +116,23 @@ namespace scrum_poker_server.Controllers
                 return StatusCode(201, new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = Role.player });
             }
             else return StatusCode(422);
+        }
+
+        // This API is used to check the availability of a room (valid room code, full people)
+        [HttpGet, Route("checkroom/{roomCode}")]
+        public async Task<IActionResult> CheckRoom(string roomCode)
+        {
+            var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == roomCode);
+            if (room == null)
+            {
+                return StatusCode(404);
+            }
+            else if (_roomService.FindRoom(roomCode).Users.Count >= 12)
+            {
+                return StatusCode(403);
+            }
+
+            return Ok();
         }
     }
 }
