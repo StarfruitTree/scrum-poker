@@ -22,7 +22,9 @@ const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
   const goBack = () => history.push('/welcome');
 
   const submit = async () => {
-    if (email && password) {
+    if (email.includes(' ') || password.includes(' ')) {
+      alert('Invalid username or password');
+    } else if (email && password) {
       const loginData: ILoginData = {
         password: password,
         email: email,

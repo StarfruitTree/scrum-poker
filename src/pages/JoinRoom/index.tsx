@@ -4,10 +4,15 @@ import { Button, Typo, Input, AvatarInput, Card } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
+import { CHECK_ROOM } from '@scrpoker/constants/apis';
 
 const USER_NAME = 'userName';
 const ROOM_CODE = 'roomCode';
 
+interface IRoomStatus {
+  isAvailable: boolean;
+  errorMessage?: string;
+}
 interface Props {
   signUp: (data: ISignUpData) => Promise<void | boolean>;
   joinRoom: (roomCode: string) => Promise<void>;
@@ -22,20 +27,38 @@ const JoinRoom: React.FC<Props> = ({ signUp, joinRoom, setIsTokenValid }) => {
   const goBack = () => history.push('/welcome');
 
   const submit = async () => {
-    if (userName) {
-      const userData: ISignUpData = {
-        userName: userName,
-      };
-
-      try {
-        await signUp(userData);
-        await joinRoom(roomCode);
-        setIsTokenValid(true);
-        history.push('/room/' + roomCode);
-      } catch (err) {
-        console.log(err);
+    const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(roomCode)).then((response) => {
+      if (response.ok) {
+        return { isAvailable: true };
+      } else {
+        if (response.status === 404) {
+          return { isAvailable: false, errorMessage: 'The room does not exist' };
+        }
+        return {
+          isAvailable: false,
+          errorMessage: 'The room is full now',
+        };
       }
-    } else alert('Username cannot be empty');
+    });
+
+    if (roomStatus.isAvailable) {
+      if (userName) {
+        const userData: ISignUpData = {
+          userName: userName,
+        };
+
+        try {
+          await signUp(userData);
+          await joinRoom(roomCode);
+          setIsTokenValid(true);
+          history.push('/room/' + roomCode);
+        } catch (err) {
+          console.log(err);
+        }
+      } else alert('Username cannot be empty');
+    } else {
+      alert(roomStatus.errorMessage);
+    }
   };
 
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {

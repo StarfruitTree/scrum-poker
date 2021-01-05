@@ -28,6 +28,13 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
   const submit = async () => {
     if (confirmPassword !== password) {
       alert('The password confirmation does not match');
+    } else if (
+      userName.includes(' ') ||
+      password.includes(' ') ||
+      confirmPassword.includes(' ') ||
+      email.includes(' ')
+    ) {
+      alert('Fields cannot be empty or white space');
     } else if (userName && password && confirmPassword && email) {
       const signUpData: ISignUpData = {
         userName: userName,
