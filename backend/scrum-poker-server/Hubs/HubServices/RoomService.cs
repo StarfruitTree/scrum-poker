@@ -18,11 +18,10 @@ namespace scrum_poker_server.HubServices
             Rooms.Add(newRoom);
         }
 
-        public PokingRoom FindRoom(string roomId)
+        public PokingRoom FindRoom(string roomCode)
         {
-            var room = Rooms.FirstOrDefault(r => r.RoomId == roomId);
-            if (room != null) return room;
-            return null;
+            var room = Rooms.FirstOrDefault(r => r.RoomCode == roomCode);
+            return room ?? null;
         }
     }
 }

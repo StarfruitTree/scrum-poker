@@ -3,9 +3,20 @@ interface IAction {
 }
 
 interface IRoomAction extends IAction {
-  payload: IRoomInfoPayload | ISubmmitedUsersPayload | IRoomConnectionPayload;
+  payload:
+    | IRoomInfoPayload
+    | IUsersAndRoomstate
+    | IUsersAndRoomStateAndCurrentStoryPoint
+    | IUsersAndSubmittedUsers
+    | IResetRoom
+    | IStory
+    | string
+    | boolean
+    | number
+    | undefined
+    | IUser[];
 }
 
 interface IUserAction extends IAction {
-  payload: IUserInfoPayload | IUserPointPayload | IUserRolePayload | IIsCardLockedPayload | IUserActionPayload;
+  payload: IUserInfoPayload | string | number | boolean;
 }

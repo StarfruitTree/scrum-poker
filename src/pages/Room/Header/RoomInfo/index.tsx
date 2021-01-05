@@ -18,7 +18,7 @@ const RoomInfo: React.FC<Props> = ({ data, className = '' }) => {
 
   return (
     <div className={`${style.roomInfo} ${className}`}>
-      <Typo type="h1">{roomName}</Typo>
+      <Typo type="h2">{roomName}</Typo>
       <Typo>{description}</Typo>
       <hr className={style.dotted} />
       <Typo className={`${style.inline} ${style.light}`}>

@@ -37,10 +37,18 @@ namespace scrum_poker_server.Controllers
                 var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
                 string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
 
-                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == data.Email && u.Password == hashedPassword);
-                if (user == null) return Unauthorized();
+                var userRoom = await _dbContext.UserRooms.Include(ur => ur.Room).Include(ur => ur.User).FirstOrDefaultAsync(ur => ur.User.Email == data.Email && ur.User.Password == hashedPassword);
+                if (userRoom == null) return Unauthorized();
 
-                return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = user.Id }), expiration = 1740, userName = user.Name, userId = user.Id });
+                return Ok(new
+                {
+                    jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = userRoom.UserID, Name = userRoom.User.Name }),
+                    expiration = 29,
+                    name = userRoom.User.Name,
+                    userId = userRoom.UserID,
+                    userRoomCode = userRoom.Room.Code,
+                    email = data.Email
+                });
             }
             else return StatusCode(422);
         }

@@ -23,15 +23,17 @@
 }
 
 .point {
-  border: 2px solid #5e9cff;
+  border: 1px solid transparent;
   border-radius: 5px;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #5e9cff;
-  font-weight: 600;
+  background-color: #376fe9;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
 .assignee {

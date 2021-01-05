@@ -5,8 +5,6 @@ yarn-error.log
 debug.log
 backend/scrum-poker-server/bin
 backend/scrum-poker-server/obj
-<<<<<<< Updated upstream
-=======
-backend/scrum-poker-server/Migrations
->>>>>>> Stashed changes
 backend/.vs
+backend/scrum-poker-server/Properties/
+*.user

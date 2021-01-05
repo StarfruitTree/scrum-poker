@@ -13,6 +13,7 @@ using scrum_poker_server.HubServices;
 using scrum_poker_server.Utils.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace scrum_poker_server
 {
@@ -20,9 +21,12 @@ namespace scrum_poker_server
     {
         public IConfiguration _configuration { get; set; }
 
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment _env { get; set; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
+            _env = env;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -32,7 +36,8 @@ namespace scrum_poker_server
                       builder.SetIsOriginAllowed(_ => true)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
-                           .AllowCredentials();
+                           .AllowCredentials()
+                           .WithOrigins("https://scrum-poker.starfruit-tree.vercel.app");
                   }));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -45,6 +50,22 @@ namespace scrum_poker_server
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.Request.Path;
+
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/room"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
@@ -62,15 +83,15 @@ namespace scrum_poker_server
             });
 
             services.AddControllers();
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
-            services.AddSignalR();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<RoomService>();
             services.AddSingleton<JwtTokenGenerator>();
+            services.AddSignalR();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

@@ -1,51 +1,147 @@
 import React from 'react';
 import style from './style.module.scss';
 import { Typo, Icon } from '@scrpoker/components';
-import Avatar from '@scrpoker/components/Avatar';
-
-export interface Story {
-  id: number;
-  title: string;
-  content: string;
-  assignee?: string;
-  point?: number;
-}
-
+import { connect } from 'react-redux';
+import { upPoint, downPoint } from '@scrpoker/utils/pointController';
 interface Props {
-  story?: Story;
+  currentStory: IStory | undefined;
+  currentStoryPoint: number;
+  roomConnection: any;
+  roomState: string;
+  roomCode: string;
+  role?: number;
   className?: string;
 }
 
-const Board: React.FC<Props> = ({ story, className = '' }) => {
-  return story !== undefined ? (
+const Board: React.FC<Props> = ({
+  currentStory,
+  currentStoryPoint,
+  roomState,
+  roomConnection,
+  roomCode,
+  role,
+  className = '',
+}) => {
+  return currentStory !== undefined ? (
     <div className={`${style.board} ${className}`}>
       <div className={style.header}>
         <Typo className={style.title} type="h2">
-          {story.title}
+          {currentStory.title}
         </Typo>
-        {story.point ? <Typo className={style.point}>{story.point}</Typo> : ''}
+        {currentStoryPoint !== -1 ? (
+          <div
+            className={`${role === 0 ? style.pointContainerHost : style.pointContainerPlayer} ${
+              roomState !== 'revealed' ? style.isDisabled : ''
+            }`}
+          >
+            <div className={style.pointWrapper}>
+              <Typo className={style.point}>{currentStoryPoint}</Typo>
+            </div>
+            {role === 0 ? (
+              <div className={style.buttonContainer}>
+                <Icon
+                  name="caret-square-up"
+                  onClick={
+                    roomState !== 'revealed'
+                      ? undefined
+                      : () => {
+                          roomConnection.send('ChangeCurrentStoryPoint', roomCode, upPoint());
+                        }
+                  }
+                />
+                <Icon
+                  name="caret-square-down"
+                  onClick={
+                    roomState !== 'revealed'
+                      ? undefined
+                      : () => {
+                          roomConnection.send('ChangeCurrentStoryPoint', roomCode, downPoint());
+                        }
+                  }
+                />
+              </div>
+            ) : (
+              ''
+            )}
+          </div>
+        ) : currentStory.point !== -1 ? (
+          <div
+            className={`${role === 0 ? style.pointContainerHost : style.pointContainerPlayer} ${
+              roomState !== 'revealed' ? style.isDisabled : ''
+            }`}
+          >
+            {' '}
+            <div className={style.pointWrapper}>
+              <Typo className={style.point}>{currentStory.point}</Typo>
+            </div>{' '}
+            {role === 0 ? (
+              <div className={style.buttonContainer}>
+                <Icon
+                  name="caret-square-up"
+                  onClick={
+                    roomState !== 'revealed'
+                      ? undefined
+                      : () => {
+                          roomConnection.send('ChangeCurrentStoryPoint', roomCode, upPoint());
+                        }
+                  }
+                />
+                <Icon
+                  name="caret-square-down"
+                  onClick={
+                    roomState !== 'revealed'
+                      ? undefined
+                      : () => {
+                          roomConnection.send('ChangeCurrentStoryPoint', roomCode, downPoint());
+                        }
+                  }
+                />
+              </div>
+            ) : (
+              ''
+            )}
+          </div>
+        ) : (
+          <div
+            className={`${role === 0 ? style.pointContainerHost : style.pointContainerPlayer} ${
+              roomState !== 'revealed' ? style.isDisabled : ''
+            }`}
+          >
+            {' '}
+            <div className={style.pointWrapper}>
+              <Typo className={style.point}>?</Typo>
+            </div>{' '}
+            {role === 0 ? (
+              <div className={style.buttonContainer}>
+                <Icon
+                  name="caret-square-up"
+                  onClick={
+                    roomState !== 'revealed'
+                      ? undefined
+                      : () => {
+                          roomConnection.send('ChangeCurrentStoryPoint', roomCode, upPoint());
+                        }
+                  }
+                />
+                <Icon
+                  name="caret-square-down"
+                  onClick={
+                    roomState !== 'revealed'
+                      ? undefined
+                      : () => {
+                          roomConnection.send('ChangeCurrentStoryPoint', roomCode, downPoint());
+                        }
+                  }
+                />
+              </div>
+            ) : (
+              ''
+            )}
+          </div>
+        )}
       </div>
       <div className={style.content}>
-        <Typo type="span">{story.content}</Typo>
-      </div>
-      <div className={style.submit}>
-        <div className={style.assign}>
-          <Typo type="h3">Assignee</Typo>
-          <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.assignee ? (
-            <div className={style.assignee}>
-              <Avatar letter={story.assignee[0]} />
-              <Typo>{story.assignee}</Typo>
-            </div>
-          ) : (
-            ''
-          )}
-        </div>
-        <div className={style.submitPoint}>
-          <Typo type="h3">Point</Typo>
-          <Icon name="plus-circle" size="lg" className={style.icon} />
-          {story.point ? <Avatar className={style.customPoint} letter={story.point.toString()} /> : ''}
-        </div>
+        <Typo type="span">{currentStory.content}</Typo>
       </div>
     </div>
   ) : (
@@ -53,4 +149,17 @@ const Board: React.FC<Props> = ({ story, className = '' }) => {
   );
 };
 
-export default Board;
+const mapStateToProps = ({
+  roomData: { currentStory, currentStoryPoint, roomState, roomCode, roomConnection, role },
+}: IGlobalState) => {
+  return {
+    currentStory,
+    currentStoryPoint,
+    roomState,
+    roomConnection,
+    roomCode,
+    role,
+  };
+};
+
+export default connect(mapStateToProps)(Board);

@@ -1,20 +1,77 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button } from '@scrpoker/components';
 import style from './style.module.scss';
-import { UserContext } from '@scrpoker/contexts';
+import { Actions } from '@scrpoker/store';
+import { connect } from 'react-redux';
+import { SUBMIT_POINT } from '@scrpoker/constants/apis';
+import { getAuthHeader } from '@scrpoker/utils';
 
 interface Props {
   className?: string;
-  currentStoryIsPicked: boolean;
+  currentStory: IStory | undefined;
+  roomCode: string;
+  roomConnection: any;
+  point: number;
+  currentStoryPoint: number;
+  role?: number;
+  users: IUser[];
+  submittedUsers: number;
+  isLocked: boolean;
+  roomState: string;
+  updateIsLocked: (isLocked: boolean) => IRoomAction;
 }
 
-const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' }) => {
-  const { roomConnection, point, userRole, roomCode, roomState } = useContext(UserContext);
-  const userContext = useContext(UserContext);
-  console.log(roomState);
+const ControlPanel: React.FC<Props> = ({
+  users,
+  submittedUsers,
+  roomConnection,
+  point,
+  currentStoryPoint,
+  role,
+  roomState,
+  roomCode,
+  isLocked,
+  currentStory,
+  updateIsLocked,
+  className = '',
+}) => {
+  const currentStoryIsPicked = currentStory ? true : false;
+
+  const submitPoint = async () => {
+    const submitPointData = {
+      storyId: currentStory?.id,
+      point: point,
+      isFinalPoint: false,
+    };
+    fetch(SUBMIT_POINT, {
+      method: 'POST',
+      body: JSON.stringify(submitPointData),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: getAuthHeader() as string,
+      },
+    });
+  };
+
+  const submitFinalPoint = async () => {
+    const submitPointData = {
+      storyId: currentStory?.id,
+      point: currentStoryPoint,
+      isFinalPoint: true,
+    };
+    fetch(SUBMIT_POINT, {
+      method: 'POST',
+      body: JSON.stringify(submitPointData),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: getAuthHeader() as string,
+      },
+    });
+  };
+
   return (
     <div className={`${style.controlPanel} ${className}`}>
-      {userRole === 0 ? (
+      {role === 0 ? (
         roomState === 'waiting' ? (
           <Button
             className={style.button}
@@ -29,25 +86,20 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
           <React.Fragment>
             <Button
               className={style.button}
-              disabled={point === -1 || userContext.isLocked ? true : false}
-              onClick={() => {
-                roomConnection.send(
-                  'ChangeUserStatus',
-                  userContext.roomCode,
-                  userContext.userName,
-                  'ready',
-                  userContext.point
-                );
-                userContext.setGlobalState({ ...userContext, isLocked: true });
+              disabled={point === -1 || isLocked ? true : false}
+              onClick={async () => {
+                roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
+                updateIsLocked(true);
+                submitPoint();
               }}
             >
               Lock
             </Button>
             <Button
               className={style.button}
-              disabled={!userContext.canBeRevealed}
+              disabled={users.length !== submittedUsers}
               onClick={() => {
-                roomConnection.send('ChangeRoomState', userContext.roomCode, 'revealed');
+                roomConnection.send('ChangeRoomState', roomCode, 'revealed');
               }}
             >
               Reveal
@@ -56,9 +108,13 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
         ) : (
           <Button
             className={style.button}
-            onClick={() => {
+            onClick={async () => {
               roomConnection.send('ChangeRoomState', roomCode, 'waiting');
               roomConnection.send('ChangeCurrentStory', roomCode, -1);
+              if (currentStoryPoint !== -1) {
+                await submitFinalPoint();
+                roomConnection.send('UpdateStory', roomCode, currentStory?.id);
+              }
             }}
             disabled={false}
           >
@@ -70,16 +126,11 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
       ) : (
         <Button
           className={style.button}
-          disabled={point === -1 || userContext.isLocked ? true : false}
+          disabled={point === -1 || isLocked ? true : false}
           onClick={() => {
-            roomConnection.send(
-              'ChangeUserStatus',
-              userContext.roomCode,
-              userContext.userName,
-              'ready',
-              userContext.point
-            );
-            userContext.setGlobalState({ ...userContext, isLocked: true });
+            roomConnection.send('ChangeUserStatus', roomCode, 'ready', point);
+            updateIsLocked(true);
+            submitPoint();
           }}
         >
           Lock
@@ -89,4 +140,36 @@ const ControlPanel: React.FC<Props> = ({ currentStoryIsPicked, className = '' })
   );
 };
 
-export default ControlPanel;
+const mapStateToProps = ({
+  roomData: {
+    roomCode,
+    roomState,
+    roomConnection,
+    point,
+    currentStoryPoint,
+    isLocked,
+    currentStory,
+    users,
+    submittedUsers,
+    role,
+  },
+}: IGlobalState) => {
+  return {
+    roomCode,
+    roomState,
+    roomConnection,
+    point,
+    currentStoryPoint,
+    isLocked,
+    currentStory,
+    role,
+    users,
+    submittedUsers,
+  };
+};
+
+const mapDispatchToProps = {
+  updateIsLocked: Actions.roomActions.updateIsLocked,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);

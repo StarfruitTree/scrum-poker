@@ -12,15 +12,17 @@ namespace scrum_poker_server.Utils.Jwt
         public string Email { get; set; }
 
         public int UserId { get; set; }
+
+        public string Name { get; set; }
     }
 
     public class JwtTokenGenerator
     {
-        public IConfiguration _configuration { get; set; }
+        private IConfiguration _configuration { get; set; }
 
-        public SigningCredentials Credentials { get; set; }
+        private SigningCredentials Credentials { get; set; }
 
-        public JwtSecurityTokenHandler JwtTokenHandler { get; set; }
+        private JwtSecurityTokenHandler JwtTokenHandler { get; set; }
 
         public JwtTokenGenerator(IConfiguration configuration)
         {
@@ -32,11 +34,17 @@ namespace scrum_poker_server.Utils.Jwt
 
         public string GenerateToken(UserData userData)
         {
+            var claims = new ClaimsIdentity(new[] { new Claim("UserId", userData.UserId.ToString()), new Claim(ClaimTypes.Name, userData.Name) });
+            bool isEmailNull = String.IsNullOrEmpty(userData.Email);
+            if (!isEmailNull)
+            {
+                claims.AddClaim(new Claim(ClaimTypes.Email, userData.Email));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Expires = DateTime.Now.AddMinutes(30),
-                Subject = String.IsNullOrEmpty(userData.Email) ? new ClaimsIdentity(new[] { new Claim("UserId", userData.UserId.ToString()) })
-                : new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, userData.Email), new Claim("UserId", userData.UserId.ToString()) }),
+                Expires = isEmailNull ? DateTime.Now.AddMonths(3) : DateTime.Now.AddMinutes(30),
+                Subject = claims,
                 SigningCredentials = Credentials,
             };
 

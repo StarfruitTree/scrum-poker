@@ -1,37 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import style from './style.module.scss';
 import { Typo, Icon, Input, Button } from '@scrpoker/components';
-import { UserContext } from '@scrpoker/contexts';
 import { ADD_STORY } from '@scrpoker/constants/apis';
+import { reactModalStyle } from '@scrpoker/constants/objects';
 import Story from './Story';
-
-interface Story {
-  id: number;
-  title: string;
-  content: string;
-  assignee?: string;
-  point?: number;
-}
+import { connect } from 'react-redux';
+import { getAuthHeader } from '@scrpoker/utils';
 
 interface Props {
-  stories: Story[];
+  stories: IStory[];
+  roomId?: number;
+  roomCode: string;
+  roomConnection: any;
+  roomState: string;
+  role?: number;
 }
 
-const modalStyle = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
-
-const StoriesContainer: React.FC<Props> = ({ stories }) => {
-  const { roomCode, roomConnection, roomState, userRole } = useContext(UserContext);
-
+const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConnection, roomState, role }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);
@@ -55,15 +41,20 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
   };
 
   const submit = async () => {
-    const storyData = new FormData();
-    storyData.append('roomCode', roomCode);
-    storyData.append('title', story.title);
-    storyData.append('content', story.content);
+    const storyData = {
+      roomId,
+      title: story.title,
+      content: story.content,
+    };
 
     try {
       const response = await fetch(ADD_STORY, {
         method: 'post',
-        body: storyData,
+        body: JSON.stringify(storyData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: getAuthHeader() as string,
+        },
       });
 
       const data = await response.json();
@@ -82,9 +73,9 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
 
   return (
     <div className={style.storiesContainer}>
-      <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={modalStyle}>
+      <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={reactModalStyle}>
         <Typo type="h2">Add a story</Typo>
-        <Input name="Title" placeholder="Story's title" onTextChange={handleTitleChange} />
+        <Input className={style.input} name="Title" placeholder="Story's title" onTextChange={handleTitleChange} />
         <textarea
           className={style.textarea}
           rows={8}
@@ -98,7 +89,7 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
       </ReactModal>
       <div className={style.firstColumn}>
         <Typo type="h3">Stories</Typo>
-        {userRole === 0 ? (
+        {role === 0 ? (
           <Icon
             onClick={roomState === 'waiting' ? openModal : undefined}
             name="plus"
@@ -113,7 +104,7 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
         {stories.map((s) => (
           <Story
             onClick={
-              roomState === 'waiting' && userRole === 0
+              roomState === 'waiting' && role === 0
                 ? () => {
                     roomConnection.send('ChangeCurrentStory', roomCode, s.id);
                   }
@@ -131,4 +122,14 @@ const StoriesContainer: React.FC<Props> = ({ stories }) => {
   );
 };
 
-export default StoriesContainer;
+const mapStateToProps = ({ roomData: { roomId, roomCode, roomConnection, roomState, role } }: IGlobalState) => {
+  return {
+    roomId,
+    roomCode,
+    roomConnection,
+    roomState,
+    role,
+  };
+};
+
+export default connect(mapStateToProps)(StoriesContainer);

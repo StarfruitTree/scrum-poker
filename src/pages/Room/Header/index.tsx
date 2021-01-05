@@ -1,102 +1,134 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import RoomInfo from './RoomInfo';
 import style from './style.module.scss';
 import UsersContainer from './UsersContainer';
-import { UserContext } from '@scrpoker/contexts';
-
-interface User {
-  name: string;
-  status: string;
-  point?: number;
-  role: number;
-}
-
-interface Data {
-  users: User[];
-  roomState: string;
-}
+import { connect } from 'react-redux';
+import { Actions } from '@scrpoker/store';
 
 interface RoomState {
   roomState: string;
-  users?: User[];
+  users?: IUser[];
+}
+
+interface IUserLeft {
+  userId: number;
+}
+
+interface IUserStatusChanged {
+  userId: number;
+  status: string;
+  point: number;
 }
 
 interface Props {
   className?: string;
+  roomConnection: signalR.HubConnection;
+  users: IUser[];
+  roomCode: string;
+  roomName: string;
+  description: string;
+  submittedUsers: number;
+  updateUsers: (data: IUser[]) => IRoomAction;
+  updateUsersAndRoomState: (data: IUsersAndRoomstate) => IRoomAction;
+  updateUsersAndRoomStateAndCurrentStoryPoint: (data: IUsersAndRoomStateAndCurrentStoryPoint) => IRoomAction;
+  updateUsersAndSubmittedUsers: (data: IUsersAndSubmittedUsers) => IRoomAction;
+  updateRoomState: (roomState: string) => IRoomAction;
+  resetRoom: (data: IResetRoom) => IRoomAction;
 }
 
-const Header: React.FC<Props> = ({ className = '' }) => {
-  const [users, setUsers] = useState([] as User[]);
-  const userContext = useContext(UserContext);
+const Header: React.FC<Props> = ({
+  className = '',
+  roomConnection,
+  users,
+  roomCode,
+  roomName,
+  description,
+  submittedUsers,
+  updateUsers,
+  updateUsersAndRoomState,
+  updateUsersAndRoomStateAndCurrentStoryPoint,
+  updateRoomState,
+  updateUsersAndSubmittedUsers,
+  resetRoom,
+}) => {
   const data = {
-    roomCode: userContext.roomCode,
-    roomName: userContext.roomName,
-    description: userContext.description,
+    roomCode: roomCode,
+    roomName: roomName,
+    description: description,
     members: users.length,
   };
 
-  const firstTimeJoinCallback = async ({ users, roomState }: Data) => {
-    console.log(users);
-    setUsers([...users]);
-    userContext.setGlobalState({ ...userContext, roomState });
+  const joinRoomCallback = async (data: IUsersAndRoomStateAndCurrentStoryPoint) => {
+    updateUsersAndRoomStateAndCurrentStoryPoint(data);
   };
 
-  const newUserConnectedCallback = async (user: User) => {
-    console.log(user);
-    setUsers([...users, user]);
-    userContext.setGlobalState({ ...userContext, canBeRevealed: false });
+  const newUserConnectedCallback = async (user: IUser) => {
+    const newUers = users.slice(0);
+    newUers.push(user);
+    updateUsers(newUers);
   };
 
-  const userStatusChangedCallback = async (user: User) => {
+  const userStatusChangedCallback = async ({ userId, status, point }: IUserStatusChanged) => {
     const newUsers = users.map((u) => {
-      if (u.name == user.name) {
-        u.point = user.point;
-        u.status = user.status;
+      if (u.id == userId) {
+        u.point = point;
+        u.status = status;
       }
       return u;
     });
 
-    userContext.submittedUsers++;
-    setUsers(newUsers);
-    if (userContext.submittedUsers === users.length) {
-      userContext.setGlobalState({ ...userContext, canBeRevealed: true });
-    }
+    submittedUsers++;
+    updateUsersAndSubmittedUsers({ users: newUsers, submittedUsers });
   };
 
   const roomStateChangedCallback = async ({ roomState, users }: RoomState) => {
     if (users === undefined) {
-      userContext.setGlobalState({ ...userContext, roomState: roomState });
+      updateRoomState(roomState);
     } else {
-      console.log(users);
-      if (roomState === 'waiting') {
-        userContext.point = -1;
-        userContext.isLocked = false;
-        userContext.canBeRevealed = false;
-        userContext.submittedUsers = 0;
+      if (roomState === 'revealed') {
+        updateUsersAndRoomState({ roomState, users });
+      } else if (roomState === 'waiting') {
+        resetRoom({ point: -1, currentStoryPoint: -1, isLocked: false, submittedUsers: 0, users, roomState });
       }
-      setUsers(users);
-      userContext.setGlobalState({ ...userContext, roomState: roomState });
+    }
+  };
+
+  const userLeftCallback = async ({ userId }: IUserLeft) => {
+    const newUsers = users.slice(0);
+    const user = newUsers.find(({ id }) => id === userId);
+    newUsers.splice(newUsers.indexOf(user as IUser), 1);
+
+    if (user?.status === 'ready') {
+      submittedUsers--;
+      updateUsersAndSubmittedUsers({ users: newUsers, submittedUsers });
+    } else {
+      updateUsers(newUsers);
     }
   };
 
   useEffect(() => {
-    userContext.roomConnection.on('firstTimeJoin', firstTimeJoinCallback);
+    roomConnection.on('joinRoom', joinRoomCallback);
   }, []);
 
   useEffect(() => {
-    userContext.roomConnection.off('newUserConnected');
-    userContext.roomConnection.on('newUserConnected', newUserConnectedCallback);
+    roomConnection.off('newUserConnected');
+    roomConnection.on('newUserConnected', newUserConnectedCallback);
   }, [newUserConnectedCallback]);
 
   useEffect(() => {
-    userContext.roomConnection.off('userStatusChanged');
-    userContext.roomConnection.on('userStatusChanged', userStatusChangedCallback);
+    roomConnection.off('userStatusChanged');
+    roomConnection.on('userStatusChanged', userStatusChangedCallback);
   }, [userStatusChangedCallback]);
 
   useEffect(() => {
-    userContext.roomConnection.off('roomStateChanged');
-    userContext.roomConnection.on('roomStateChanged', roomStateChangedCallback);
+    roomConnection.off('roomStateChanged');
+    roomConnection.on('roomStateChanged', roomStateChangedCallback);
   }, [roomStateChangedCallback]);
+
+  useEffect(() => {
+    roomConnection.off('userLeft');
+    roomConnection.on('userLeft', userLeftCallback);
+  }, [userLeftCallback]);
 
   return (
     <div className={`${style.header} ${className}`}>
@@ -106,4 +138,27 @@ const Header: React.FC<Props> = ({ className = '' }) => {
   );
 };
 
-export default Header;
+const mapStateToProps = ({
+  roomData: { roomConnection, users, roomCode, roomName, description, submittedUsers },
+}: IGlobalState) => {
+  return {
+    roomConnection,
+    users,
+    roomCode,
+    roomName,
+    description,
+    submittedUsers,
+  };
+};
+
+const mapDispatchToProps = {
+  updateUsers: Actions.roomActions.updateUsers,
+  updateUsersAndRoomState: Actions.roomActions.updateUsersAndRoomState,
+  updateUsersAndRoomStateAndCurrentStoryPoint: Actions.roomActions.updateUsersAndRoomStateAndCurrentStoryPoint,
+  updateUsersAndSubmittedUsers: Actions.roomActions.updateUsersAndSubmittedUsers,
+  updateRoomState: Actions.roomActions.updateRoomState,
+  updateSubmittedUsers: Actions.roomActions.updateSubmittedUsers,
+  resetRoom: Actions.roomActions.resetRoom,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

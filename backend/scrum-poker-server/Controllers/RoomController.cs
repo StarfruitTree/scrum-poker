@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs;
+using scrum_poker_server.HubServices;
 using scrum_poker_server.Models;
 using scrum_poker_server.Utils;
-using System;
+using scrum_poker_server.Utils.RoomUtils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -19,9 +20,12 @@ namespace scrum_poker_server.Controllers
     {
         public AppDbContext _dbContext { get; set; }
 
-        public RoomController(AppDbContext dbContext)
+        public RoomService _roomService { get; set; }
+
+        public RoomController(AppDbContext dbContext, RoomService roomService)
         {
             _dbContext = dbContext;
+            _roomService = roomService;
         }
 
         [Authorize(Policy = "OfficialUsers")]
@@ -31,27 +35,11 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var random = new Random();
-                Room room = null;
-                bool isRoomExisted = true;
-                string randomResult, prefix, roomCode = "";
-
-                while (isRoomExisted)
-                {
-                    randomResult = random.Next(0, 999999).ToString();
-
-                    prefix = new string('0', 6 - randomResult.Length);
-
-                    roomCode = prefix + randomResult;
-
-                    room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == roomCode);
-
-                    if (room == null) isRoomExisted = false;
-                }
+                var roomCode = await new RoomCodeGenerator(_dbContext).Generate();
 
                 var user = _dbContext.Users.Include(u => u.Account).ThenInclude(a => a.Rooms).FirstOrDefault(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Email).Value);
 
-                room = new Room
+                var room = new Room
                 {
                     Owner = user,
                     Code = roomCode,
@@ -114,7 +102,7 @@ namespace scrum_poker_server.Controllers
 
                 var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Id.ToString() == userId);
 
-                if (userRoom != null) return StatusCode(409, new { error = "You've already joined this room" });
+                if (userRoom != null) return Ok(new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = userRoom.Role });
 
                 await _dbContext.UserRooms.AddAsync(new UserRoom
                 {
@@ -125,9 +113,26 @@ namespace scrum_poker_server.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { roomId = room.Id, code = data.RoomCode, roomName = room.Name, description = room.Description });
+                return StatusCode(201, new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = Role.player });
             }
             else return StatusCode(422);
+        }
+
+        // This API is used to check the availability of a room (valid room code, full people)
+        [HttpGet, Route("checkroom/{roomCode}")]
+        public async Task<IActionResult> CheckRoom(string roomCode)
+        {
+            var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == roomCode);
+            if (room == null)
+            {
+                return StatusCode(404);
+            }
+            else if (_roomService.FindRoom(roomCode).Users.Count >= 12)
+            {
+                return StatusCode(403);
+            }
+
+            return Ok();
         }
     }
 }

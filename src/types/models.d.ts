@@ -1,7 +1,7 @@
 interface ISignUpData {
-  email: string;
+  email?: string;
   userName: string;
-  password: string;
+  password?: string;
 }
 
 interface ILoginData {
@@ -10,64 +10,90 @@ interface ILoginData {
 }
 
 interface IGlobalState {
-  testReducer: boolean;
+  roomData: IRoomData;
+  userData: IUserData;
+}
+
+interface IChangeNameData {
+  newName: string;
+}
+
+interface IStory {
+  id: number;
+  title: string;
+  content: string;
+  assignee?: string;
+  point: number;
 }
 
 interface IRoomData {
-  roomId: number;
+  roomId: number | undefined;
   roomCode: string;
   roomName: string;
   roomState: string;
   description: string;
   roomConnection: any;
+  users: IUser[];
   submittedUsers: number;
-  canBeRevealed: boolean;
+  point: number;
+  isLocked: boolean;
+  role: number | undefined;
+  currentStory: IStory | undefined;
+  currentStoryPoint: number;
 }
 
 interface IRoomInfoPayload {
   roomId: number;
   roomCode: string;
   roomName: string;
-  roomState: string;
   description: string;
-}
-
-interface ISubmmitedUsersPayload {
-  submittedUsers: number;
-}
-
-interface IRoomConnectionPayload {
-  roomConnection: any;
+  role: number;
 }
 
 interface IUserData {
   jwtToken: string;
   userId: number;
-  userName: string;
-  userRole: number;
-  action: string;
-  point: number;
-  isCardLocked: boolean;
+  name: string;
+  action: number;
+  userRoomCode: string | undefined;
+  email: string | undefined;
 }
 
 interface IUserInfoPayload {
-  jwtToken: string;
   userId: number;
-  userName: string;
+  name: string;
+  userRoomCode: string | undefined;
+  email: string | undefined;
+}
+interface IUser {
+  id: number;
+  name: string;
+  status: string;
+  point?: number;
+  role: number;
 }
 
-interface IUserActionPayload {
-  action: string;
+interface IUsersAndRoomstate {
+  users: IUser[];
+  roomState: string;
 }
 
-interface IUserRolePayload {
-  userRole: number;
+interface IUsersAndSubmittedUsers {
+  users: IUser[];
+  submittedUsers: number;
 }
 
-interface IUserPointPayload {
+interface IResetRoom {
+  roomState: string;
+  users: IUser[];
+  submittedUsers: number;
   point: number;
+  currentStoryPoint: number;
+  isLocked: boolean;
 }
 
-interface IIsCardLockedPayload {
-  isCardLocked: boolean;
+interface IUsersAndRoomStateAndCurrentStoryPoint {
+  users: IUser[];
+  roomState: string;
+  currentStoryPoint: number;
 }
