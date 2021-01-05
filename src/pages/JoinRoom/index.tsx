@@ -5,6 +5,8 @@ import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
 import { CHECK_ROOM } from '@scrpoker/constants/apis';
+import { getAuthHeader } from '@scrpoker/utils';
+import CookieReader from 'js-cookie';
 
 const USER_NAME = 'userName';
 const ROOM_CODE = 'roomCode';
@@ -14,12 +16,14 @@ interface IRoomStatus {
   errorMessage?: string;
 }
 interface Props {
+  authenticate: () => Promise<void>;
+  changeName: (changeNameData: IChangeNameData) => Promise<void>;
   signUp: (data: ISignUpData) => Promise<void | boolean>;
   joinRoom: (roomCode: string) => Promise<void>;
   setIsTokenValid: (isValid: boolean) => void;
 }
 
-const JoinRoom: React.FC<Props> = ({ signUp, joinRoom, setIsTokenValid }) => {
+const JoinRoom: React.FC<Props> = ({ changeName, signUp, joinRoom, setIsTokenValid, authenticate }) => {
   const [userName, setUserName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const history = useHistory();
@@ -43,15 +47,28 @@ const JoinRoom: React.FC<Props> = ({ signUp, joinRoom, setIsTokenValid }) => {
 
     if (roomStatus.isAvailable) {
       if (userName) {
-        const userData: ISignUpData = {
-          userName: userName,
-        };
-
         try {
-          await signUp(userData);
-          await joinRoom(roomCode);
-          setIsTokenValid(true);
-          history.push('/room/' + roomCode);
+          if (getAuthHeader()) {
+            switch (userName !== CookieReader.get('userName')) {
+              case true:
+                await changeName({ newName: userName });
+                await joinRoom(roomCode);
+                setIsTokenValid(true);
+                history.push('/room/' + roomCode);
+                break;
+              case false:
+                await authenticate();
+                await joinRoom(roomCode);
+                setIsTokenValid(true);
+                history.push('/room/' + roomCode);
+                break;
+            }
+          } else {
+            await signUp({ userName });
+            await joinRoom(roomCode);
+            setIsTokenValid(true);
+            history.push('/room/' + roomCode);
+          }
         } catch (err) {
           console.log(err);
         }
@@ -60,7 +77,6 @@ const JoinRoom: React.FC<Props> = ({ signUp, joinRoom, setIsTokenValid }) => {
       alert(roomStatus.errorMessage);
     }
   };
-
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     switch (name) {
       case USER_NAME:
@@ -93,6 +109,8 @@ const JoinRoom: React.FC<Props> = ({ signUp, joinRoom, setIsTokenValid }) => {
 const mapDispatchToProps = {
   signUp: Actions.userActions.signUp,
   joinRoom: Actions.roomActions.joinRoom,
+  changeName: Actions.userActions.changeName,
+  authenticate: Actions.userActions.authenticate,
 };
 
 export default connect(null, mapDispatchToProps)(JoinRoom);

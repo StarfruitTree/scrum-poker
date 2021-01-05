@@ -4,6 +4,8 @@ import { Link, useHistory } from 'react-router-dom';
 import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
+import { getAuthHeader } from '@scrpoker/utils';
+import CookieReader from 'js-cookie';
 
 const USER_NAME = 'userName';
 const PASSWORD = 'password';

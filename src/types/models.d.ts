@@ -14,6 +14,10 @@ interface IGlobalState {
   userData: IUserData;
 }
 
+interface IChangeNameData {
+  newName: string;
+}
+
 interface IStory {
   id: number;
   title: string;

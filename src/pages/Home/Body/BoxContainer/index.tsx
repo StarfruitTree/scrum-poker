@@ -7,11 +7,17 @@ import Box from './Box';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
 import { reactModalStyle } from '@scrpoker/constants/objects';
+import { CHECK_ROOM } from '@scrpoker/constants/apis';
 
 interface Box {
   iconName: string;
   actionName: string;
   onClick: () => void;
+}
+
+interface IRoomStatus {
+  isAvailable: boolean;
+  errorMessage?: string;
 }
 
 interface Props {
@@ -37,8 +43,26 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
   };
 
   const join = async () => {
-    await joinRoom(roomCode);
-    history.push('/room/' + roomCode);
+    const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(roomCode)).then((response) => {
+      if (response.ok) {
+        return { isAvailable: true };
+      } else {
+        if (response.status === 404) {
+          return { isAvailable: false, errorMessage: 'The room does not exist' };
+        }
+        return {
+          isAvailable: false,
+          errorMessage: 'The room is full now',
+        };
+      }
+    });
+
+    if (roomStatus.isAvailable) {
+      await joinRoom(roomCode);
+      history.push('/room/' + roomCode);
+    } else {
+      alert(roomStatus.errorMessage);
+    }
   };
 
   const boxes: Box[] = [
@@ -46,8 +70,26 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
       iconName: 'house-user',
       actionName: 'Join your room',
       onClick: async () => {
-        await joinRoom(userRoomCode as string);
-        history.push('/room/' + userRoomCode);
+        const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(roomCode)).then((response) => {
+          if (response.ok) {
+            return { isAvailable: true };
+          } else {
+            if (response.status === 404) {
+              return { isAvailable: false, errorMessage: 'The room does not exist' };
+            }
+            return {
+              isAvailable: false,
+              errorMessage: 'The room is full now',
+            };
+          }
+        });
+
+        if (roomStatus.isAvailable) {
+          await joinRoom(userRoomCode as string);
+          history.push('/room/' + userRoomCode);
+        } else {
+          alert(roomStatus.errorMessage);
+        }
       },
     },
     {
