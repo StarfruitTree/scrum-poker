@@ -6,6 +6,7 @@ interface IRoomAction extends IAction {
   payload:
     | IRoomInfoPayload
     | IUsersAndRoomstate
+    | IUsersAndRoomStateAndCurrentStoryPoint
     | IUsersAndSubmittedUsers
     | IResetRoom
     | IStory

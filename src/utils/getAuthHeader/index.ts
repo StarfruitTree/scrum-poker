@@ -1,5 +1,6 @@
 import CookieReader from 'js-cookie';
 
-const getAuthHeader = (): string => `Bearer ${CookieReader.get('jwtToken')}`;
+const getAuthHeader = (): string | null =>
+  CookieReader.get('jwtToken') ? `Bearer ${CookieReader.get('jwtToken')}` : null;
 
 export default getAuthHeader;

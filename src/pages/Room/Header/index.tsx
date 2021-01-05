@@ -5,11 +5,6 @@ import UsersContainer from './UsersContainer';
 import { connect } from 'react-redux';
 import { Actions } from '@scrpoker/store';
 
-interface Data {
-  users: IUser[];
-  roomState: string;
-}
-
 interface RoomState {
   roomState: string;
   users?: IUser[];
@@ -17,6 +12,12 @@ interface RoomState {
 
 interface IUserLeft {
   userId: number;
+}
+
+interface IUserStatusChanged {
+  userId: number;
+  status: string;
+  point: number;
 }
 
 interface Props {
@@ -29,6 +30,7 @@ interface Props {
   submittedUsers: number;
   updateUsers: (data: IUser[]) => IRoomAction;
   updateUsersAndRoomState: (data: IUsersAndRoomstate) => IRoomAction;
+  updateUsersAndRoomStateAndCurrentStoryPoint: (data: IUsersAndRoomStateAndCurrentStoryPoint) => IRoomAction;
   updateUsersAndSubmittedUsers: (data: IUsersAndSubmittedUsers) => IRoomAction;
   updateRoomState: (roomState: string) => IRoomAction;
   resetRoom: (data: IResetRoom) => IRoomAction;
@@ -44,6 +46,7 @@ const Header: React.FC<Props> = ({
   submittedUsers,
   updateUsers,
   updateUsersAndRoomState,
+  updateUsersAndRoomStateAndCurrentStoryPoint,
   updateRoomState,
   updateUsersAndSubmittedUsers,
   resetRoom,
@@ -55,9 +58,8 @@ const Header: React.FC<Props> = ({
     members: users.length,
   };
 
-  const firstTimeJoinCallback = async ({ users, roomState }: Data) => {
-    updateUsersAndRoomState({ users, roomState });
-    console.log(users);
+  const joinRoomCallback = async (data: IUsersAndRoomStateAndCurrentStoryPoint) => {
+    updateUsersAndRoomStateAndCurrentStoryPoint(data);
   };
 
   const newUserConnectedCallback = async (user: IUser) => {
@@ -66,11 +68,11 @@ const Header: React.FC<Props> = ({
     updateUsers(newUers);
   };
 
-  const userStatusChangedCallback = async (user: IUser) => {
+  const userStatusChangedCallback = async ({ userId, status, point }: IUserStatusChanged) => {
     const newUsers = users.map((u) => {
-      if (u.name == user.name) {
-        u.point = user.point;
-        u.status = user.status;
+      if (u.id == userId) {
+        u.point = point;
+        u.status = status;
       }
       return u;
     });
@@ -86,7 +88,7 @@ const Header: React.FC<Props> = ({
       if (roomState === 'revealed') {
         updateUsersAndRoomState({ roomState, users });
       } else if (roomState === 'waiting') {
-        resetRoom({ point: -1, isLocked: false, submittedUsers: 0, users, roomState });
+        resetRoom({ point: -1, currentStoryPoint: -1, isLocked: false, submittedUsers: 0, users, roomState });
       }
     }
   };
@@ -105,7 +107,7 @@ const Header: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    roomConnection.on('firstTimeJoin', firstTimeJoinCallback);
+    roomConnection.on('joinRoom', joinRoomCallback);
   }, []);
 
   useEffect(() => {
@@ -152,6 +154,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   updateUsers: Actions.roomActions.updateUsers,
   updateUsersAndRoomState: Actions.roomActions.updateUsersAndRoomState,
+  updateUsersAndRoomStateAndCurrentStoryPoint: Actions.roomActions.updateUsersAndRoomStateAndCurrentStoryPoint,
   updateUsersAndSubmittedUsers: Actions.roomActions.updateUsersAndSubmittedUsers,
   updateRoomState: Actions.roomActions.updateRoomState,
   updateSubmittedUsers: Actions.roomActions.updateSubmittedUsers,

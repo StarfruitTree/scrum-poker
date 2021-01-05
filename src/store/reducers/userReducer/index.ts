@@ -4,6 +4,7 @@ const initialState: IUserData = {
   name: '',
   action: -1,
   userRoomCode: '',
+  email: '',
 };
 
 const reducer = (state: IUserData = initialState, action: IUserAction): IUserData => {

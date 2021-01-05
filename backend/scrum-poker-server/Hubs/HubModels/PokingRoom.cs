@@ -5,7 +5,12 @@ namespace scrum_poker_server.HubModels
     public class PokingRoom
     {
         public string RoomCode { get; set; }
+
         public int CurrentStoryId { get; set; }
+
+        public int CurrentStoryPoint { get; set; }
+
+        public Dictionary<int, int> PointsFrequency { get; set; }
 
         public string State { get; set; }
 
@@ -17,8 +22,10 @@ namespace scrum_poker_server.HubModels
         {
             RoomCode = roomCode;
             State = roomState;
+            CurrentStoryPoint = -1;
             Users = new List<User>();
             StoryIds = new List<int>();
+            PointsFrequency = new Dictionary<int, int>();
             Users.Add(host);
         }
 

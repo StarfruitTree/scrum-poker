@@ -14,16 +14,20 @@ interface IGlobalState {
   userData: IUserData;
 }
 
+interface IChangeNameData {
+  newName: string;
+}
+
 interface IStory {
   id: number;
   title: string;
   content: string;
   assignee?: string;
-  point?: number;
+  point: number;
 }
 
 interface IRoomData {
-  roomId: number;
+  roomId: number | undefined;
   roomCode: string;
   roomName: string;
   roomState: string;
@@ -33,8 +37,9 @@ interface IRoomData {
   submittedUsers: number;
   point: number;
   isLocked: boolean;
-  role: number;
+  role: number | undefined;
   currentStory: IStory | undefined;
+  currentStoryPoint: number;
 }
 
 interface IRoomInfoPayload {
@@ -50,14 +55,15 @@ interface IUserData {
   userId: number;
   name: string;
   action: number;
-  userRoomCode: string;
+  userRoomCode: string | undefined;
+  email: string | undefined;
 }
 
 interface IUserInfoPayload {
-  jwtToken: string;
   userId: number;
   name: string;
-  userRoomCode: string;
+  userRoomCode: string | undefined;
+  email: string | undefined;
 }
 interface IUser {
   id: number;
@@ -82,5 +88,12 @@ interface IResetRoom {
   users: IUser[];
   submittedUsers: number;
   point: number;
+  currentStoryPoint: number;
   isLocked: boolean;
+}
+
+interface IUsersAndRoomStateAndCurrentStoryPoint {
+  users: IUser[];
+  roomState: string;
+  currentStoryPoint: number;
 }

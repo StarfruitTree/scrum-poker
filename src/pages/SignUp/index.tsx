@@ -4,6 +4,8 @@ import { Link, useHistory } from 'react-router-dom';
 import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
+import { getAuthHeader } from '@scrpoker/utils';
+import CookieReader from 'js-cookie';
 
 const USER_NAME = 'userName';
 const PASSWORD = 'password';
@@ -11,10 +13,11 @@ const EMAIL = 'email';
 const CONFIRM_PASSWORD = 'confirmPassword';
 
 interface Props {
-  signUp: (data: ISignUpData) => Promise<void>;
+  signUp: (data: ISignUpData) => Promise<void | boolean>;
+  setIsTokenValid: (isValid: boolean) => void;
 }
 
-const SignUp: React.FC<Props> = ({ signUp }) => {
+const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,7 +30,14 @@ const SignUp: React.FC<Props> = ({ signUp }) => {
   const submit = async () => {
     if (confirmPassword !== password) {
       alert('The password confirmation does not match');
-    } else {
+    } else if (
+      userName.includes(' ') ||
+      password.includes(' ') ||
+      confirmPassword.includes(' ') ||
+      email.includes(' ')
+    ) {
+      alert('Fields cannot be empty or white space');
+    } else if (userName && password && confirmPassword && email) {
       const signUpData: ISignUpData = {
         userName: userName,
         password: password,
@@ -35,12 +45,15 @@ const SignUp: React.FC<Props> = ({ signUp }) => {
       };
 
       try {
-        await signUp(signUpData);
-        history.push('/home');
+        const isSignUpSuccessful = await signUp(signUpData);
+        if (isSignUpSuccessful) {
+          setIsTokenValid(true);
+          history.push('/home');
+        } else alert('Something went wrong');
       } catch (err) {
         console.log(err);
       }
-    }
+    } else alert('Please fill up empty fields');
   };
 
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {

@@ -15,7 +15,7 @@ export const reactModalStyle = {
 };
 
 export const initialRoomData: IRoomData = {
-  roomId: 0,
+  roomId: undefined,
   roomCode: '',
   roomName: '',
   roomState: '',
@@ -25,6 +25,7 @@ export const initialRoomData: IRoomData = {
   submittedUsers: 0,
   point: -1,
   isLocked: false,
-  role: 0,
+  role: undefined,
   currentStory: undefined,
+  currentStoryPoint: -1,
 };

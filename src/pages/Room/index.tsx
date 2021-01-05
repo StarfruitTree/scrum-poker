@@ -7,12 +7,12 @@ import style from './style.module.scss';
 import * as signalR from '@microsoft/signalr';
 import { ROOM_CHANNEL } from '@scrpoker/constants/apis';
 import CookieReader from 'js-cookie';
-import { Actions, store } from '@scrpoker/store';
+import { Actions } from '@scrpoker/store';
 import { initialRoomData } from '@scrpoker/constants/objects';
 
 interface Props {
   roomCode: string;
-  role: number;
+  role?: number;
   updateRoomConnection: (roomConnection: any) => IRoomAction;
   cleanUpRoomData: (data: IRoomData) => IRoomAction;
 }
@@ -25,20 +25,23 @@ const Room: React.FC<Props> = ({ roomCode, role, updateRoomConnection, cleanUpRo
   updateRoomConnection(connection);
 
   useEffect(() => {
-    connection.start().then(() => {
-      connection.send('Combine', roomCode, role).catch((err) => console.log(err));
-    });
+    if (roomCode) {
+      connection.start().then(() => {
+        connection.send('Combine', roomCode, role).catch((err) => console.log(err));
+      });
 
-    window.addEventListener('beforeunload', () => {
-      connection.send('RemoveFromChannel', roomCode);
-    });
+      window.addEventListener('beforeunload', () => {
+        connection.send('RemoveFromChannel', roomCode);
+        connection.stop();
+      });
 
-    return () => {
-      connection.send('RemoveFromChannel', roomCode);
-      connection.stop();
-      cleanUpRoomData(initialRoomData);
-    };
-  }, []);
+      return () => {
+        connection.send('RemoveFromChannel', roomCode);
+        connection.stop();
+        cleanUpRoomData(initialRoomData);
+      };
+    }
+  }, [roomCode]);
 
   return (
     <div className={style.pokingRoom}>

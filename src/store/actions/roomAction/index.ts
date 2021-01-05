@@ -14,7 +14,7 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     body: JSON.stringify(joinRoomData),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: getAuthHeader(),
+      Authorization: getAuthHeader() as string,
     },
   })
     .then((response) => response.json())
@@ -33,6 +33,13 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     .catch((err) => {
       throw new Error(err);
     });
+};
+
+export const updateRoomInfo = (data: IRoomInfoPayload): IRoomAction => {
+  return {
+    type: 'UPDATE_ROOM_INFO',
+    payload: data,
+  };
 };
 
 export const updateRoomConnection = (roomConnection: any): IRoomAction => {
@@ -98,6 +105,13 @@ export const updateCurrentStory = (story: IStory | undefined): IRoomAction => {
   };
 };
 
+export const updateCurrentStoryPoint = (point: number): IRoomAction => {
+  return {
+    type: 'UPDATE_CURRENT_STORY_POINT',
+    payload: point,
+  };
+};
+
 export const resetRoom = (payload: IResetRoom): IRoomAction => {
   return {
     type: 'RESET_ROOM',
@@ -108,6 +122,15 @@ export const resetRoom = (payload: IResetRoom): IRoomAction => {
 export const cleanUpRoomData = (payload: IRoomData): IRoomAction => {
   return {
     type: 'CLEAN_UP_ROOM_DATA',
+    payload: payload,
+  };
+};
+
+export const updateUsersAndRoomStateAndCurrentStoryPoint = (
+  payload: IUsersAndRoomStateAndCurrentStoryPoint
+): IRoomAction => {
+  return {
+    type: 'UPDATE_USERS_AND_ROOM_STATE_AND_CURRENT_STORY_POINT',
     payload: payload,
   };
 };

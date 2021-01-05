@@ -9,7 +9,7 @@ interface Props {
   onClick?: () => void;
 }
 
-const Icon: React.FC<Props> = ({ name, size, className, onClick }) => {
+const Icon: React.FC<Props> = ({ name, size, className = '', onClick }) => {
   const sizeClass = size ? `fa-${size}` : '';
   return <i onClick={onClick} className={`fas fa-${name} ${sizeClass} ${className}`} />;
 };
