@@ -82,6 +82,7 @@ namespace scrum_poker_server
                 });
             });
 
+            services.AddHttpClient();
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<RoomService>();

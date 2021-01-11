@@ -33,7 +33,7 @@ namespace scrum_poker_server.Controllers
                 {
                     return StatusCode(404, new { error = "The story is not existed" });
                 }
-                return Ok(new { id, title = story.Title, content = story.Content, point = story.Point });
+                return Ok(new { id, title = story.Title, content = story.Content, point = story.Point, isJiraStory = story.IsJiraStory });
             }
             else return StatusCode(422);
         }
@@ -57,7 +57,7 @@ namespace scrum_poker_server.Controllers
                 if (userRoom == null) return Forbid();
                 else if (userRoom.Role != Role.host) return Forbid();
 
-                var story = new Story { Title = data.Title, Content = data.Content, Point = -1 };
+                var story = new Story { Title = data.Title, Content = data.Content, Point = -1, IsJiraStory = data.IsJiraStory };
 
                 room.Stories.Add(story);
 
