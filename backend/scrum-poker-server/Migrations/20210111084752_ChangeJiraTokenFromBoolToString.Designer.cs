@@ -10,8 +10,8 @@ using scrum_poker_server.Data;
 namespace scrum_poker_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201217042303_ScaffoldInitialDb")]
-    partial class ScaffoldInitialDb
+    [Migration("20210111084752_ChangeJiraTokenFromBoolToString")]
+    partial class ChangeJiraTokenFromBoolToString
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,6 +76,9 @@ namespace scrum_poker_server.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsJiraStory")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("Point")
                         .HasColumnType("int");
 
@@ -135,6 +138,9 @@ namespace scrum_poker_server.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("JiraToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(25)

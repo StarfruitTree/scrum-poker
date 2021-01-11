@@ -15,6 +15,8 @@ namespace scrum_poker_server.Models
 
         public int? Point { get; set; }
 
+        public bool IsJiraStory { get; set; }
+
         [ForeignKey("Room")]
         public int RoomId { get; set; }
 
