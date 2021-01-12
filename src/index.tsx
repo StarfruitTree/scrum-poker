@@ -12,6 +12,7 @@ import CookieReader from 'js-cookie';
 
 interface IUserInfoResponse {
   jwtToken: string;
+  jiraToken?: string;
   userId: number;
   name: string;
   userRoomCode?: string;
@@ -54,12 +55,13 @@ const App = () => {
       .then((response) => {
         return response.json();
       })
-      .then(({ userId, name, userRoomCode, email }: IUserInfoResponse) => {
+      .then(({ userId, name, userRoomCode, email, jiraToken }: IUserInfoResponse) => {
         const userInfo: IUserInfoPayload = {
           userId,
           name,
           userRoomCode,
           email,
+          jiraToken,
         };
         store.dispatch(Actions.userActions.updateUserInfo(userInfo));
       })

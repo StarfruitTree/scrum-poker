@@ -13,6 +13,8 @@ const reducer = (state: IUserData = initialState, action: IUserAction): IUserDat
       return { ...state, ...(action.payload as IUserInfoPayload) };
     case 'UPDATE_USER_ACTION':
       return { ...state, action: action.payload as number };
+    case 'UPDATE_JIRA_TOKEN':
+      return { ...state, jiraToken: action.payload as string };
     default:
       return state;
   }

@@ -24,6 +24,8 @@ interface IStory {
   content: string;
   assignee?: string;
   point: number;
+  isJiraStory: boolean;
+  jiraIssueId?: string;
 }
 
 interface IRoomData {
@@ -52,6 +54,7 @@ interface IRoomInfoPayload {
 
 interface IUserData {
   jwtToken: string;
+  jiraToken?: string;
   userId: number;
   name: string;
   action: number;
@@ -59,11 +62,18 @@ interface IUserData {
   email: string | undefined;
 }
 
+interface IJiraUserCredentials {
+  jiraEmail: string;
+  jiraDomain: string;
+  apiToken: string;
+}
+
 interface IUserInfoPayload {
   userId: number;
   name: string;
   userRoomCode: string | undefined;
   email: string | undefined;
+  jiraToken?: string;
 }
 interface IUser {
   id: number;

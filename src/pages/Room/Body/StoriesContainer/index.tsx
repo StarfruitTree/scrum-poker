@@ -45,6 +45,7 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
       roomId,
       title: story.title,
       content: story.content,
+      isJiraStory: false,
     };
 
     try {
@@ -114,6 +115,7 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
             title={s.title}
             assignee={s.assignee}
             point={s.point}
+            isJiraStory={s.isJiraStory}
             className={style.story}
           />
         ))}

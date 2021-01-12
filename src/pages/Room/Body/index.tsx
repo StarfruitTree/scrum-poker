@@ -55,7 +55,10 @@ const Body: React.FC<Props> = ({
     if (response.status === 404) {
       console.log(data.error);
     } else {
-      setStories([...stories, { id, title: data.title, content: data.content, point: data.point }]);
+      setStories([
+        ...stories,
+        { id, title: data.title, content: data.content, point: data.point, isJiraStory: data.isJiraStory },
+      ]);
     }
   };
 

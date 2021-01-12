@@ -7,7 +7,8 @@ import Box from './Box';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
 import { reactModalStyle } from '@scrpoker/constants/objects';
-import { CHECK_ROOM } from '@scrpoker/constants/apis';
+import { CHECK_ROOM, SUBMIT_JIRA_USER_CREDENTIALS } from '@scrpoker/constants/apis';
+import { getAuthHeader } from '@scrpoker/utils';
 
 interface Box {
   iconName: string;
@@ -22,24 +23,49 @@ interface IRoomStatus {
 
 interface Props {
   userRoomCode?: string;
+  submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void>;
   joinRoom: (roomCode: string) => Promise<void>;
 }
 
-const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
-  const [modalIsOpen, setIsOpen] = useState(false);
+const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom, submitJiraUserCredentials }) => {
+  const [joinRoomModalIsOpen, setIsJoinRoomModalOpen] = useState(false);
+  const [integrationModalIsOpen, setIsIntegrationModalIsOpen] = useState(false);
   const [roomCode, setRoomCode] = useState('');
+  const [jiraEmail, setJiraEmail] = useState('');
+  const [jiraDomain, setJiraDomain] = useState('');
+  const [apiToken, setAPIToken] = useState('');
   const history = useHistory();
 
-  const openModal = () => {
-    setIsOpen(true);
+  const openJoinRoomModal = () => {
+    setIsJoinRoomModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsOpen(false);
+  const closeJoinRoomModal = () => {
+    setIsJoinRoomModalOpen(false);
+  };
+
+  const openIntegrationModal = () => {
+    setIsIntegrationModalIsOpen(true);
+  };
+
+  const closeIntegrationModal = () => {
+    setIsIntegrationModalIsOpen(false);
   };
 
   const handleRoomCodeChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
     setRoomCode(value);
+  };
+
+  const handleJiraEmailChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    setJiraEmail(value);
+  };
+
+  const handleJiraDomainChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    setJiraDomain(value);
+  };
+
+  const handleAPITokenChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    setAPIToken(value);
   };
 
   const join = async () => {
@@ -65,12 +91,27 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
     }
   };
 
+  const addJiraToken = async () => {
+    const data = {
+      jiraDomain,
+      jiraEmail,
+      apiToken,
+    };
+
+    if (jiraDomain && jiraEmail && apiToken) {
+      await submitJiraUserCredentials(data);
+      closeIntegrationModal();
+    } else {
+      alert('Fields cannot be empty');
+    }
+  };
+
   const boxes: Box[] = [
     {
       iconName: 'house-user',
       actionName: 'Join your room',
       onClick: async () => {
-        const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(roomCode)).then((response) => {
+        const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(userRoomCode as string)).then((response) => {
           if (response.ok) {
             return { isAvailable: true };
           } else {
@@ -96,14 +137,14 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
       iconName: 'arrow-right',
       actionName: 'Join a room',
       onClick: () => {
-        openModal();
+        openJoinRoomModal();
       },
     },
     {
       iconName: 'compress-arrows-alt',
-      actionName: 'Integration',
+      actionName: 'Jira integration',
       onClick: () => {
-        alert(`Yeah ^^`);
+        openIntegrationModal();
       },
     },
     {
@@ -117,11 +158,35 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom }) => {
 
   return (
     <div className={style.boxContainer}>
-      <ReactModal onRequestClose={closeModal} isOpen={modalIsOpen} style={reactModalStyle}>
+      <ReactModal onRequestClose={closeJoinRoomModal} isOpen={joinRoomModalIsOpen} style={reactModalStyle}>
         <Typo type="h2">Join a room</Typo>
         <Input className={style.input} name="roomCode" placeholder="Room code" onTextChange={handleRoomCodeChange} />
         <div className={style.submit}>
           <Button onClick={join}>Submit</Button>
+        </div>
+      </ReactModal>
+      <ReactModal onRequestClose={closeIntegrationModal} isOpen={integrationModalIsOpen} style={reactModalStyle}>
+        <Typo type="h2">Integrate with Jira</Typo>
+        <Input
+          className={style.input}
+          name="jiraEmail"
+          placeholder="Enter your jira email"
+          onTextChange={handleJiraEmailChange}
+        />
+        <Input
+          className={style.input}
+          name="jiraDomain"
+          placeholder="Enter your jira domain"
+          onTextChange={handleJiraDomainChange}
+        />
+        <Input
+          className={style.input}
+          name="apiToken"
+          placeholder="Enter your API token"
+          onTextChange={handleAPITokenChange}
+        />
+        <div className={style.submit}>
+          <Button onClick={addJiraToken}>Submit</Button>
         </div>
       </ReactModal>
       {boxes.map((box, key) => (
@@ -145,6 +210,7 @@ const mapStateToProps = ({ userData: { userRoomCode } }: IGlobalState) => {
 
 const mapDispatchToProps = {
   joinRoom: Actions.roomActions.joinRoom,
+  submitJiraUserCredentials: Actions.userActions.submitJiraUserCredentials,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoxContainer);
