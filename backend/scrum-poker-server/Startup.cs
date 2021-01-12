@@ -36,8 +36,7 @@ namespace scrum_poker_server
                       builder.SetIsOriginAllowed(_ => true)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
-                           .AllowCredentials()
-                           .WithOrigins("https://scrum-poker.starfruit-tree.vercel.app");
+                           .AllowCredentials();
                   }));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using scrum_poker_server.Data;
 
 namespace scrum_poker_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210112065150_IncreaseTitleStoryTo255Characters")]
+    partial class IncreaseTitleStoryTo255Characters
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,9 +78,6 @@ namespace scrum_poker_server.Migrations
 
                     b.Property<bool>("IsJiraStory")
                         .HasColumnType("bit");
-
-                    b.Property<string>("JiraIssueId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Point")
                         .HasColumnType("int");

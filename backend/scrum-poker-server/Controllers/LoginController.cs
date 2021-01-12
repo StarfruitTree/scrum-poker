@@ -47,7 +47,8 @@ namespace scrum_poker_server.Controllers
                     name = userRoom.User.Name,
                     userId = userRoom.UserID,
                     userRoomCode = userRoom.Room.Code,
-                    email = data.Email
+                    email = data.Email,
+                    jiraToken = userRoom.User.JiraToken
                 });
             }
             else return StatusCode(422);

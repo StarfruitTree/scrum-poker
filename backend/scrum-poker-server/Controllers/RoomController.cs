@@ -80,7 +80,7 @@ namespace scrum_poker_server.Controllers
                 var stories = new List<StoryDTO>();
                 room.Stories.ToList().ForEach(s =>
                 {
-                    stories.Add(new StoryDTO { Id = s.Id, Title = s.Title, Content = s.Content, Assignee = s.Assignee, Point = s.Point });
+                    stories.Add(new StoryDTO { Id = s.Id, Title = s.Title, Content = s.Content, Assignee = s.Assignee, Point = s.Point, IsJiraStory = s.IsJiraStory });
                 });
 
                 return Ok(new { stories });
@@ -126,6 +126,10 @@ namespace scrum_poker_server.Controllers
             if (room == null)
             {
                 return StatusCode(404);
+            }
+            else if (_roomService.FindRoom(roomCode) == null)
+            {
+                return Ok();
             }
             else if (_roomService.FindRoom(roomCode).Users.Count >= 12)
             {

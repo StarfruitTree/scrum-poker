@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using scrum_poker_server.Data;
 using scrum_poker_server.DTOs.Incoming;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,14 +30,14 @@ namespace scrum_poker_server.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (data.Domain.Contains("http")) return StatusCode(404, new { error = "The domain is not valid" });
+                if (data.JiraDomain.Contains("http")) return StatusCode(404, new { error = "The domain is not valid" });
 
                 bool isDomainValid = false;
                 var client = _clientFactory.CreateClient();
 
                 try
                 {
-                    var domainResponse = await client.GetAsync($"https://{data.Domain}");
+                    var domainResponse = await client.GetAsync($"https://{data.JiraDomain}");
                     if (domainResponse.IsSuccessStatusCode) isDomainValid = true;
                 }
                 catch (Exception)
@@ -49,10 +47,10 @@ namespace scrum_poker_server.Controllers
 
                 if (!isDomainValid) return StatusCode(404, new { error = "The domain is not valid" });
 
-                var JiraToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{data.Email}:{data.APIToken}"));
+                var JiraToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{data.JiraEmail}:{data.APIToken}"));
 
                 bool isTokenValid = false;
-                var request = new HttpRequestMessage(HttpMethod.Get, $"https://{data.Domain}/rest/api/3/myself");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://{data.JiraDomain}/rest/api/3/myself");
                 request.Headers.Add("Authorization", $"Basic {JiraToken}");
 
                 var response = await client.SendAsync(request);
@@ -66,7 +64,7 @@ namespace scrum_poker_server.Controllers
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok(new { jiraToken = JiraToken });
+                return StatusCode(201, new { jiraToken = JiraToken });
             }
             else
             {

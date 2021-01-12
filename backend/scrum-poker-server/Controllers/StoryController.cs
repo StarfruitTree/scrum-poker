@@ -58,6 +58,7 @@ namespace scrum_poker_server.Controllers
                 else if (userRoom.Role != Role.host) return Forbid();
 
                 var story = new Story { Title = data.Title, Content = data.Content, Point = -1, IsJiraStory = data.IsJiraStory };
+                if (data.IsJiraStory) story.JiraIssueId = data.JiraIssueId;
 
                 room.Stories.Add(story);
 
