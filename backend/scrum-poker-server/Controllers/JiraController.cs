@@ -61,10 +61,11 @@ namespace scrum_poker_server.Controllers
                 var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
                 var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
                 user.JiraToken = JiraToken;
+                user.JiraDomain = data.JiraDomain;
 
                 await _dbContext.SaveChangesAsync();
 
-                return StatusCode(201, new { jiraToken = JiraToken });
+                return StatusCode(201, new { jiraToken = JiraToken, jiraDomain = data.JiraDomain });
             }
             else
             {

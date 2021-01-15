@@ -9,6 +9,7 @@ interface IResponse {
   data: {
     error?: string;
     jiraToken?: string;
+    jiraDomain?: string;
   };
 }
 
@@ -164,7 +165,10 @@ export const submitJiraUserCredentials = (
       else {
         dispatch({
           type: 'UPDATE_JIRA_TOKEN',
-          payload: data.jiraToken,
+          payload: {
+            jiraToken: data.jiraToken as string,
+            jiraDomain: data.jiraDomain as string,
+          },
         });
 
         alert('Added successfully');

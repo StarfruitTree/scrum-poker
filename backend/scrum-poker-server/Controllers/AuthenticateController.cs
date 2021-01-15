@@ -33,7 +33,8 @@ namespace scrum_poker_server.Controllers
                 name = userRoom.User.Name,
                 userId = userRoom.UserID,
                 userRoomCode = userRoom.Room.Code,
-                email = userRoom.User.Email
+                email = userRoom.User.Email,
+                jiraToken = userRoom.User.JiraToken
             }); ;
         }
     }

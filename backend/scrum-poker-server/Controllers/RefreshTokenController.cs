@@ -21,14 +21,20 @@ namespace scrum_poker_server.Controllers
             JwtTokenGenerator = jwtTokenGenerator;
         }
 
-        [Authorize(Policy = "AllUsers")]
+        [HttpGet, Authorize(Policy = "AllUsers")]
         public IActionResult RefreshToken()
         {
             var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
             string email = null;
+
             var emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email);
-            if (emailClaim != null) email = emailClaim.Value;
+            if (emailClaim != null)
+            {
+                email = emailClaim.Value;
+            }
+
             var userName = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+
             return Ok(new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { UserId = userId, Email = email, Name = userName }), expiration = email != null ? 29 : 131399, email });
         }
     }

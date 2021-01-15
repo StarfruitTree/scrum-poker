@@ -19,6 +19,8 @@ namespace scrum_poker_server.Models
 
         public string JiraToken { get; set; }
 
+        public string JiraDomain { get; set; }
+
         [ForeignKey("Account")]
         public int? AccountId { get; set; }
 

@@ -121,3 +121,8 @@ interface IUsersAndRoomStateAndCurrentStoryPoint {
   roomState: string;
   currentStoryPoint: number;
 }
+
+interface IJiraTokenPayload {
+  jiraToken: string;
+  jiraDomain: string;
+}
