@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import { useHistory } from 'react-router-dom';
-import { Button, Typo, Input } from '@scrpoker/components';
+import { Button, Typo, Input, Icon } from '@scrpoker/components';
 import style from './style.module.scss';
 import Box from './Box';
 import { Actions } from '@scrpoker/store';
@@ -22,12 +22,13 @@ interface IRoomStatus {
 }
 
 interface Props {
+  integratedJiraDomain?: string;
   userRoomCode?: string;
   submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void | boolean>;
   joinRoom: (roomCode: string) => Promise<void>;
 }
 
-const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom, submitJiraUserCredentials }) => {
+const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joinRoom, submitJiraUserCredentials }) => {
   const [joinRoomModalIsOpen, setIsJoinRoomModalOpen] = useState(false);
   const [integrationModalIsOpen, setIsIntegrationModalIsOpen] = useState(false);
   const [roomCode, setRoomCode] = useState('');
@@ -161,24 +162,40 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom, submitJiraUserC
   return (
     <div className={style.boxContainer}>
       <ReactModal onRequestClose={closeJoinRoomModal} isOpen={joinRoomModalIsOpen} style={reactModalStyle}>
-        <Typo type="h2">Join a room</Typo>
-        <Input className={style.input} name="roomCode" placeholder="Room code" onTextChange={handleRoomCodeChange} />
+        <div className={style.title}>
+          <Typo type="h2">Join a room</Typo>
+          <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeJoinRoomModal} />
+        </div>
+        <Input
+          className={`${style.input} ${style.roomCodeInput}`}
+          name="roomCode"
+          placeholder="Room code"
+          onTextChange={handleRoomCodeChange}
+        />
         <div className={style.submit}>
           <Button onClick={join}>Submit</Button>
         </div>
       </ReactModal>
       <ReactModal onRequestClose={closeIntegrationModal} isOpen={integrationModalIsOpen} style={reactModalStyle}>
-        <Typo type="h2">Integrate with Jira</Typo>
+        <div className={style.title}>
+          <Typo type="h2">Integrate with Jira</Typo>
+          <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeIntegrationModal} />
+        </div>
+        {integratedJiraDomain ? (
+          <Typo className={style.jiraDomain}>Integrated Jira domain: {integratedJiraDomain}</Typo>
+        ) : (
+          ''
+        )}
         <Input
           className={style.input}
           name="jiraEmail"
-          placeholder="Enter your jira email"
+          placeholder="Enter your Jira email"
           onTextChange={handleJiraEmailChange}
         />
         <Input
           className={style.input}
           name="jiraDomain"
-          placeholder="Enter your jira domain"
+          placeholder="Enter your Jira domain (Eg. example.atlassian.net)"
           onTextChange={handleJiraDomainChange}
         />
         <Input
@@ -204,9 +221,10 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom, submitJiraUserC
   );
 };
 
-const mapStateToProps = ({ userData: { userRoomCode } }: IGlobalState) => {
+const mapStateToProps = ({ userData: { userRoomCode, jiraDomain } }: IGlobalState) => {
   return {
     userRoomCode,
+    integratedJiraDomain: jiraDomain,
   };
 };
 

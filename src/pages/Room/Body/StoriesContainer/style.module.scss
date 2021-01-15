@@ -47,7 +47,26 @@
 }
 
 .input {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   box-shadow: $lightShadow;
+}
+
+.longButton {
+  margin: 1rem;
+  width: 350px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.closeButton {
+  cursor: pointer;
+}
+
+.longInput {
+  width: 500px;
 }

@@ -8,12 +8,30 @@
 }
 
 .input {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
   box-shadow: $lightShadow;
 }
 
 .submit {
   display: flex;
   justify-content: center;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.jiraDomain {
+  margin: 0.5rem 0;
+}
+
+.roomCodeInput {
+  width: 350px;
+}
+
+.closeButton {
+  cursor: pointer;
 }
