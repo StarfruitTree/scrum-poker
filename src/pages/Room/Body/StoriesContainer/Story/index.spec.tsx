@@ -5,7 +5,7 @@ import Story from './index';
 describe('<Story />', () => {
   it('should render a story component with className="story " and without point, assignee', () => {
     const component = renderer.create(
-      <Story isJiraStory={true} onClick={() => console.log('hello')} title="Implement header" />
+      <Story selected={true} isJiraStory={true} onClick={() => console.log('hello')} title="Implement header" />
     );
     const tree = component.toJSON() as renderer.ReactTestRendererJSON;
 
@@ -15,6 +15,7 @@ describe('<Story />', () => {
   it('should render a story component with className="story custom" and with point, assignee', () => {
     const component = renderer.create(
       <Story
+        selected={false}
         isJiraStory={false}
         onClick={() => console.log('hello')}
         title="Implement header"

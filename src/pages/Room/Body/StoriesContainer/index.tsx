@@ -14,11 +14,23 @@ interface Props {
   roomCode: string;
   roomConnection: any;
   roomState: string;
+  currentStory: IStory | undefined;
   role?: number;
 }
 
-const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConnection, roomState, role }) => {
+const StoriesContainer: React.FC<Props> = ({
+  stories,
+  currentStory,
+  roomId,
+  roomCode,
+  roomConnection,
+  roomState,
+  role,
+}) => {
+  console.log(stories);
+
   const [modalIsOpen, setIsOpen] = useState(false);
+
   const openModal = () => {
     setIsOpen(true);
   };
@@ -112,6 +124,7 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
                 : undefined
             }
             key={s.id}
+            selected={s.id === currentStory?.id}
             title={s.title}
             assignee={s.assignee}
             point={s.point}
@@ -124,13 +137,16 @@ const StoriesContainer: React.FC<Props> = ({ stories, roomId, roomCode, roomConn
   );
 };
 
-const mapStateToProps = ({ roomData: { roomId, roomCode, roomConnection, roomState, role } }: IGlobalState) => {
+const mapStateToProps = ({
+  roomData: { roomId, roomCode, roomConnection, roomState, role, currentStory },
+}: IGlobalState) => {
   return {
     roomId,
     roomCode,
     roomConnection,
     roomState,
     role,
+    currentStory,
   };
 };
 

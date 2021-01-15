@@ -21,19 +21,20 @@
 .details {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .point {
   border: 1px solid transparent;
   border-radius: 5px;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #376fe9;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 
@@ -50,4 +51,8 @@ span {
 
 .clickable {
   cursor: pointer;
+}
+
+.selected {
+  border: 2px solid #376fe9;
 }

@@ -23,7 +23,7 @@ interface IRoomStatus {
 
 interface Props {
   userRoomCode?: string;
-  submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void>;
+  submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void | boolean>;
   joinRoom: (roomCode: string) => Promise<void>;
 }
 
@@ -99,8 +99,10 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, joinRoom, submitJiraUserC
     };
 
     if (jiraDomain && jiraEmail && apiToken) {
-      await submitJiraUserCredentials(data);
-      closeIntegrationModal();
+      const isSuccessful = await submitJiraUserCredentials(data);
+      if (isSuccessful) {
+        closeIntegrationModal();
+      }
     } else {
       alert('Fields cannot be empty');
     }
