@@ -29,3 +29,14 @@ export const initialRoomData: IRoomData = {
   currentStory: undefined,
   currentStoryPoint: -1,
 };
+
+export const initialUserData: IUserData = {
+  jwtToken: '',
+  userId: 0,
+  name: '',
+  action: -1,
+  userRoomCode: '',
+  email: '',
+  jiraToken: '',
+  jiraDomain: '',
+};

@@ -55,11 +55,24 @@ interface IRoomInfoPayload {
 interface IUserData {
   jwtToken: string;
   jiraToken?: string;
+  jiraDomain?: string;
   userId: number;
   name: string;
   action: number;
   userRoomCode: string | undefined;
   email: string | undefined;
+}
+
+interface IUserInfoResponse {
+  jwtToken: string;
+  jiraToken?: string;
+  jiraDomain?: string;
+  userId: number;
+  name: string;
+  userRoomCode?: string;
+  expiration: number;
+  email?: string;
+  isLoginFailed?: boolean;
 }
 
 interface IJiraUserCredentials {
@@ -74,6 +87,7 @@ interface IUserInfoPayload {
   userRoomCode: string | undefined;
   email: string | undefined;
   jiraToken?: string;
+  jiraDomain?: string;
 }
 interface IUser {
   id: number;

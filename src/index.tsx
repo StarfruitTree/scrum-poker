@@ -10,16 +10,6 @@ import { getAuthHeader } from '@scrpoker/utils';
 import { Actions } from '@scrpoker/store';
 import CookieReader from 'js-cookie';
 
-interface IUserInfoResponse {
-  jwtToken: string;
-  jiraToken?: string;
-  userId: number;
-  name: string;
-  userRoomCode?: string;
-  expiration: number;
-  email?: string;
-}
-
 const App = () => {
   const [isTokenValid, setIsTokenValid] = useState(getAuthHeader() ? true : false);
   const currentPath = window.location.pathname;
@@ -27,7 +17,7 @@ const App = () => {
 
   const refreshToken = async () => {
     fetch(REFRESH_TOKEN, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Authorization: getAuthHeader() as string,
       },
@@ -55,14 +45,16 @@ const App = () => {
       .then((response) => {
         return response.json();
       })
-      .then(({ userId, name, userRoomCode, email, jiraToken }: IUserInfoResponse) => {
+      .then(({ userId, name, userRoomCode, email, jiraToken, jiraDomain }: IUserInfoResponse) => {
         const userInfo: IUserInfoPayload = {
           userId,
           name,
           userRoomCode,
           email,
           jiraToken,
+          jiraDomain,
         };
+
         store.dispatch(Actions.userActions.updateUserInfo(userInfo));
       })
       .catch((err) => console.log(err));
@@ -98,7 +90,7 @@ const App = () => {
         joinRoom();
       }
       const expiration = new Date(CookieReader.get('tokenExpiration') as string);
-      if (expiration.getDate() - new Date().getDate() <= 300000) {
+      if (expiration.getTime() - new Date().getTime() <= 300000) {
         refreshToken();
       } else {
         expiration.setMinutes(expiration.getMinutes() - 5);

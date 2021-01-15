@@ -1,13 +1,6 @@
-const initialState: IUserData = {
-  jwtToken: '',
-  userId: 0,
-  name: '',
-  action: -1,
-  userRoomCode: '',
-  email: '',
-};
+import { initialUserData } from '@scrpoker/constants/objects';
 
-const reducer = (state: IUserData = initialState, action: IUserAction): IUserData => {
+const reducer = (state: IUserData = initialUserData, action: IUserAction): IUserData => {
   switch (action.type) {
     case 'UPDATE_USER_INFO':
       return { ...state, ...(action.payload as IUserInfoPayload) };
