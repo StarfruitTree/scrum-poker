@@ -8,11 +8,21 @@ interface Props {
   assignee?: string;
   point?: number;
   isJiraStory: boolean;
+  jiraIssueId?: string;
   className?: string;
   onClick?: (() => void) | undefined;
 }
 
-const Story: React.FC<Props> = ({ onClick, selected, title, assignee, point, isJiraStory, className = '' }) => {
+const Story: React.FC<Props> = ({
+  onClick,
+  selected,
+  title,
+  assignee,
+  point,
+  isJiraStory,
+  jiraIssueId,
+  className = '',
+}) => {
   return (
     <div
       onClick={onClick}
@@ -20,7 +30,10 @@ const Story: React.FC<Props> = ({ onClick, selected, title, assignee, point, isJ
         selected ? style.selected : ''
       }`}
     >
-      <Typo className={style.title}>{title}</Typo>
+      <div className={style.title}>
+        <Typo>{title}</Typo>
+      </div>
+
       <div className={style.details}>
         {point !== -1 ? <Typo className={style.point}>{point}</Typo> : <Typo></Typo>}
         {assignee ? (
@@ -31,8 +44,11 @@ const Story: React.FC<Props> = ({ onClick, selected, title, assignee, point, isJ
         ) : (
           ''
         )}
-        {!isJiraStory ? (
-          <img width={16} height={16} src="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/jira.svg" />
+        {isJiraStory ? (
+          <div className={style.jiraIssueId}>
+            <Typo type="span">{jiraIssueId}</Typo> &nbsp;&nbsp;
+            <img width={16} height={16} src="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/jira.svg" />
+          </div>
         ) : (
           ''
         )}

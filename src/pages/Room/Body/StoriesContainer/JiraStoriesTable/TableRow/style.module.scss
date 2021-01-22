@@ -1,0 +1,19 @@
+.tableRow {
+  display: flex;
+  margin: 1rem 0;
+}
+
+.issueType {
+  width: 80px;
+}
+
+.issueKey {
+  width: 190px;
+  font-weight: 500;
+  color: #8995a7;
+}
+
+.summary {
+  width: 500px;
+  margin-right: 0.5rem;
+}

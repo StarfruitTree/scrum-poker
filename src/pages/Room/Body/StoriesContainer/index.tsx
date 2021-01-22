@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import style from './style.module.scss';
 import { Typo, Icon, Input, Button } from '@scrpoker/components';
-import { ADD_STORY } from '@scrpoker/constants/apis';
-import { reactModalStyle } from '@scrpoker/constants/objects';
+import { ADD_STORY, FETCH_JIRA_STORIES } from '@scrpoker/constants/apis';
+import { reactModalStyle, jiraStoryModalStyle } from '@scrpoker/constants/objects';
 import Story from './Story';
 import { connect } from 'react-redux';
-import { getAuthHeader } from '@scrpoker/utils';
+import { getAuthHeader, debounce } from '@scrpoker/utils';
+import JiraStoriesTable from './JiraStoriesTable';
 
 interface Props {
   jiraToken?: string;
@@ -18,6 +19,20 @@ interface Props {
   roomState: string;
   currentStory: IStory | undefined;
   role?: number;
+  jiraIssueIds: string[];
+}
+
+interface IJiraStory {
+  issueKey: string;
+  summary: string;
+  issueTypeLink: string;
+}
+
+interface IIssueResponse {
+  id: number;
+  img: string;
+  key: string;
+  summaryText: string;
 }
 
 const StoriesContainer: React.FC<Props> = ({
@@ -30,8 +45,9 @@ const StoriesContainer: React.FC<Props> = ({
   roomConnection,
   roomState,
   role,
+  jiraIssueIds,
 }) => {
-  console.log(stories);
+  const [fetching, setFetching] = useState(false);
 
   const [manualStoryModalIsOpen, setManualStoryModalIsOpen] = useState(false);
 
@@ -40,6 +56,8 @@ const StoriesContainer: React.FC<Props> = ({
   const [jiraStoryModalIsOpen, setJiraStoryModalIsOpen] = useState(false);
 
   const [jiraIssueId, setJiraIssueId] = useState('');
+
+  const [jiraStories, setJiraStories] = useState<IJiraStory[] | undefined>(undefined);
 
   const openJiraStoryModal = () => {
     setJiraStoryModalIsOpen(true);
@@ -78,6 +96,50 @@ const StoriesContainer: React.FC<Props> = ({
     content: '',
   });
 
+  const fetchJiraStories = async (query: string) => {
+    const requestBody = {
+      query,
+      jiraDomain,
+      jiraToken,
+    };
+
+    try {
+      setFetching(true);
+      const response = await fetch(FETCH_JIRA_STORIES, {
+        method: 'POST',
+        headers: {
+          Authorization: getAuthHeader() as string,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }).then((response) => response.json());
+
+      if (response.status === 'Ok') {
+        const jsonObject = JSON.parse(response.content);
+
+        console.log(jsonObject);
+
+        const issues = jsonObject.sections[0].issues as Array<IIssueResponse>;
+
+        const jiraStories: IJiraStory[] = issues.map((s) => {
+          return {
+            issueKey: s.key,
+            summary: s.summaryText,
+            issueTypeLink: `https://${jiraDomain}/${s.img}`,
+          };
+        });
+        setFetching(false);
+        setJiraStories(jiraStories);
+
+        console.log(jiraStories);
+      } else {
+        setJiraStories([]);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStory({ ...story, title: event.target.value });
   };
@@ -88,6 +150,13 @@ const StoriesContainer: React.FC<Props> = ({
 
   const handleJiraIssueIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setJiraIssueId(event.target.value);
+    const query = event.target.value;
+
+    if (query) {
+      debounce(() => {
+        fetchJiraStories(query);
+      }, 300);
+    }
   };
 
   const submit = async () => {
@@ -124,8 +193,13 @@ const StoriesContainer: React.FC<Props> = ({
 
   return (
     <div className={style.storiesContainer}>
-      <ReactModal onRequestClose={closeManualStoryModal} isOpen={manualStoryModalIsOpen} style={reactModalStyle}>
-        <div className={style.title}>
+      <ReactModal
+        closeTimeoutMS={100}
+        onRequestClose={closeManualStoryModal}
+        isOpen={manualStoryModalIsOpen}
+        style={reactModalStyle}
+      >
+        <div className={style.lessMarginTitle}>
           <Typo type="h2">Add stories manually</Typo>
           <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeManualStoryModal} />
         </div>
@@ -141,7 +215,12 @@ const StoriesContainer: React.FC<Props> = ({
           <Button onClick={submit}>Submit</Button>
         </div>
       </ReactModal>
-      <ReactModal onRequestClose={closeNavigateModal} isOpen={navigateModalIsOpen} style={reactModalStyle}>
+      <ReactModal
+        closeTimeoutMS={100}
+        onRequestClose={closeNavigateModal}
+        isOpen={navigateModalIsOpen}
+        style={reactModalStyle}
+      >
         <div className={style.title}>
           <Typo type="h2">Add a story</Typo>
           <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeNavigateModal} />
@@ -165,10 +244,20 @@ const StoriesContainer: React.FC<Props> = ({
           Add stories manually
         </Button>
       </ReactModal>
-      <ReactModal onRequestClose={closeJiraStoryModal} isOpen={jiraStoryModalIsOpen} style={reactModalStyle}>
-        <div className={style.title}>
+      <ReactModal closeTimeoutMS={100} isOpen={jiraStoryModalIsOpen} style={jiraStoryModalStyle}>
+        <div className={style.lessMarginTitle}>
           <Typo type="h2">Add stories with Jira</Typo>
-          <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeJiraStoryModal} />
+          <Icon
+            className={style.closeButton}
+            size="2x"
+            name="window-close"
+            onClick={() => {
+              closeJiraStoryModal();
+              setTimeout(() => {
+                setJiraStories(undefined);
+              }, 100);
+            }}
+          />
         </div>
         <Input
           className={`${style.input} ${style.longInput}`}
@@ -176,10 +265,17 @@ const StoriesContainer: React.FC<Props> = ({
           placeholder="Enter a Jira issue ID"
           onTextChange={handleJiraIssueIdChange}
         />
-
-        <div className={style.submit}>
-          <Button onClick={submit}>Submit</Button>
-        </div>
+        <JiraStoriesTable
+          roomConnection={roomConnection}
+          roomCode={roomCode}
+          roomId={roomId as number}
+          jiraToken={jiraToken as string}
+          jiraDomain={jiraDomain as string}
+          jiraIssueIds={jiraIssueIds}
+          fetching={fetching}
+          stories={jiraStories}
+          className={style.jiraStoriesTable}
+        />
       </ReactModal>
       <div className={style.firstColumn}>
         <Typo type="h3">Stories</Typo>
@@ -210,6 +306,7 @@ const StoriesContainer: React.FC<Props> = ({
             assignee={s.assignee}
             point={s.point}
             isJiraStory={s.isJiraStory}
+            jiraIssueId={s.jiraIssueId}
             className={style.story}
           />
         ))}
@@ -219,7 +316,7 @@ const StoriesContainer: React.FC<Props> = ({
 };
 
 const mapStateToProps = ({
-  roomData: { roomId, roomCode, roomConnection, roomState, role, currentStory },
+  roomData: { roomId, roomCode, roomConnection, roomState, role, currentStory, jiraIssueIds },
   userData: { jiraToken, jiraDomain },
 }: IGlobalState) => {
   return {
@@ -231,6 +328,7 @@ const mapStateToProps = ({
     currentStory,
     jiraDomain,
     jiraToken,
+    jiraIssueIds,
   };
 };
 

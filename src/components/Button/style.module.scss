@@ -10,7 +10,6 @@
   background-color: $blue;
   color: $white;
   width: fit-content;
-  cursor: pointer;
 
   &.secondary {
     background-color: $white;
@@ -27,11 +26,24 @@
     width: 100%;
   }
 
-  i {
+  .marginedIcon {
     margin-left: 1rem;
   }
 
   span {
     font-weight: bold;
   }
+}
+
+.small {
+  height: 6px;
+  width: 6px;
+}
+
+.square {
+  border-radius: 3px;
+}
+
+.pointer {
+  cursor: pointer;
 }

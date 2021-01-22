@@ -4,11 +4,16 @@
   border-radius: 8px;
   box-shadow: 0 1px 3px #888888;
   width: 100%;
-  height: 100px;
+  height: 115px;
   padding: 0.8rem;
   flex-direction: column;
   justify-content: space-between;
   background-color: white;
+  transition: background-color 140ms ease-in-out;
+}
+
+.story:hover {
+  background-color: #f4f5f7;
 }
 
 .title {
@@ -22,6 +27,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-top: 1.5rem;
 }
 
 .point {
@@ -55,4 +61,10 @@ span {
 
 .selected {
   border: 2px solid #376fe9;
+}
+
+.jiraIssueId {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

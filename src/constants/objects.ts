@@ -6,8 +6,27 @@ export const reactModalStyle = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    borderRadius: '8px',
-    padding: '20px',
+    borderRadius: '3px',
+    padding: '1rem',
+  },
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.3)',
+  },
+};
+
+export const jiraStoryModalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    borderRadius: '3px',
+    padding: '1rem',
+    height: '41rem',
+    width: '870px',
+    overflow: 'hidden',
   },
   overlay: {
     background: 'rgba(0, 0, 0, 0.3)',
@@ -28,6 +47,7 @@ export const initialRoomData: IRoomData = {
   role: undefined,
   currentStory: undefined,
   currentStoryPoint: -1,
+  jiraIssueIds: [],
 };
 
 export const initialUserData: IUserData = {

@@ -87,14 +87,20 @@ const App = () => {
     if (isTokenValid) {
       authenticate();
       if (currentPath.includes('/room')) {
-        joinRoom();
+        if (!currentPath.includes('/room/join')) {
+          joinRoom();
+        }
       }
       const expiration = new Date(CookieReader.get('tokenExpiration') as string);
       if (expiration.getTime() - new Date().getTime() <= 300000) {
+        console.log('hihihi');
         refreshToken();
       } else {
         expiration.setMinutes(expiration.getMinutes() - 5);
-        setTimeout(refreshToken, expiration.getTime() - new Date().getTime());
+        setTimeout(() => {
+          console.log('hahaha');
+          refreshToken();
+        }, expiration.getTime() - new Date().getTime());
       }
     }
   }, []);

@@ -42,6 +42,7 @@ interface IRoomData {
   role: number | undefined;
   currentStory: IStory | undefined;
   currentStoryPoint: number;
+  jiraIssueIds: string[];
 }
 
 interface IRoomInfoPayload {

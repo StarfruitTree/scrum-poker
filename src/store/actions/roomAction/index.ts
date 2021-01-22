@@ -134,3 +134,10 @@ export const updateUsersAndRoomStateAndCurrentStoryPoint = (
     payload: payload,
   };
 };
+
+export const updateJiraIssueIds = (issueIds: string[]): IRoomAction => {
+  return {
+    type: 'UPDATE_JIRA_ISSUE_IDS',
+    payload: issueIds,
+  };
+};

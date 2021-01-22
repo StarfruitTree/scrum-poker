@@ -65,8 +65,20 @@
 
 .closeButton {
   cursor: pointer;
+  font-size: 1.5rem;
 }
 
 .longInput {
-  width: 500px;
+  width: 100%;
+}
+
+.lessMarginTitle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.jiraStoriesTable {
+  margin-top: 1.5rem;
+  overflow: hidden;
 }

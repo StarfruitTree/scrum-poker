@@ -17,3 +17,5 @@ export const REFRESH_TOKEN = getUrl('refreshtoken');
 export const CHECK_ROOM: (roomCode: string) => string = (roomCode: string) => getUrl(`rooms/checkroom/${roomCode}`);
 export const CHANGE_NAME = getUrl('changename');
 export const SUBMIT_JIRA_USER_CREDENTIALS = getUrl('jira/addtoken');
+export const FETCH_JIRA_STORIES = getUrl('jira/fetchstories');
+export const ADD_JIRA_STORY = getUrl('jira/addstory');

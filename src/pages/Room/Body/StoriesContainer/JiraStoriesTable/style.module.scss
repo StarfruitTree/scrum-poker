@@ -1,0 +1,30 @@
+.columnTypes {
+  display: flex;
+}
+
+.issueType {
+  width: 80px;
+}
+
+.issueKey {
+  width: 190px;
+}
+
+.summary {
+  width: 500px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.tableRows {
+  overflow: auto;
+  height: 450px;
+  margin-top: 0.5rem;
+}

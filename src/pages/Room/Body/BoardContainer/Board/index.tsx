@@ -141,7 +141,11 @@ const Board: React.FC<Props> = ({
         )}
       </div>
       <div className={style.content}>
-        <Typo type="span">{currentStory.content}</Typo>
+        {currentStory.isJiraStory ? (
+          <Typo htmlString={currentStory.content} />
+        ) : (
+          <Typo type="span">{currentStory.content}</Typo>
+        )}
       </div>
     </div>
   ) : (

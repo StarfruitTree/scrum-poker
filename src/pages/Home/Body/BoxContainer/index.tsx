@@ -161,7 +161,12 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joi
 
   return (
     <div className={style.boxContainer}>
-      <ReactModal onRequestClose={closeJoinRoomModal} isOpen={joinRoomModalIsOpen} style={reactModalStyle}>
+      <ReactModal
+        closeTimeoutMS={100}
+        onRequestClose={closeJoinRoomModal}
+        isOpen={joinRoomModalIsOpen}
+        style={reactModalStyle}
+      >
         <div className={style.title}>
           <Typo type="h2">Join a room</Typo>
           <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeJoinRoomModal} />
@@ -176,7 +181,12 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joi
           <Button onClick={join}>Submit</Button>
         </div>
       </ReactModal>
-      <ReactModal onRequestClose={closeIntegrationModal} isOpen={integrationModalIsOpen} style={reactModalStyle}>
+      <ReactModal
+        closeTimeoutMS={100}
+        onRequestClose={closeIntegrationModal}
+        isOpen={integrationModalIsOpen}
+        style={reactModalStyle}
+      >
         <div className={style.title}>
           <Typo type="h2">Integrate with Jira</Typo>
           <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeIntegrationModal} />

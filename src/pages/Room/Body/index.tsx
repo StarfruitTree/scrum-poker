@@ -11,8 +11,10 @@ interface Props {
   className?: string;
   roomConnection: any;
   roomId?: number;
+  jiraIssueIds: string[];
   updateCurrentStory: (story: IStory | undefined) => IRoomAction;
   updateCurrentStoryPoint: (point: number) => IRoomAction;
+  updateJiraIssueIds: (issueIds: string[]) => IRoomAction;
 }
 
 interface IStoryData {
@@ -26,8 +28,10 @@ interface ICurrentStoryPointData {
 const Body: React.FC<Props> = ({
   roomConnection,
   roomId,
+  jiraIssueIds,
   updateCurrentStory,
   updateCurrentStoryPoint,
+  updateJiraIssueIds,
   className = '',
 }) => {
   const [stories, setStories] = useState([] as IStory[]);
@@ -39,8 +43,18 @@ const Body: React.FC<Props> = ({
           Authorization: getAuthHeader() as string,
         },
       });
-      const data = await response.json();
-      setStories(data.stories);
+      const stories = (await response.json()).stories as IStory[];
+      setStories(stories);
+
+      const jiraIssueIds: string[] = [];
+
+      stories.forEach((s) => {
+        if (s.isJiraStory) {
+          jiraIssueIds.push(s.jiraIssueId as string);
+        }
+      });
+
+      updateJiraIssueIds(jiraIssueIds);
     }
   };
 
@@ -57,8 +71,21 @@ const Body: React.FC<Props> = ({
     } else {
       setStories([
         ...stories,
-        { id, title: data.title, content: data.content, point: data.point, isJiraStory: data.isJiraStory },
+        {
+          id,
+          title: data.title,
+          content: data.content,
+          point: data.point,
+          isJiraStory: data.isJiraStory,
+          jiraIssueId: data.jiraIssueId,
+        },
       ]);
+
+      if (data.isJiraStory) {
+        const newJiraIssueIds = jiraIssueIds.slice();
+        newJiraIssueIds.push(data.jiraIssueId);
+        updateJiraIssueIds(newJiraIssueIds);
+      }
     }
   };
 
@@ -125,16 +152,18 @@ const Body: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = ({ roomData: { roomConnection, roomId } }: IGlobalState) => {
+const mapStateToProps = ({ roomData: { roomConnection, roomId, jiraIssueIds } }: IGlobalState) => {
   return {
     roomConnection,
     roomId,
+    jiraIssueIds,
   };
 };
 
 const mapDispatchToProps = {
   updateCurrentStory: Actions.roomActions.updateCurrentStory,
   updateCurrentStoryPoint: Actions.roomActions.updateCurrentStoryPoint,
+  updateJiraIssueIds: Actions.roomActions.updateJiraIssueIds,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Body);
