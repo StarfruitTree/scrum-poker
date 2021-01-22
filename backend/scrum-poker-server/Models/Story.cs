@@ -13,10 +13,11 @@ namespace scrum_poker_server.Models
 
         public string Content { get; set; }
 
-        public int? Point { get; set; }
+        public int Point { get; set; }
 
         public bool IsJiraStory { get; set; }
 
+        [MaxLength(20)]
         public string JiraIssueId { get; set; }
 
         [ForeignKey("Room")]

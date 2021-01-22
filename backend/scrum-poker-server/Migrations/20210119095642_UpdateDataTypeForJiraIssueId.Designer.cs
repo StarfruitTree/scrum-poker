@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using scrum_poker_server.Data;
 
 namespace scrum_poker_server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210119095642_UpdateDataTypeForJiraIssueId")]
+    partial class UpdateDataTypeForJiraIssueId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,7 +83,7 @@ namespace scrum_poker_server.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("Point")
+                    b.Property<int?>("Point")
                         .HasColumnType("int");
 
                     b.Property<int>("RoomId")
@@ -110,8 +112,8 @@ namespace scrum_poker_server.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<float>("Point")
-                        .HasColumnType("real");
+                    b.Property<int>("Point")
+                        .HasColumnType("int");
 
                     b.Property<int>("StoryId")
                         .HasColumnType("int");

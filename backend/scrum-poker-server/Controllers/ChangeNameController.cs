@@ -32,20 +32,16 @@ namespace scrum_poker_server.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeName([FromBody] ChangeNameDTO data)
         {
-            if (ModelState.IsValid)
-            {
-                var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
-                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-                user.Name = data.NewName;
+            var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            user.Name = data.NewName;
 
-                string email = null;
-                var emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email);
-                if (emailClaim != null) email = emailClaim.Value;
-                await _dbContext.SaveChangesAsync();
+            string email = null;
+            var emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email);
+            if (emailClaim != null) email = emailClaim.Value;
+            await _dbContext.SaveChangesAsync();
 
-                return StatusCode(201, new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { UserId = userId, Email = email, Name = data.NewName }), name = data.NewName, userId = userId, expiration = email != null ? 29 : 131399, email });
-            }
-            else return StatusCode(422);
+            return StatusCode(201, new { jwtToken = JwtTokenGenerator.GenerateToken(new UserData { UserId = userId, Email = email, Name = data.NewName }), name = data.NewName, userId = userId, expiration = email != null ? 29 : 131399, email });
         }
     }
 }
