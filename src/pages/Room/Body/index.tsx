@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 import { Actions } from '@scrpoker/store';
 import { getAuthHeader } from '@scrpoker/utils';
+import { GlobalPoints } from '@scrpoker/utils/pointController';
 
 interface Props {
   className?: string;
@@ -117,6 +118,7 @@ const Body: React.FC<Props> = ({
   };
 
   const currentStoryPointChangedCallback = ({ point }: ICurrentStoryPointData) => {
+    GlobalPoints.pointer = GlobalPoints.points.indexOf(point) as number;
     updateCurrentStoryPoint(point);
   };
 

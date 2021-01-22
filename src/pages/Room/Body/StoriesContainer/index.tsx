@@ -160,34 +160,38 @@ const StoriesContainer: React.FC<Props> = ({
   };
 
   const submit = async () => {
-    const storyData = {
-      roomId,
-      title: story.title,
-      content: story.content,
-      isJiraStory: false,
-    };
+    if (story.title && story.content) {
+      const storyData = {
+        roomId,
+        title: story.title,
+        content: story.content,
+        isJiraStory: false,
+      };
 
-    try {
-      const response = await fetch(ADD_STORY, {
-        method: 'post',
-        body: JSON.stringify(storyData),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: getAuthHeader() as string,
-        },
-      });
+      try {
+        const response = await fetch(ADD_STORY, {
+          method: 'post',
+          body: JSON.stringify(storyData),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: getAuthHeader() as string,
+          },
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.status === 422) {
-        console.log('Error');
-      } else {
-        roomConnection.send('AddStory', roomCode, data.id);
+        if (response.status === 422) {
+          console.log('Error');
+        } else {
+          roomConnection.send('AddStory', roomCode, data.id);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        closeManualStoryModal();
       }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      closeManualStoryModal();
+    } else {
+      alert('Fields cannot be empty');
     }
   };
 
