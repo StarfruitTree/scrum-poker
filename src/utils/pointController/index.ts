@@ -6,6 +6,8 @@ export const upPoint = (): number => {
     pointer = 0;
   } else pointer++;
 
+  console.log(pointer);
+
   return points[pointer];
 };
 
@@ -13,6 +15,8 @@ export const downPoint = (): number => {
   if (pointer === 0) {
     pointer = points.length - 1;
   } else pointer--;
+
+  console.log(pointer);
 
   return points[pointer];
 };

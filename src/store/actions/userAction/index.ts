@@ -188,6 +188,7 @@ export const changeName = (
     method: 'POST',
     headers: {
       Authorization: getAuthHeader() as string,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(changeNameData),
   })

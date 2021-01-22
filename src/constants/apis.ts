@@ -19,3 +19,4 @@ export const CHANGE_NAME = getUrl('changename');
 export const SUBMIT_JIRA_USER_CREDENTIALS = getUrl('jira/addtoken');
 export const FETCH_JIRA_STORIES = getUrl('jira/fetchstories');
 export const ADD_JIRA_STORY = getUrl('jira/addstory');
+export const SUBMIT_JIRA_POINT = getUrl('jira/submitpoint');
