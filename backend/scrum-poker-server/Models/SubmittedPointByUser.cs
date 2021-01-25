@@ -6,7 +6,7 @@ namespace scrum_poker_server.Models
     {
         public int Id { get; set; }
 
-        public float Point { get; set; }
+        public int Point { get; set; }
 
         [ForeignKey("Story")]
         public int StoryId { get; set; }

@@ -17,6 +17,8 @@ namespace scrum_poker_server.Models
         [MaxLength(100)]
         public string Description { get; set; }
 
+        public string JiraDomain { get; set; }
+
         [ForeignKey("Owner")]
         public int UserId { get; set; }
 

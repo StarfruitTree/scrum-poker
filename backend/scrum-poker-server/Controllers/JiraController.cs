@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using scrum_poker_server.Models;
 using scrum_poker_server.POCOs;
-using System.Collections.Generic;
+using System.Net;
 
 namespace scrum_poker_server.Controllers
 {
@@ -62,9 +62,10 @@ namespace scrum_poker_server.Controllers
             }
 
             var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            user.JiraToken = JiraToken;
-            user.JiraDomain = data.JiraDomain;
+            var userRoom = await _dbContext.UserRooms.Include(ur => ur.Room).Include(ur => ur.User).FirstOrDefaultAsync(ur => ur.UserID == userId);
+            userRoom.User.JiraToken = JiraToken;
+            userRoom.User.JiraDomain = data.JiraDomain;
+            userRoom.Room.JiraDomain = data.JiraDomain;
 
             await _dbContext.SaveChangesAsync();
 
@@ -84,6 +85,12 @@ namespace scrum_poker_server.Controllers
             request.Headers.Add("Authorization", $"Basic {data.JiraToken}");
 
             var response = await client.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode(401);
+            }
+
             var content = await response.Content.ReadAsStringAsync();
 
             return Ok(new { content, status = "Ok" });
@@ -95,6 +102,18 @@ namespace scrum_poker_server.Controllers
             if (String.IsNullOrEmpty(data.IssueId))
             {
                 return StatusCode(422);
+            }
+
+            var room = await _dbContext.Rooms.Include(r => r.Stories).FirstOrDefaultAsync(r => r.Id == data.RoomId);
+            if (room == null)
+            {
+                return StatusCode(422, new { error = "The room does not exist" });
+            }
+
+            var jiraStory = await _dbContext.Stories.FirstOrDefaultAsync(s => s.JiraIssueId == data.IssueId && s.RoomId == data.RoomId);
+            if (jiraStory != null)
+            {
+                return StatusCode(422, new { error = "You've already added this story" });
             }
 
             var client = _clientFactory.CreateClient();
@@ -117,19 +136,6 @@ namespace scrum_poker_server.Controllers
             Console.WriteLine(content);
 
             JiraIssueResponse issue = JsonSerializer.Deserialize<JiraIssueResponse>(content, options);
-
-            var room = await _dbContext.Rooms.Include(r => r.Stories).FirstOrDefaultAsync(r => r.Id == data.RoomId);
-            if (room == null)
-            {
-                return StatusCode(422, new { error = "The room does not exist" });
-            }
-
-            var jiraStory = await _dbContext.Stories.FirstOrDefaultAsync(s => s.JiraIssueId == data.IssueId && s.RoomId == data.RoomId);
-
-            if (jiraStory != null)
-            {
-                return StatusCode(422, new { error = "You've already added this story" });
-            }
 
             int point;
 
@@ -162,6 +168,11 @@ namespace scrum_poker_server.Controllers
         {
             if (data.IssueId == null || data.JiraDomain == null || data.JiraToken == null)
             {
+                if (data.JiraDomain == null || data.JiraToken == null)
+                {
+                    return StatusCode(401);
+                }
+
                 return StatusCode(422);
             }
 
@@ -177,6 +188,11 @@ namespace scrum_poker_server.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    return StatusCode(400);
+                }
+
                 return StatusCode(401);
             }
 

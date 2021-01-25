@@ -103,14 +103,17 @@ namespace scrum_poker_server.Controllers
 
             await _dbContext.SaveChangesAsync();
 
-            return StatusCode(201, new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = Role.player });
+            return StatusCode(201, new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = Role.player, jiraDomain = room.JiraDomain });
         }
 
         // This API is used to check the availability of a room (valid room code, full people)
+        [Authorize(Policy = "AllUsers")]
         [HttpGet, Route("checkroom/{roomCode}")]
         public async Task<IActionResult> CheckRoom(string roomCode)
         {
             var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == roomCode);
+            var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
+
             if (room == null)
             {
                 return StatusCode(404);
@@ -122,6 +125,10 @@ namespace scrum_poker_server.Controllers
             else if (_roomService.FindRoom(roomCode).Users.Count >= 12)
             {
                 return StatusCode(403);
+            }
+            else if (_roomService.FindRoom(roomCode).Users.Find(u => u.Id == userId) != null)
+            {
+                return StatusCode(409);
             }
 
             return Ok();
