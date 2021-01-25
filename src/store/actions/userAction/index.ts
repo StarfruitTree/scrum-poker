@@ -3,6 +3,7 @@ import { SIGN_UP, LOGIN, AUTHENTICATE, CHANGE_NAME, SUBMIT_JIRA_USER_CREDENTIALS
 import { ThunkAction } from 'redux-thunk';
 import { getAuthHeader } from '@scrpoker/utils';
 import { Actions } from '@scrpoker/store';
+import { act } from 'react-test-renderer';
 
 interface IResponse {
   isSuccessful: boolean;
@@ -225,5 +226,12 @@ export const updateUserAction = (action: string): IUserAction => {
   return {
     type: 'UPDATE_USER_ACTION',
     payload: action,
+  };
+};
+
+export const updateIsJiraTokenValid = (data: boolean): IUserAction => {
+  return {
+    type: 'UPDATE_IS_JIRA_TOKEN_VALID',
+    payload: data,
   };
 };

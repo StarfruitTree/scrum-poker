@@ -1,10 +1,12 @@
-import React from 'react';
-import { Button } from '@scrpoker/components';
+import React, { useState } from 'react';
+import { Button, Typo, Icon } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
 import { SUBMIT_POINT, SUBMIT_JIRA_POINT } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
+import ReactModal from 'react-modal';
+import { reactModalStyle } from '@scrpoker/constants/objects';
 
 interface Props {
   className?: string;
@@ -39,7 +41,25 @@ const ControlPanel: React.FC<Props> = ({
   updateIsLocked,
   className = '',
 }) => {
-  console.log(point);
+  const [is401ModalOpen, setIs401ModalOpen] = useState(false);
+
+  const [is400ModalOpen, setIs400ModalOpen] = useState(false);
+
+  const open401Modal = () => {
+    setIs401ModalOpen(true);
+  };
+
+  const close401Modal = () => {
+    setIs401ModalOpen(false);
+  };
+
+  const open400Modal = () => {
+    setIs400ModalOpen(true);
+  };
+
+  const close400Modal = () => {
+    setIs400ModalOpen(false);
+  };
 
   const currentStoryIsPicked = currentStory ? true : false;
 
@@ -84,18 +104,20 @@ const ControlPanel: React.FC<Props> = ({
       point: currentStoryPoint,
     };
 
-    const response = await fetch(SUBMIT_JIRA_POINT, {
+    fetch(SUBMIT_JIRA_POINT, {
       method: 'POST',
       headers: {
         Authorization: getAuthHeader() as string,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(jiraStoryData),
+    }).then((response) => {
+      if (response.status === 401) {
+        open401Modal();
+      } else if (response.status === 400) {
+        open400Modal();
+      }
     });
-
-    if (response.status === 401) {
-      alert(`The point hasn't been submitted on Jira yet because your Jira token has been revoked.`);
-    }
   };
 
   const submitFinalPoint = async () => {
@@ -116,6 +138,29 @@ const ControlPanel: React.FC<Props> = ({
 
   return (
     <div className={`${style.controlPanel} ${className}`}>
+      <ReactModal closeTimeoutMS={100} onRequestClose={close401Modal} isOpen={is401ModalOpen} style={reactModalStyle}>
+        <div className={style.description}>
+          <Typo>The point is not submitted on Jira because your Jira token has been revoked</Typo>
+        </div>
+      </ReactModal>
+      <ReactModal closeTimeoutMS={100} onRequestClose={close400Modal} isOpen={is400ModalOpen} style={reactModalStyle}>
+        <div className={style.description}>
+          <div>
+            <Typo>
+              The point is not submitted on Jira because you have not enabled the default screen of the project
+            </Typo>
+          </div>
+          <div className={style.explanation}>
+            <Typo>
+              You need to enable the default scrren or all the screens with the url:{' '}
+              <Typo type="span" className={style.url}>
+                https://{jiraDomain}
+                /secure/admin/AssociateFieldToScreens!default.jspa?fieldId=customfield_10026
+              </Typo>
+            </Typo>
+          </div>
+        </div>
+      </ReactModal>
       {role === 0 ? (
         roomState === 'waiting' ? (
           <Button
@@ -154,11 +199,11 @@ const ControlPanel: React.FC<Props> = ({
           <Button
             className={style.button}
             onClick={
-              jiraToken
+              currentStory?.isJiraStory
                 ? async () => {
                     roomConnection.send('ChangeRoomState', roomCode, 'waiting');
                     roomConnection.send('ChangeCurrentStory', roomCode, -1);
-                    submitPointForJiraStory();
+                    await submitPointForJiraStory();
                   }
                 : async () => {
                     roomConnection.send('ChangeRoomState', roomCode, 'waiting');

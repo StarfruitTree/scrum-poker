@@ -2,6 +2,16 @@ import { Dispatch } from 'redux';
 import { JOIN_ROOM } from '@scrpoker/constants/apis';
 import { ThunkAction } from 'redux-thunk';
 import { getAuthHeader } from '@scrpoker/utils';
+import { GlobalRoomJiraDomain } from '@scrpoker/constants/objects';
+
+interface IRoomInfoResponse {
+  roomId: number;
+  roomCode: string;
+  roomName: string;
+  description: string;
+  role: number;
+  jiraDomain?: string;
+}
 
 export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
   dispatch: Dispatch
@@ -18,7 +28,11 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     },
   })
     .then((response) => response.json())
-    .then(({ roomId, roomCode, roomName, description, role }: IRoomInfoPayload) => {
+    .then(({ roomId, roomCode, roomName, description, role, jiraDomain }: IRoomInfoResponse) => {
+      if (jiraDomain) {
+        GlobalRoomJiraDomain.roomJiraDomain = jiraDomain;
+      }
+
       dispatch({
         type: 'UPDATE_ROOM_INFO',
         payload: {

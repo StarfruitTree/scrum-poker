@@ -58,6 +58,7 @@ const Board: React.FC<Props> = ({
                           roomConnection.send('ChangeCurrentStoryPoint', roomCode, downPoint());
                         }
                   }
+                  className={style.downPoint}
                 />
               </div>
             ) : (
@@ -95,6 +96,7 @@ const Board: React.FC<Props> = ({
                           roomConnection.send('ChangeCurrentStoryPoint', roomCode, downPoint());
                         }
                   }
+                  className={style.downPoint}
                 />
               </div>
             ) : (
@@ -132,6 +134,7 @@ const Board: React.FC<Props> = ({
                           roomConnection.send('ChangeCurrentStoryPoint', roomCode, downPoint());
                         }
                   }
+                  className={style.downPoint}
                 />
               </div>
             ) : (

@@ -10,6 +10,7 @@
   justify-content: space-between;
   background-color: white;
   transition: background-color 140ms ease-in-out;
+  position: relative;
 }
 
 .story:hover {
@@ -50,7 +51,7 @@
   font-weight: 500;
 }
 
-span {
+.span {
   font-weight: 500;
   margin-left: 0.3rem;
 }
@@ -67,4 +68,10 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.popup {
+  position: absolute;
+  right: -245px;
+  top: 0px;
 }

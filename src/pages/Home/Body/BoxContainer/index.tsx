@@ -22,13 +22,20 @@ interface IRoomStatus {
 }
 
 interface Props {
+  jiraToken?: string;
   integratedJiraDomain?: string;
   userRoomCode?: string;
   submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void | boolean>;
   joinRoom: (roomCode: string) => Promise<void>;
 }
 
-const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joinRoom, submitJiraUserCredentials }) => {
+const BoxContainer: React.FC<Props> = ({
+  userRoomCode,
+  jiraToken,
+  integratedJiraDomain,
+  joinRoom,
+  submitJiraUserCredentials,
+}) => {
   const [joinRoomModalIsOpen, setIsJoinRoomModalOpen] = useState(false);
   const [integrationModalIsOpen, setIsIntegrationModalIsOpen] = useState(false);
   const [roomCode, setRoomCode] = useState('');
@@ -114,13 +121,20 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joi
       iconName: 'house-user',
       actionName: 'Join your room',
       onClick: async () => {
-        const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(userRoomCode as string)).then((response) => {
+        const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(userRoomCode as string), {
+          headers: {
+            Authorization: getAuthHeader() as string,
+          },
+        }).then((response) => {
           if (response.ok) {
             return { isAvailable: true };
           } else {
             if (response.status === 404) {
               return { isAvailable: false, errorMessage: 'The room does not exist' };
+            } else if (response.status === 409) {
+              return { isAvailable: false, errorMessage: `You are currently in this room` };
             }
+
             return {
               isAvailable: false,
               errorMessage: 'The room is full now',
@@ -191,11 +205,7 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joi
           <Typo type="h2">Integrate with Jira</Typo>
           <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeIntegrationModal} />
         </div>
-        {integratedJiraDomain ? (
-          <Typo className={style.jiraDomain}>Integrated Jira domain: {integratedJiraDomain}</Typo>
-        ) : (
-          ''
-        )}
+        {jiraToken ? <Typo className={style.jiraDomain}>Integrated Jira domain: {integratedJiraDomain}</Typo> : ''}
         <Input
           className={style.input}
           name="jiraEmail"
@@ -231,10 +241,11 @@ const BoxContainer: React.FC<Props> = ({ userRoomCode, integratedJiraDomain, joi
   );
 };
 
-const mapStateToProps = ({ userData: { userRoomCode, jiraDomain } }: IGlobalState) => {
+const mapStateToProps = ({ userData: { userRoomCode, jiraDomain, jiraToken } }: IGlobalState) => {
   return {
     userRoomCode,
     integratedJiraDomain: jiraDomain,
+    jiraToken,
   };
 };
 

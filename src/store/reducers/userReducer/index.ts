@@ -1,4 +1,5 @@
 import { initialUserData } from '@scrpoker/constants/objects';
+import { act } from 'react-test-renderer';
 
 const reducer = (state: IUserData = initialUserData, action: IUserAction): IUserData => {
   switch (action.type) {

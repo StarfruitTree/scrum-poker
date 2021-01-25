@@ -127,3 +127,9 @@ interface IJiraTokenPayload {
   jiraToken: string;
   jiraDomain: string;
 }
+
+interface ISubmittedPointByUsers {
+  userId: number;
+  userName: string;
+  point: number;
+}

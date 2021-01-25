@@ -110,9 +110,23 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
-            {isTokenValid && isOfficialUser ? <Redirect to={{ pathname: '/home' }} /> : <LandingPage />}
+            {isTokenValid && isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : isTokenValid ? (
+              <Redirect to={{ pathname: '/room/join' }} />
+            ) : (
+              <LandingPage />
+            )}
           </Route>
-          <Route path="/welcome">{isOfficialUser ? <Redirect to={{ pathname: '/home' }} /> : <WelcomePage />}</Route>
+          <Route path="/welcome">
+            {isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : isTokenValid ? (
+              <Redirect to={{ pathname: '/room/join' }} />
+            ) : (
+              <WelcomePage />
+            )}
+          </Route>
           <Route path="/signup" exact>
             {isTokenValid && isOfficialUser ? (
               <Redirect to={{ pathname: '/home' }} />

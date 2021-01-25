@@ -54,7 +54,12 @@ const JiraStoriesTable: React.FC<Props> = ({
       body: JSON.stringify(requestBody),
       headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader() as string },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status === 401) {
+          alert(`Can't add Jira story because your Jira token has been revoked`);
+        }
+        return response.json();
+      })
       .then(({ storyId }: IResponseData) => {
         roomConnection.send('AddStory', roomCode, storyId);
       });

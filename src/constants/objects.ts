@@ -60,3 +60,7 @@ export const initialUserData: IUserData = {
   jiraToken: '',
   jiraDomain: '',
 };
+
+export class GlobalRoomJiraDomain {
+  static roomJiraDomain = '';
+}

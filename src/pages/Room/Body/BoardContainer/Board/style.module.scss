@@ -75,10 +75,11 @@
 .buttonContainer {
   display: flex;
   flex-direction: column;
-  font-size: 1.9rem;
+  font-size: 1.5rem;
   height: 100%;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
+  margin-left: 0.3rem;
 }
 
 .pointContainerHost {
@@ -88,9 +89,9 @@
   background-color: #2267f2;
   color: white;
   border-radius: 5px;
-  padding: 0.4rem 0.5rem;
-  width: 98px;
-  height: 78px;
+  padding: 0 0.5rem;
+  width: 90px;
+  height: 70px;
   justify-content: space-between;
 
   .pointWrapper {
@@ -116,4 +117,8 @@
 .isDisabled {
   border: 1px solid #9b9c9d;
   background-color: #9b9c9d;
+}
+
+.downPoint {
+  margin-top: 0.3rem;
 }

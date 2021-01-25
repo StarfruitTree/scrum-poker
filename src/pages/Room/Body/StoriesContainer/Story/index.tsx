@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import style from './style.module.scss';
 import { Typo, Avatar } from '@scrpoker/components';
+import Popup from './Popup';
 
 interface Props {
   selected: boolean;
@@ -23,13 +24,24 @@ const Story: React.FC<Props> = ({
   jiraIssueId,
   className = '',
 }) => {
+  const [isPopupHidden, setIsPopupHidden] = useState(true);
+
+  const submittedPointByUsers: ISubmittedPointByUsers[] = [
+    { userId: 1, userName: 'An Pham', point: 5 },
+    { userId: 2, userName: 'Hoang Trinh', point: 3 },
+    { userId: 3, userName: 'Pham Van An', point: 8 },
+  ];
+
   return (
     <div
+      onMouseEnter={() => setIsPopupHidden(false)}
+      onMouseLeave={() => setIsPopupHidden(true)}
       onClick={onClick}
       className={`${style.story} ${className} ${onClick !== undefined ? style.clickable : ''} ${
         selected ? style.selected : ''
       }`}
     >
+      <Popup className={style.popup} submittedPoint={submittedPointByUsers} isHidden={isPopupHidden} />
       <div className={style.title}>
         <Typo>{title}</Typo>
       </div>
@@ -46,7 +58,10 @@ const Story: React.FC<Props> = ({
         )}
         {isJiraStory ? (
           <div className={style.jiraIssueId}>
-            <Typo type="span">{jiraIssueId}</Typo> &nbsp;&nbsp;
+            <Typo className={style.span} type="span">
+              {jiraIssueId}
+            </Typo>{' '}
+            &nbsp;&nbsp;
             <img width={16} height={16} src="https://cdn.jsdelivr.net/npm/simple-icons@v4/icons/jira.svg" />
           </div>
         ) : (

@@ -8,6 +8,7 @@ import Story from './Story';
 import { connect } from 'react-redux';
 import { getAuthHeader, debounce } from '@scrpoker/utils';
 import JiraStoriesTable from './JiraStoriesTable';
+import { GlobalRoomJiraDomain } from '@scrpoker/constants/objects';
 
 interface Props {
   jiraToken?: string;
@@ -47,6 +48,8 @@ const StoriesContainer: React.FC<Props> = ({
   role,
   jiraIssueIds,
 }) => {
+  console.log(jiraToken);
+
   const [fetching, setFetching] = useState(false);
 
   const [manualStoryModalIsOpen, setManualStoryModalIsOpen] = useState(false);
@@ -294,6 +297,13 @@ const StoriesContainer: React.FC<Props> = ({
           ''
         )}
       </div>
+      {GlobalRoomJiraDomain.roomJiraDomain ? (
+        <div className={style.jiraDomain}>
+          <Typo>Jira domain: anvpham.atlassian.net</Typo>
+        </div>
+      ) : (
+        ''
+      )}
       <div className={style.stories}>
         {stories.map((s) => (
           <Story
