@@ -49,20 +49,20 @@ const JiraStoriesTable: React.FC<Props> = ({
       jiraToken,
       roomId,
     };
-    await fetch(ADD_JIRA_STORY, {
+    const response = await fetch(ADD_JIRA_STORY, {
       method: 'POST',
       body: JSON.stringify(requestBody),
       headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader() as string },
-    })
-      .then((response) => {
-        if (response.status === 401) {
-          alert(`Can't add Jira story because your Jira token has been revoked`);
-        }
-        return response.json();
-      })
-      .then(({ storyId }: IResponseData) => {
-        roomConnection.send('AddStory', roomCode, storyId);
-      });
+    });
+
+    if (response.status === 401) {
+      alert(`Can't add Jira story because your Jira token has been revoked`);
+    } else if (response.status === 403) {
+      alert(`You've reached the limit of 20 stories, please delete before adding more`);
+    } else {
+      const data = (await response.json()) as IResponseData;
+      roomConnection.send('AddStory', roomCode, data.storyId);
+    }
   };
 
   return (

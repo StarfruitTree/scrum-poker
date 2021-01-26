@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Typo, Icon } from '@scrpoker/components';
+import { Button, Typo } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
 import { SUBMIT_POINT, SUBMIT_JIRA_POINT } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
 import ReactModal from 'react-modal';
-import { reactModalStyle } from '@scrpoker/constants/objects';
+import { reactWarningModalStyle } from '@scrpoker/constants/objects';
 
 interface Props {
   className?: string;
@@ -138,16 +138,27 @@ const ControlPanel: React.FC<Props> = ({
 
   return (
     <div className={`${style.controlPanel} ${className}`}>
-      <ReactModal closeTimeoutMS={100} onRequestClose={close401Modal} isOpen={is401ModalOpen} style={reactModalStyle}>
+      <ReactModal
+        closeTimeoutMS={100}
+        onRequestClose={close401Modal}
+        isOpen={is401ModalOpen}
+        style={reactWarningModalStyle}
+      >
         <div className={style.description}>
           <Typo>The point is not submitted on Jira because your Jira token has been revoked</Typo>
+          <div>
+            <Button className={style.okButton} onClick={close400Modal}>
+              Ok
+            </Button>
+          </div>
         </div>
       </ReactModal>
-      <ReactModal closeTimeoutMS={100} onRequestClose={close400Modal} isOpen={is400ModalOpen} style={reactModalStyle}>
+      <ReactModal closeTimeoutMS={100} isOpen={is400ModalOpen} style={reactWarningModalStyle}>
         <div className={style.description}>
           <div>
             <Typo>
-              The point is not submitted on Jira because you have not enabled the default screen of the project
+              The point is not submitted on Jira because you have not enabled the default screen of the project or this
+              ticket does not associate with points
             </Typo>
           </div>
           <div className={style.explanation}>

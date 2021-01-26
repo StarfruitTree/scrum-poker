@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
 import style from './style.module.scss';
-import { Typo, Avatar } from '@scrpoker/components';
+import { Typo, Avatar, Icon } from '@scrpoker/components';
 import Popup from './Popup';
 
 interface IPopupState {
   isHidden: boolean;
-  leftedSpace?: number;
+  left?: number;
+  top?: number;
 }
 
 interface Props {
@@ -17,11 +18,13 @@ interface Props {
   isJiraStory: boolean;
   jiraIssueId?: string;
   className?: string;
-  onClick?: (() => void) | undefined;
+  onClick?: (event: React.MouseEvent) => void;
+  deleteStory?: (event: React.MouseEvent) => void;
 }
 
 const Story: React.FC<Props> = ({
   onClick,
+  deleteStory,
   selected,
   title,
   assignee,
@@ -36,8 +39,9 @@ const Story: React.FC<Props> = ({
 
   const calculateLeftedSpaceAndSetPopupState = (state: boolean) => {
     if (ref.current) {
-      const leftedSpace = ref.current.getBoundingClientRect().x + ref.current.getBoundingClientRect().width + 5;
-      setPopupState({ isHidden: state, leftedSpace });
+      const left = ref.current.getBoundingClientRect().x + ref.current.getBoundingClientRect().width + 5;
+      const top = ref.current.getBoundingClientRect().y + 6;
+      setPopupState({ isHidden: state, left, top });
     }
   };
 
@@ -51,6 +55,7 @@ const Story: React.FC<Props> = ({
       }`}
       ref={ref}
     >
+      {deleteStory ? <Icon onClick={deleteStory} className={style.closeButton} name="trash-alt" size="sm" /> : null}
       <Popup className={style.popup} submittedPoint={submittedPointByUsers} popUpState={popUpState} />
       <div className={style.title}>
         <Typo>{title}</Typo>

@@ -7,13 +7,22 @@ import Box from './Box';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
 import { reactModalStyle } from '@scrpoker/constants/objects';
-import { CHECK_ROOM, SUBMIT_JIRA_USER_CREDENTIALS } from '@scrpoker/constants/apis';
+import { CHECK_ROOM } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
 
 interface Box {
   iconName: string;
   actionName: string;
   onClick: () => void;
+}
+
+interface IJiraResponse {
+  isSuccessful: boolean;
+  data?: {
+    error?: string;
+    jiraToken?: string;
+    jiraDomain?: string;
+  };
 }
 
 interface IRoomStatus {
@@ -25,7 +34,7 @@ interface Props {
   jiraToken?: string;
   integratedJiraDomain?: string;
   userRoomCode?: string;
-  submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void | boolean>;
+  submitJiraUserCredentials: (data: IJiraUserCredentials) => Promise<void | IJiraResponse>;
   joinRoom: (roomCode: string) => Promise<void>;
 }
 
@@ -42,6 +51,7 @@ const BoxContainer: React.FC<Props> = ({
   const [jiraEmail, setJiraEmail] = useState('');
   const [jiraDomain, setJiraDomain] = useState('');
   const [apiToken, setAPIToken] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
   const openJoinRoomModal = () => {
@@ -100,6 +110,7 @@ const BoxContainer: React.FC<Props> = ({
   };
 
   const addJiraToken = async () => {
+    setIsLoading(true);
     const data = {
       jiraDomain,
       jiraEmail,
@@ -107,8 +118,13 @@ const BoxContainer: React.FC<Props> = ({
     };
 
     if (jiraDomain && jiraEmail && apiToken) {
-      const isSuccessful = await submitJiraUserCredentials(data);
-      if (isSuccessful) {
+      const responseStatus = (await submitJiraUserCredentials(data)) as IJiraResponse;
+      setIsLoading(false);
+
+      if (!responseStatus.isSuccessful) {
+        alert(responseStatus.data?.error);
+      } else {
+        alert('Added successfully');
         closeIntegrationModal();
       }
     } else {
@@ -192,15 +208,16 @@ const BoxContainer: React.FC<Props> = ({
           onTextChange={handleRoomCodeChange}
         />
         <div className={style.submit}>
-          <Button onClick={join}>Submit</Button>
+          {isLoading ? (
+            <Button square={true} className={style.loadingBUtton} icon="fas fa-circle-notch fa-spin" />
+          ) : (
+            <Button square={true} onClick={join}>
+              Submit
+            </Button>
+          )}
         </div>
       </ReactModal>
-      <ReactModal
-        closeTimeoutMS={100}
-        onRequestClose={closeIntegrationModal}
-        isOpen={integrationModalIsOpen}
-        style={reactModalStyle}
-      >
+      <ReactModal closeTimeoutMS={100} isOpen={integrationModalIsOpen} style={reactModalStyle}>
         <div className={style.title}>
           <Typo type="h2">Integrate with Jira</Typo>
           <Icon className={style.closeButton} size="2x" name="window-close" onClick={closeIntegrationModal} />
@@ -224,8 +241,13 @@ const BoxContainer: React.FC<Props> = ({
           placeholder="Enter your API token"
           onTextChange={handleAPITokenChange}
         />
+
         <div className={style.submit}>
-          <Button onClick={addJiraToken}>Submit</Button>
+          {isLoading ? (
+            <Button className={style.loadingButton} icon="fas fa-circle-notch fa-spin" />
+          ) : (
+            <Button onClick={addJiraToken}>Submit</Button>
+          )}
         </div>
       </ReactModal>
       {boxes.map((box, key) => (

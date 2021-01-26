@@ -5,9 +5,9 @@ import { getAuthHeader } from '@scrpoker/utils';
 import { Actions } from '@scrpoker/store';
 import { act } from 'react-test-renderer';
 
-interface IResponse {
+interface IJiraResponse {
   isSuccessful: boolean;
-  data: {
+  data?: {
     error?: string;
     jiraToken?: string;
     jiraDomain?: string;
@@ -139,7 +139,7 @@ export const authenticate = (): ThunkAction<Promise<void>, IGlobalState, unknown
 
 export const submitJiraUserCredentials = (
   data: IJiraUserCredentials
-): ThunkAction<Promise<void | boolean>, IGlobalState, unknown, IRoomAction> => (dispatch: Dispatch) =>
+): ThunkAction<Promise<void | IJiraResponse>, IGlobalState, unknown, IRoomAction> => (dispatch: Dispatch) =>
   fetch(SUBMIT_JIRA_USER_CREDENTIALS, {
     body: JSON.stringify(data),
     method: 'POST',
@@ -161,24 +161,26 @@ export const submitJiraUserCredentials = (
         };
       }
     })
-    .then(({ isSuccessful, data }: IResponse) => {
-      if (!isSuccessful) alert(data.error);
-      else {
+    .then(({ isSuccessful, data }: IJiraResponse) => {
+      if (!isSuccessful) {
+        return {
+          isSuccessful: false,
+          data: {
+            error: data?.error,
+          },
+        };
+      } else {
         dispatch({
           type: 'UPDATE_JIRA_TOKEN',
           payload: {
-            jiraToken: data.jiraToken as string,
-            jiraDomain: data.jiraDomain as string,
+            jiraToken: data?.jiraToken as string,
+            jiraDomain: data?.jiraDomain as string,
           },
         });
 
-        alert('Added successfully');
-
-        if (isSuccessful) {
-          return true;
-        } else {
-          return false;
-        }
+        return {
+          isSuccessful: true,
+        };
       }
     });
 

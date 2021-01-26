@@ -31,50 +31,54 @@ const JoinRoom: React.FC<Props> = ({ changeName, signUp, joinRoom, setIsTokenVal
   const goBack = () => history.push('/welcome');
 
   const submit = async () => {
-    const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(roomCode)).then((response) => {
-      if (response.ok) {
-        return { isAvailable: true };
-      } else {
-        if (response.status === 404) {
-          return { isAvailable: false, errorMessage: 'The room does not exist' };
-        }
-        return {
-          isAvailable: false,
-          errorMessage: 'The room is full now',
-        };
-      }
-    });
-
-    if (roomStatus.isAvailable) {
-      if (userName) {
-        try {
-          if (getAuthHeader()) {
-            switch (userName !== CookieReader.get('userName')) {
-              case true:
-                await changeName({ newName: userName });
-                await joinRoom(roomCode);
-                setIsTokenValid(true);
-                history.push('/room/' + roomCode);
-                break;
-              case false:
-                await authenticate();
-                await joinRoom(roomCode);
-                setIsTokenValid(true);
-                history.push('/room/' + roomCode);
-                break;
-            }
-          } else {
-            await signUp({ userName });
-            await joinRoom(roomCode);
-            setIsTokenValid(true);
-            history.push('/room/' + roomCode);
+    if (roomCode) {
+      const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(roomCode)).then((response) => {
+        if (response.ok) {
+          return { isAvailable: true };
+        } else {
+          if (response.status === 404) {
+            return { isAvailable: false, errorMessage: 'The room does not exist' };
           }
-        } catch (err) {
-          console.log(err);
+          return {
+            isAvailable: false,
+            errorMessage: 'The room is full now',
+          };
         }
-      } else alert('Username cannot be empty');
+      });
+
+      if (roomStatus.isAvailable) {
+        if (userName && userName.trim() != '') {
+          try {
+            if (getAuthHeader()) {
+              switch (userName !== CookieReader.get('userName')) {
+                case true:
+                  await changeName({ newName: userName.trim() });
+                  await joinRoom(roomCode);
+                  setIsTokenValid(true);
+                  history.push('/room/' + roomCode);
+                  break;
+                case false:
+                  await authenticate();
+                  await joinRoom(roomCode);
+                  setIsTokenValid(true);
+                  history.push('/room/' + roomCode);
+                  break;
+              }
+            } else {
+              await signUp({ userName: userName.trim() });
+              await joinRoom(roomCode);
+              setIsTokenValid(true);
+              history.push('/room/' + roomCode);
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        } else alert('Username cannot be empty or white space');
+      } else {
+        alert(roomStatus.errorMessage);
+      }
     } else {
-      alert(roomStatus.errorMessage);
+      alert('Please enter room code');
     }
   };
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {

@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import ReactModal from 'react-modal';
 import style from './style.module.scss';
 import { Typo, Icon, Input, Button } from '@scrpoker/components';
-import { ADD_STORY, FETCH_JIRA_STORIES } from '@scrpoker/constants/apis';
-import { reactModalStyle, jiraStoryModalStyle } from '@scrpoker/constants/objects';
+import { ADD_STORY, FETCH_JIRA_STORIES, DELETE_STORY } from '@scrpoker/constants/apis';
+import {
+  GlobalRoomJiraDomain,
+  reactModalStyle,
+  jiraStoryModalStyle,
+  reactWarningModalStyle,
+} from '@scrpoker/constants/objects';
 import Story from './Story';
 import { connect } from 'react-redux';
 import { getAuthHeader, debounce } from '@scrpoker/utils';
 import JiraStoriesTable from './JiraStoriesTable';
-import { GlobalRoomJiraDomain } from '@scrpoker/constants/objects';
 
 interface Props {
   jiraToken?: string;
@@ -48,8 +52,6 @@ const StoriesContainer: React.FC<Props> = ({
   role,
   jiraIssueIds,
 }) => {
-  console.log(jiraToken);
-
   const [fetching, setFetching] = useState(false);
 
   const [manualStoryModalIsOpen, setManualStoryModalIsOpen] = useState(false);
@@ -133,8 +135,6 @@ const StoriesContainer: React.FC<Props> = ({
         });
         setFetching(false);
         setJiraStories(jiraStories);
-
-        console.log(jiraStories);
       } else {
         setJiraStories([]);
       }
@@ -181,12 +181,16 @@ const StoriesContainer: React.FC<Props> = ({
           },
         });
 
-        const data = await response.json();
-
-        if (response.status === 422) {
-          console.log('Error');
+        if (response.status === 403) {
+          alert(`You've reached the limit of 20 stories, please delete before adding more`);
         } else {
-          roomConnection.send('AddStory', roomCode, data.id);
+          const data = await response.json();
+
+          if (response.status === 422) {
+            console.log('Error');
+          } else {
+            roomConnection.send('AddStory', roomCode, data.id);
+          }
         }
       } catch (err) {
         console.log(err);
@@ -312,6 +316,27 @@ const StoriesContainer: React.FC<Props> = ({
               roomState === 'waiting' && role === 0
                 ? () => {
                     roomConnection.send('ChangeCurrentStory', roomCode, s.id);
+                  }
+                : undefined
+            }
+            deleteStory={
+              roomState === 'waiting' && role === 0
+                ? async (event: React.MouseEvent) => {
+                    event?.stopPropagation();
+                    const requestBody = {
+                      storyId: s.id,
+                    };
+
+                    await fetch(DELETE_STORY, {
+                      method: 'DELETE',
+                      headers: {
+                        Authorization: getAuthHeader() as string,
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(requestBody),
+                    });
+
+                    roomConnection.send('DeleteStory', roomCode, s.id);
                   }
                 : undefined
             }

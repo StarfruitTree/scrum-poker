@@ -16,4 +16,6 @@
 .summary {
   width: 500px;
   margin-right: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

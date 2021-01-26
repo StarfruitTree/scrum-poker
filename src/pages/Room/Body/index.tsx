@@ -114,6 +114,21 @@ const Body: React.FC<Props> = ({
     }
   };
 
+  const storyDeletedCallback = ({ id }: IStoryData) => {
+    const newStories = stories.slice(0);
+    const story = newStories.find((s) => s.id === id);
+
+    if (story?.isJiraStory) {
+      const newJiraIssueIds = jiraIssueIds.slice(0);
+      const jiraIssueId = newJiraIssueIds.find((s) => s === story.jiraIssueId);
+      newJiraIssueIds.splice(newJiraIssueIds.indexOf(jiraIssueId as string), 1);
+      updateJiraIssueIds(newJiraIssueIds);
+    }
+
+    newStories.splice(newStories.indexOf(story as IStory), 1);
+    setStories(newStories);
+  };
+
   const currentStoryChangedCallback = ({ id }: IStoryData) => {
     const story = stories.find((s) => s.id === id);
     updateCurrentStory(story);
@@ -128,6 +143,11 @@ const Body: React.FC<Props> = ({
     roomConnection.off('storyAdded');
     roomConnection.on('storyAdded', storyAddedCallback);
   }, [storyAddedCallback]);
+
+  useEffect(() => {
+    roomConnection.off('storyDeleted');
+    roomConnection.on('storyDeleted', storyDeletedCallback);
+  }, [storyDeletedCallback]);
 
   useEffect(() => {
     roomConnection.off('storyUpdated');

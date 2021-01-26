@@ -4,7 +4,8 @@ import style from './style.module.scss';
 
 interface IPopupState {
   isHidden: boolean;
-  leftedSpace?: number;
+  left?: number;
+  top?: number;
 }
 
 interface Props {
@@ -14,11 +15,11 @@ interface Props {
 }
 
 const Popup: React.FC<Props> = ({ submittedPoint, popUpState, className }) => {
-  console.log(popUpState.leftedSpace);
+  console.log(popUpState.left);
 
-  return submittedPoint ? (
+  return submittedPoint && submittedPoint.length != 0 ? (
     <div
-      style={{ left: popUpState.leftedSpace }}
+      style={{ left: popUpState.left, top: popUpState.top }}
       className={`${popUpState.isHidden ? style.hiddenPopup : style.showPopup} ${className || ''}`}
     >
       <Typo className={style.title}>Submitted point by users</Typo>
@@ -31,9 +32,7 @@ const Popup: React.FC<Props> = ({ submittedPoint, popUpState, className }) => {
         ))}
       </div>
     </div>
-  ) : (
-    <div></div>
-  );
+  ) : null;
 };
 
 export default Popup;

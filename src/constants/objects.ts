@@ -14,6 +14,23 @@ export const reactModalStyle = {
   },
 };
 
+export const reactWarningModalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    borderRadius: '3px',
+    padding: '1rem',
+    width: '700px',
+  },
+  overlay: {
+    background: 'rgba(0, 0, 0, 0.3)',
+  },
+};
+
 export const jiraStoryModalStyle = {
   content: {
     top: '50%',

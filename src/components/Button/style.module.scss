@@ -4,12 +4,11 @@
   align-items: center;
   outline: none;
   box-shadow: $lightShadow;
-  border-radius: $borderRadius;
+  border-radius: 3px;
   padding: $base;
   border: 1px solid $blue;
   background-color: $blue;
   color: $white;
-  width: fit-content;
 
   &.secondary {
     background-color: $white;

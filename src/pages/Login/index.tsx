@@ -16,7 +16,7 @@ interface Props {
 const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [isPersistentLogin, setIsPersistentLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const history = useHistory();
 
   const goBack = () => history.push('/welcome');
@@ -25,6 +25,7 @@ const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
     if (email.includes(' ') || password.includes(' ')) {
       alert('Invalid username or password');
     } else if (email && password) {
+      setIsLoading(true);
       const loginData: ILoginData = {
         password: password,
         email: email,
@@ -35,15 +36,12 @@ const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
         if (isLoginSuccessful) {
           setIsTokenValid(true);
           history.push('/home');
+          setIsLoading(false);
         } else alert('Invalid username or password');
       } catch (err) {
         alert(err);
       }
     } else alert('Please fill up empty fields');
-  };
-
-  const handleIsChecked = () => {
-    setIsPersistentLogin(!isPersistentLogin);
   };
 
   const handleTextChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,11 +63,7 @@ const Login: React.FC<Props> = ({ login, setIsTokenValid }) => {
         </div>
         <Input name={EMAIL} onTextChange={handleTextChange} placeholder="Enter your email" />
         <Input name={PASSWORD} type="password" onTextChange={handleTextChange} placeholder="Enter your password" />
-        <div className={style.checkBoxContainer}>
-          <Checkbox isChecked={isPersistentLogin} checkHandler={handleIsChecked} />
-          <Typo>Keep me signed in</Typo>
-        </div>
-        <Button fullWidth onClick={submit}>
+        <Button fullWidth onClick={submit} icon={isLoading ? 'fas fa-circle-notch fa-spin' : 'sign-in-alt'}>
           Login
         </Button>
         <Button fullWidth secondary onClick={goBack}>
