@@ -1,4 +1,5 @@
 using scrum_poker_server.Models;
+using System.Collections.Generic;
 
 namespace scrum_poker_server.DTOs
 {
@@ -17,5 +18,16 @@ namespace scrum_poker_server.DTOs
         public bool IsJiraStory { get; set; }
 
         public string JiraIssueId { get; set; }
+
+        public List<SubmittedPointByUser> SubmittedPointByUsers { get; set; }
+    }
+
+    public class SubmittedPointByUser
+    {
+        public int UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public int Point { get; set; }
     }
 }

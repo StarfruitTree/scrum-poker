@@ -63,7 +63,7 @@ namespace scrum_poker_server.Controllers
         [HttpGet, Route("{id}/stories")]
         public async Task<IActionResult> GetStories(int id)
         {
-            var room = await _dbContext.Rooms.Include(r => r.Stories).FirstOrDefaultAsync(r => r.Id == id);
+            var room = await _dbContext.Rooms.Include(r => r.Stories).ThenInclude(s => s.SubmittedPointByUsers).ThenInclude(s => s.User).AsSplitQuery().FirstOrDefaultAsync(r => r.Id == id);
             if (room == null) return NotFound(new { error = "The room doesn't exist" });
 
             var userRoom = await _dbContext.UserRooms.
@@ -74,7 +74,33 @@ namespace scrum_poker_server.Controllers
             var stories = new List<StoryDTO>();
             room.Stories.ToList().ForEach(s =>
             {
-                stories.Add(new StoryDTO { Id = s.Id, Title = s.Title, Content = s.Content, Assignee = s.Assignee, Point = s.Point, IsJiraStory = s.IsJiraStory, JiraIssueId = s.JiraIssueId });
+                var submittedPointByUsers = new List<DTOs.SubmittedPointByUser>();
+
+                if (s.SubmittedPointByUsers != null)
+                {
+                    s.SubmittedPointByUsers.ToList().ForEach(s =>
+                    {
+                        submittedPointByUsers.Add(new DTOs.SubmittedPointByUser
+                        {
+                            UserId = s.UserId,
+                            UserName = s.User.Name,
+                            Point = s.Point
+                        });
+                    });
+                }
+
+                stories.Add(new StoryDTO
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Content = s.Content,
+                    Assignee = s.Assignee,
+                    Point = s.Point,
+                    IsJiraStory = s.IsJiraStory,
+                    JiraIssueId = s.JiraIssueId,
+                    SubmittedPointByUsers = submittedPointByUsers,
+                }
+                );
             });
 
             return Ok(new { stories });
@@ -92,7 +118,7 @@ namespace scrum_poker_server.Controllers
 
             var userRoom = await _dbContext.UserRooms.FirstOrDefaultAsync(ur => ur.Room.Code == data.RoomCode && ur.User.Id.ToString() == userId);
 
-            if (userRoom != null) return Ok(new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = userRoom.Role });
+            if (userRoom != null) return Ok(new { roomId = room.Id, roomCode = data.RoomCode, roomName = room.Name, description = room.Description, role = userRoom.Role, jiraDomain = room.JiraDomain });
 
             await _dbContext.UserRooms.AddAsync(new UserRoom
             {
@@ -107,12 +133,19 @@ namespace scrum_poker_server.Controllers
         }
 
         // This API is used to check the availability of a room (valid room code, full people)
+        [AllowAnonymous]
         [Authorize(Policy = "AllUsers")]
         [HttpGet, Route("checkroom/{roomCode}")]
         public async Task<IActionResult> CheckRoom(string roomCode)
         {
             var room = await _dbContext.Rooms.FirstOrDefaultAsync(r => r.Code == roomCode);
-            var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
+            var userClaim = HttpContext.User.FindFirst("UserId");
+            var userId = -1;
+
+            if (userClaim != null)
+            {
+                userId = int.Parse(userClaim.Value);
+            }
 
             if (room == null)
             {
@@ -125,6 +158,10 @@ namespace scrum_poker_server.Controllers
             else if (_roomService.FindRoom(roomCode).Users.Count >= 12)
             {
                 return StatusCode(403);
+            }
+            else if (userId == -1)
+            {
+                return Ok();
             }
             else if (_roomService.FindRoom(roomCode).Users.Find(u => u.Id == userId) != null)
             {

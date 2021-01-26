@@ -6,6 +6,7 @@ using scrum_poker_server.DTOs;
 using scrum_poker_server.Models;
 using scrum_poker_server.Utils;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,13 +27,28 @@ namespace scrum_poker_server.Controllers
         [HttpGet, Route("get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Id == id);
+            var story = await _dbContext.Stories.Include(s => s.SubmittedPointByUsers).ThenInclude(s => s.User).FirstOrDefaultAsync(s => s.Id == id);
             if (story == null)
             {
                 return StatusCode(404, new { error = "The story is not existed" });
             }
 
-            return Ok(new { id, title = story.Title, content = story.Content, point = story.Point, isJiraStory = story.IsJiraStory, jiraIssueId = story.JiraIssueId });
+            var submittedPointByUsers = new List<DTOs.SubmittedPointByUser>();
+
+            if (story.SubmittedPointByUsers != null)
+            {
+                story.SubmittedPointByUsers.ToList().ForEach(s =>
+                {
+                    submittedPointByUsers.Add(new DTOs.SubmittedPointByUser
+                    {
+                        UserId = s.UserId,
+                        Point = s.Point,
+                        UserName = s.User.Name,
+                    });
+                });
+            }
+
+            return Ok(new { id, title = story.Title, content = story.Content, point = story.Point, isJiraStory = story.IsJiraStory, jiraIssueId = story.JiraIssueId, submittedPointByUsers });
         }
 
         [Authorize(Policy = "OfficialUsers")]
@@ -96,7 +112,7 @@ namespace scrum_poker_server.Controllers
                 var submittedPoint = story.SubmittedPointByUsers.FirstOrDefault(i => i.UserId == userId);
                 if (submittedPoint != null) _dbContext.Remove(submittedPoint);
 
-                story.SubmittedPointByUsers.Add(new SubmittedPointByUser
+                story.SubmittedPointByUsers.Add(new Models.SubmittedPointByUser
                 {
                     Point = data.Point,
                     User = userRoom.User
