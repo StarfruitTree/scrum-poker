@@ -39,6 +39,11 @@ namespace scrum_poker_server.HubModels
             StoryIds.Add(storyId);
         }
 
+        public void RemoveStory(int storyId)
+        {
+            StoryIds.Remove(storyId);
+        }
+
         public void RemoveUser(int id)
         {
             var user = Users.Find(u => u.Id == id);

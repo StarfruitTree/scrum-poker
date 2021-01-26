@@ -110,6 +110,11 @@ namespace scrum_poker_server.Controllers
                 return StatusCode(422, new { error = "The room does not exist" });
             }
 
+            if (room.Stories.Count >= 10)
+            {
+                return Forbid();
+            }
+
             var jiraStory = await _dbContext.Stories.FirstOrDefaultAsync(s => s.JiraIssueId == data.IssueId && s.RoomId == data.RoomId);
             if (jiraStory != null)
             {
@@ -132,8 +137,6 @@ namespace scrum_poker_server.Controllers
             };
 
             var content = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine(content);
 
             JiraIssueResponse issue = JsonSerializer.Deserialize<JiraIssueResponse>(content, options);
 

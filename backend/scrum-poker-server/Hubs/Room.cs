@@ -103,6 +103,13 @@ namespace scrum_poker_server.Hubs
             room.AddStory(id);
         }
 
+        public async Task DeleteStory(string roomCode, int id)
+        {
+            await Clients.Group(roomCode).SendAsync("storyDeleted", new { id });
+            var room = _roomService.FindRoom(roomCode);
+            room.RemoveStory(id);
+        }
+
         public async Task UpdateStory(string roomCode, int id)
         {
             await Clients.Group(roomCode).SendAsync("storyUpdated", new { id });

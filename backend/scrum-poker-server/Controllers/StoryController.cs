@@ -62,6 +62,11 @@ namespace scrum_poker_server.Controllers
                 return StatusCode(422, new { error = "The room does not exist" });
             }
 
+            if (room.Stories.Count >= 10)
+            {
+                return Forbid();
+            }
+
             if (data.IsJiraStory)
             {
                 var jiraStory = _dbContext.Stories.FirstOrDefaultAsync(s => s.JiraIssueId == data.JiraIssueId && s.RoomId == data.RoomId);
@@ -86,6 +91,28 @@ namespace scrum_poker_server.Controllers
             await _dbContext.SaveChangesAsync();
 
             return StatusCode(201, new { id = story.Id });
+        }
+
+        [HttpDelete, Route("delete"), Consumes("application/json"), Authorize(Policy = "OfficialUsers")]
+        public async Task<IActionResult> Delete([FromBody] DeleteStory data)
+        {
+            if (data.StoryId == 0)
+            {
+                return StatusCode(402);
+            }
+
+            var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Id == data.StoryId);
+
+            if (story == null)
+            {
+                return StatusCode(404);
+            }
+
+            _dbContext.Stories.Remove(story);
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { storyId = data.StoryId });
         }
 
         [Authorize(Policy = "AllUsers")]
