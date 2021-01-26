@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import style from './style.module.scss';
 import { Typo, Avatar } from '@scrpoker/components';
 import Popup from './Popup';
+
+interface IPopupState {
+  isHidden: boolean;
+  leftedSpace?: number;
+}
 
 interface Props {
   selected: boolean;
   title: string;
   assignee?: string;
   point?: number;
+  submittedPointByUsers?: ISubmittedPointByUsers[];
   isJiraStory: boolean;
   jiraIssueId?: string;
   className?: string;
@@ -20,28 +26,32 @@ const Story: React.FC<Props> = ({
   title,
   assignee,
   point,
+  submittedPointByUsers,
   isJiraStory,
   jiraIssueId,
   className = '',
 }) => {
-  const [isPopupHidden, setIsPopupHidden] = useState(true);
+  const [popUpState, setPopupState] = useState<IPopupState>({ isHidden: true });
+  const ref = useRef<HTMLDivElement>(null);
 
-  const submittedPointByUsers: ISubmittedPointByUsers[] = [
-    { userId: 1, userName: 'An Pham', point: 5 },
-    { userId: 2, userName: 'Hoang Trinh', point: 3 },
-    { userId: 3, userName: 'Pham Van An', point: 8 },
-  ];
+  const calculateLeftedSpaceAndSetPopupState = (state: boolean) => {
+    if (ref.current) {
+      const leftedSpace = ref.current.getBoundingClientRect().x + ref.current.getBoundingClientRect().width + 5;
+      setPopupState({ isHidden: state, leftedSpace });
+    }
+  };
 
   return (
     <div
-      onMouseEnter={() => setIsPopupHidden(false)}
-      onMouseLeave={() => setIsPopupHidden(true)}
+      onMouseEnter={() => calculateLeftedSpaceAndSetPopupState(false)}
+      onMouseLeave={() => calculateLeftedSpaceAndSetPopupState(true)}
       onClick={onClick}
       className={`${style.story} ${className} ${onClick !== undefined ? style.clickable : ''} ${
         selected ? style.selected : ''
       }`}
+      ref={ref}
     >
-      <Popup className={style.popup} submittedPoint={submittedPointByUsers} isHidden={isPopupHidden} />
+      <Popup className={style.popup} submittedPoint={submittedPointByUsers} popUpState={popUpState} />
       <div className={style.title}>
         <Typo>{title}</Typo>
       </div>

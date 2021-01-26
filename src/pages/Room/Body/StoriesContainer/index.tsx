@@ -307,6 +307,7 @@ const StoriesContainer: React.FC<Props> = ({
       <div className={style.stories}>
         {stories.map((s) => (
           <Story
+            submittedPointByUsers={s.submittedPointByUsers}
             onClick={
               roomState === 'waiting' && role === 0
                 ? () => {

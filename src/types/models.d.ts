@@ -26,6 +26,7 @@ interface IStory {
   point: number;
   isJiraStory: boolean;
   jiraIssueId?: string;
+  submittedPointByUsers?: ISubmittedPointByUsers[];
 }
 
 interface IRoomData {
@@ -51,6 +52,7 @@ interface IRoomInfoPayload {
   roomName: string;
   description: string;
   role: number;
+  jiraDomain?: string;
 }
 
 interface IUserData {

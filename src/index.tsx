@@ -7,6 +7,7 @@ import { store } from './store';
 import './index.scss';
 import { AUTHENTICATE, JOIN_ROOM, REFRESH_TOKEN } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
+import { GlobalRoomJiraDomain } from '@scrpoker/constants/objects';
 import { Actions } from '@scrpoker/store';
 import CookieReader from 'js-cookie';
 
@@ -76,6 +77,9 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((roomData: IRoomInfoPayload) => {
+        if (roomData.jiraDomain) {
+          GlobalRoomJiraDomain.roomJiraDomain = roomData.jiraDomain;
+        }
         store.dispatch(Actions.roomActions.updateRoomInfo(roomData));
       })
       .catch((err) => {

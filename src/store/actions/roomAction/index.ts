@@ -33,6 +33,8 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
         GlobalRoomJiraDomain.roomJiraDomain = jiraDomain;
       }
 
+      console.log(jiraDomain);
+
       dispatch({
         type: 'UPDATE_ROOM_INFO',
         payload: {

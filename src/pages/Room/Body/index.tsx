@@ -79,6 +79,7 @@ const Body: React.FC<Props> = ({
           point: data.point,
           isJiraStory: data.isJiraStory,
           jiraIssueId: data.jiraIssueId,
+          submittedPointByUsers: data.submittedPointByUsers,
         },
       ]);
 
@@ -106,6 +107,7 @@ const Body: React.FC<Props> = ({
       updatedStories.forEach((s) => {
         if (s.id === data.id) {
           s.point = data.point;
+          s.submittedPointByUsers = data.submittedPointByUsers;
         }
       });
       setStories(updatedStories);
