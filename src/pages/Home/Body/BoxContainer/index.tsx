@@ -6,7 +6,7 @@ import style from './style.module.scss';
 import Box from './Box';
 import { Actions } from '@scrpoker/store';
 import { connect } from 'react-redux';
-import { reactModalStyle } from '@scrpoker/constants/objects';
+import { reactModalStyle, reactWarningModalStyle } from '@scrpoker/constants/objects';
 import { CHECK_ROOM } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
 
@@ -52,6 +52,10 @@ const BoxContainer: React.FC<Props> = ({
   const [jiraDomain, setJiraDomain] = useState('');
   const [apiToken, setAPIToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [domainWarningModal, setDomainWarningModal] = useState(false);
+  const [tokenWarningModal, setTokenWarningModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+
   const history = useHistory();
 
   const openJoinRoomModal = () => {
@@ -68,6 +72,30 @@ const BoxContainer: React.FC<Props> = ({
 
   const closeIntegrationModal = () => {
     setIsIntegrationModalIsOpen(false);
+  };
+
+  const showDomainWarningModal = () => {
+    setDomainWarningModal(true);
+  };
+
+  const hideDomainWarningModal = () => {
+    setDomainWarningModal(false);
+  };
+
+  const showTokenWarningModal = () => {
+    setTokenWarningModal(true);
+  };
+
+  const hideTokenWarningModal = () => {
+    setTokenWarningModal(false);
+  };
+
+  const showSuccessModal = () => {
+    setSuccessModal(true);
+  };
+
+  const hideSuccessModal = () => {
+    setSuccessModal(false);
   };
 
   const handleRoomCodeChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,6 +143,7 @@ const BoxContainer: React.FC<Props> = ({
       jiraDomain,
       jiraEmail,
       apiToken,
+      roomCode: userRoomCode as string,
     };
 
     if (jiraDomain && jiraEmail && apiToken) {
@@ -122,9 +151,13 @@ const BoxContainer: React.FC<Props> = ({
       setIsLoading(false);
 
       if (!responseStatus.isSuccessful) {
-        alert(responseStatus.data?.error);
+        if (responseStatus.data?.error === 'The domain is not valid') {
+          showDomainWarningModal();
+        } else {
+          showTokenWarningModal();
+        }
       } else {
-        alert('Added successfully');
+        showSuccessModal();
         closeIntegrationModal();
       }
     } else {
@@ -248,6 +281,51 @@ const BoxContainer: React.FC<Props> = ({
           ) : (
             <Button onClick={addJiraToken}>Submit</Button>
           )}
+        </div>
+      </ReactModal>
+      <ReactModal
+        style={reactWarningModalStyle}
+        isOpen={domainWarningModal}
+        onRequestClose={hideDomainWarningModal}
+        closeTimeoutMS={100}
+      >
+        <div className={style.description}>
+          <Typo>The domain is not valid</Typo>
+          <div>
+            <Button className={style.okButton} onClick={hideDomainWarningModal}>
+              Ok
+            </Button>
+          </div>
+        </div>
+      </ReactModal>
+      <ReactModal
+        style={reactWarningModalStyle}
+        isOpen={tokenWarningModal}
+        onRequestClose={hideTokenWarningModal}
+        closeTimeoutMS={100}
+      >
+        <div className={style.description}>
+          <Typo>The email or API token is not valid</Typo>
+          <div>
+            <Button className={style.okButton} onClick={hideTokenWarningModal}>
+              Ok
+            </Button>
+          </div>
+        </div>
+      </ReactModal>
+      <ReactModal
+        style={reactWarningModalStyle}
+        isOpen={successModal}
+        onRequestClose={hideSuccessModal}
+        closeTimeoutMS={100}
+      >
+        <div className={style.description}>
+          <Typo>Added successfully</Typo>
+          <div>
+            <Button className={style.okButton} onClick={hideSuccessModal}>
+              Ok
+            </Button>
+          </div>
         </div>
       </ReactModal>
       {boxes.map((box, key) => (

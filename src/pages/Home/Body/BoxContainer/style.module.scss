@@ -16,6 +16,7 @@
 .submit {
   display: flex;
   justify-content: center;
+  margin-top: 0.5rem;
 }
 
 .title {
@@ -39,4 +40,17 @@
 
 .loadingButton {
   width: 94.81px;
+  height: 53px;
+}
+
+.okButton {
+  background-color: #276ef1;
+  border-radius: 3px;
+  height: 35px;
+  float: right;
+  margin-top: 1rem;
+}
+
+.description {
+  margin-bottom: 0.5rem;
 }

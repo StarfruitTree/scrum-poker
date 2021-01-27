@@ -24,7 +24,7 @@ export const reactWarningModalStyle = {
     transform: 'translate(-50%, -50%)',
     borderRadius: '3px',
     padding: '1rem',
-    width: '700px',
+    maxWidth: '700px',
   },
   overlay: {
     background: 'rgba(0, 0, 0, 0.3)',

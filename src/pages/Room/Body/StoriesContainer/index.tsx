@@ -3,12 +3,7 @@ import ReactModal from 'react-modal';
 import style from './style.module.scss';
 import { Typo, Icon, Input, Button } from '@scrpoker/components';
 import { ADD_STORY, FETCH_JIRA_STORIES, DELETE_STORY } from '@scrpoker/constants/apis';
-import {
-  GlobalRoomJiraDomain,
-  reactModalStyle,
-  jiraStoryModalStyle,
-  reactWarningModalStyle,
-} from '@scrpoker/constants/objects';
+import { GlobalRoomJiraDomain, reactModalStyle, jiraStoryModalStyle } from '@scrpoker/constants/objects';
 import Story from './Story';
 import { connect } from 'react-redux';
 import { getAuthHeader, debounce } from '@scrpoker/utils';
@@ -303,7 +298,7 @@ const StoriesContainer: React.FC<Props> = ({
       </div>
       {GlobalRoomJiraDomain.roomJiraDomain ? (
         <div className={style.jiraDomain}>
-          <Typo>Jira domain: anvpham.atlassian.net</Typo>
+          <Typo>Jira domain: {GlobalRoomJiraDomain.roomJiraDomain}</Typo>
         </div>
       ) : (
         ''

@@ -13,6 +13,7 @@ interface Props {
   small?: boolean;
   square?: boolean;
   pointerCursor?: boolean;
+  lightFont?: boolean;
   onClick?: () => void;
 }
 
@@ -26,6 +27,7 @@ const Button: React.FC<Props> = ({
   secondary = false,
   small = false,
   square = false,
+  lightFont = false,
   pointerCursor = true,
   onClick,
 }) => {

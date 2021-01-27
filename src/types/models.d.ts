@@ -82,6 +82,7 @@ interface IJiraUserCredentials {
   jiraEmail: string;
   jiraDomain: string;
   apiToken: string;
+  roomCode: string;
 }
 
 interface IUserInfoPayload {

@@ -146,11 +146,9 @@ const ControlPanel: React.FC<Props> = ({
       >
         <div className={style.description}>
           <Typo>The point is not submitted on Jira because your Jira token has been revoked</Typo>
-          <div>
-            <Button className={style.okButton} onClick={close400Modal}>
-              Ok
-            </Button>
-          </div>
+          <Button className={style.okButton} onClick={close400Modal}>
+            Ok
+          </Button>
         </div>
       </ReactModal>
       <ReactModal closeTimeoutMS={100} isOpen={is400ModalOpen} style={reactWarningModalStyle}>
@@ -169,6 +167,11 @@ const ControlPanel: React.FC<Props> = ({
                 /secure/admin/AssociateFieldToScreens!default.jspa?fieldId=customfield_10026
               </Typo>
             </Typo>
+          </div>
+          <div>
+            <Button className={style.okButton} onClick={close400Modal}>
+              Ok
+            </Button>
           </div>
         </div>
       </ReactModal>
