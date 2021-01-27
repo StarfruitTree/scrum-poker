@@ -12,6 +12,7 @@ using System.Text.Json;
 using scrum_poker_server.Models;
 using scrum_poker_server.POCOs;
 using System.Net;
+using System.Linq;
 
 namespace scrum_poker_server.Controllers
 {
@@ -32,7 +33,7 @@ namespace scrum_poker_server.Controllers
         [HttpPost, Route("addtoken"), Authorize(Policy = "OfficialUsers"), Consumes("application/json")]
         public async Task<IActionResult> AddToken([FromBody] JiraUserCredentials data)
         {
-            if (data.JiraDomain.Contains("http")) return StatusCode(404, new { error = "The domain is not valid" });
+            if (data.JiraDomain.Contains("http") || !data.JiraDomain.Contains('.')) return StatusCode(404, new { error = "The domain is not valid" });
 
             bool isDomainValid = false;
             var client = _clientFactory.CreateClient();
@@ -62,7 +63,23 @@ namespace scrum_poker_server.Controllers
             }
 
             var userId = int.Parse(HttpContext.User.FindFirst("UserId").Value);
-            var userRoom = await _dbContext.UserRooms.Include(ur => ur.Room).Include(ur => ur.User).FirstOrDefaultAsync(ur => ur.UserID == userId);
+
+            var userRoom = await _dbContext.UserRooms
+                .Include(ur => ur.Room)
+                .ThenInclude(r => r.Stories)
+                .ThenInclude(s => s.SubmittedPointByUsers).Include(ur => ur.User).AsSplitQuery()
+                .FirstOrDefaultAsync(ur => ur.UserID == userId && ur.Room.Code == data.RoomCode);
+
+            if (userRoom.User.JiraToken != null)
+            {
+                userRoom.Room.Stories.ToList().ForEach(s =>
+                {
+                    _dbContext.SubmittedPointByUsers.RemoveRange(s.SubmittedPointByUsers);
+                });
+
+                _dbContext.Stories.RemoveRange(userRoom.Room.Stories);
+            }
+
             userRoom.User.JiraToken = JiraToken;
             userRoom.User.JiraDomain = data.JiraDomain;
             userRoom.Room.JiraDomain = data.JiraDomain;

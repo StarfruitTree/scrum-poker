@@ -101,13 +101,14 @@ namespace scrum_poker_server.Controllers
                 return StatusCode(402);
             }
 
-            var story = await _dbContext.Stories.FirstOrDefaultAsync(s => s.Id == data.StoryId);
+            var story = await _dbContext.Stories.Include(s => s.SubmittedPointByUsers).FirstOrDefaultAsync(s => s.Id == data.StoryId);
 
             if (story == null)
             {
                 return StatusCode(404);
             }
 
+            _dbContext.SubmittedPointByUsers.RemoveRange(story.SubmittedPointByUsers);
             _dbContext.Stories.Remove(story);
 
             await _dbContext.SaveChangesAsync();
