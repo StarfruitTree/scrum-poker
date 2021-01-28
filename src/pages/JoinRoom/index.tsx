@@ -47,7 +47,7 @@ const JoinRoom: React.FC<Props> = ({ changeName, signUp, joinRoom, setIsTokenVal
       });
 
       if (roomStatus.isAvailable) {
-        if (userName && userName.trim() != '') {
+        if (userName && userName.trim() != '' && userName.length <= 20) {
           try {
             if (getAuthHeader()) {
               switch (userName !== CookieReader.get('userName')) {
@@ -73,7 +73,7 @@ const JoinRoom: React.FC<Props> = ({ changeName, signUp, joinRoom, setIsTokenVal
           } catch (err) {
             console.log(err);
           }
-        } else alert('Username cannot be empty or white space');
+        } else alert(`Username cannot be empty or white space and can't exceed 20 characters`);
       } else {
         alert(roomStatus.errorMessage);
       }
