@@ -24,6 +24,9 @@ interface IStory {
   content: string;
   assignee?: string;
   point: number;
+  isJiraStory: boolean;
+  jiraIssueId?: string;
+  submittedPointByUsers?: ISubmittedPointByUsers[];
 }
 
 interface IRoomData {
@@ -40,6 +43,7 @@ interface IRoomData {
   role: number | undefined;
   currentStory: IStory | undefined;
   currentStoryPoint: number;
+  jiraIssueIds: string[];
 }
 
 interface IRoomInfoPayload {
@@ -48,10 +52,13 @@ interface IRoomInfoPayload {
   roomName: string;
   description: string;
   role: number;
+  jiraDomain?: string;
 }
 
 interface IUserData {
   jwtToken: string;
+  jiraToken?: string;
+  jiraDomain?: string;
   userId: number;
   name: string;
   action: number;
@@ -59,11 +66,32 @@ interface IUserData {
   email: string | undefined;
 }
 
+interface IUserInfoResponse {
+  jwtToken: string;
+  jiraToken?: string;
+  jiraDomain?: string;
+  userId: number;
+  name: string;
+  userRoomCode?: string;
+  expiration: number;
+  email?: string;
+  isLoginFailed?: boolean;
+}
+
+interface IJiraUserCredentials {
+  jiraEmail: string;
+  jiraDomain: string;
+  apiToken: string;
+  roomCode: string;
+}
+
 interface IUserInfoPayload {
   userId: number;
   name: string;
   userRoomCode: string | undefined;
   email: string | undefined;
+  jiraToken?: string;
+  jiraDomain?: string;
 }
 interface IUser {
   id: number;
@@ -96,4 +124,15 @@ interface IUsersAndRoomStateAndCurrentStoryPoint {
   users: IUser[];
   roomState: string;
   currentStoryPoint: number;
+}
+
+interface IJiraTokenPayload {
+  jiraToken: string;
+  jiraDomain: string;
+}
+
+interface ISubmittedPointByUsers {
+  userId: number;
+  userName: string;
+  point: number;
 }

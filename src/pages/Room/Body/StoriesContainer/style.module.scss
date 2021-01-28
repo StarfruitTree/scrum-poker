@@ -7,13 +7,14 @@
   display: flex;
   flex-direction: column;
   margin-right: 2rem;
+  flex: 1;
+  overflow: hidden;
 }
 
 .firstColumn {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  width: 333px;
+  margin-bottom: 0.5rem;
   padding: 0 0.5rem;
 }
 
@@ -46,7 +47,60 @@
 }
 
 .input {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   box-shadow: $lightShadow;
+}
+
+.longButton {
+  margin: 1rem;
+  width: 350px;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.closeButton {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.longInput {
+  width: 100%;
+}
+
+.lessMarginTitle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.jiraStoriesTable {
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.jiraDomain {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+@media only screen and (max-width: 1366px) {
+  .storiesContainer {
+    border: 1px solid #ece9e9;
+    border-radius: 8px;
+    background-color: #f4f4f4;
+    padding: 1rem 0.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+    flex: 1.5;
+    overflow: hidden;
+  }
 }

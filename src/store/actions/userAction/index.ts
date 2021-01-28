@@ -1,16 +1,17 @@
 import { Dispatch } from 'redux';
-import { SIGN_UP, LOGIN, AUTHENTICATE, CHANGE_NAME } from '@scrpoker/constants/apis';
+import { SIGN_UP, LOGIN, AUTHENTICATE, CHANGE_NAME, SUBMIT_JIRA_USER_CREDENTIALS } from '@scrpoker/constants/apis';
 import { ThunkAction } from 'redux-thunk';
 import { getAuthHeader } from '@scrpoker/utils';
+import { Actions } from '@scrpoker/store';
+import { act } from 'react-test-renderer';
 
-interface IUserInfoResponse {
-  jwtToken: string;
-  userId: number;
-  name: string;
-  userRoomCode?: string;
-  expiration: number;
-  email?: string;
-  isLoginFailed?: boolean;
+interface IJiraResponse {
+  isSuccessful: boolean;
+  data?: {
+    error?: string;
+    jiraToken?: string;
+    jiraDomain?: string;
+  };
 }
 
 export const signUp = (
@@ -41,15 +42,14 @@ export const signUp = (
           document.cookie = `officialUser=thisuserhasemail;expires=${date};path=/`;
         }
 
-        dispatch({
-          type: 'UPDATE_USER_INFO',
-          payload: {
-            userId,
-            name,
-            userRoomCode,
-            email,
-          },
-        });
+        const userInfo: IUserInfoPayload = {
+          userId,
+          name,
+          userRoomCode,
+          email,
+        };
+
+        dispatch(Actions.userActions.updateUserInfo(userInfo));
 
         return true;
       }
@@ -73,31 +73,44 @@ export const login = (
         return response.json();
       } else return { isLoginFailed: true };
     })
-    .then(({ jwtToken, userId, name, userRoomCode, expiration, email, isLoginFailed }: IUserInfoResponse) => {
-      if (isLoginFailed) {
-        return false;
-      } else {
-        const date = new Date();
-        date.setMinutes(date.getMinutes() + expiration);
-        document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
-        document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
-        if (email) {
-          document.cookie = `officialUser=thisuserhasemail;expires=${date};path=/`;
-        }
+    .then(
+      ({
+        jwtToken,
+        jiraToken,
+        jiraDomain,
+        userId,
+        name,
+        userRoomCode,
+        expiration,
+        email,
+        isLoginFailed,
+      }: IUserInfoResponse) => {
+        if (isLoginFailed) {
+          return false;
+        } else {
+          const date = new Date();
+          date.setMinutes(date.getMinutes() + expiration);
+          document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+          document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
+          if (email) {
+            document.cookie = `officialUser=thisuserhasemail;expires=${date};path=/`;
+          }
 
-        dispatch({
-          type: 'UPDATE_USER_INFO',
-          payload: {
+          const userInfo: IUserInfoPayload = {
             userId,
             name,
             userRoomCode,
             email,
-          },
-        });
+            jiraToken,
+            jiraDomain,
+          };
 
-        return true;
+          dispatch(Actions.userActions.updateUserInfo(userInfo));
+
+          return true;
+        }
       }
-    })
+    )
     .catch((err) => console.log(err));
 
 export const authenticate = (): ThunkAction<Promise<void>, IGlobalState, unknown, IRoomAction> => (
@@ -110,18 +123,66 @@ export const authenticate = (): ThunkAction<Promise<void>, IGlobalState, unknown
     },
   })
     .then((response) => response.json())
-    .then(({ userId, name, userRoomCode, email }: IUserInfoResponse) => {
-      dispatch({
-        type: 'UPDATE_USER_INFO',
-        payload: {
-          userId,
-          name,
-          userRoomCode,
-          email,
-        },
-      });
+    .then(({ jiraToken, jiraDomain, userId, name, userRoomCode, email }: IUserInfoResponse) => {
+      const userInfo: IUserInfoPayload = {
+        userId,
+        name,
+        userRoomCode,
+        email,
+        jiraToken,
+        jiraDomain,
+      };
+
+      dispatch(Actions.userActions.updateUserInfo(userInfo));
     })
     .catch((err) => console.log(err));
+
+export const submitJiraUserCredentials = (
+  data: IJiraUserCredentials
+): ThunkAction<Promise<void | IJiraResponse>, IGlobalState, unknown, IRoomAction> => (dispatch: Dispatch) =>
+  fetch(SUBMIT_JIRA_USER_CREDENTIALS, {
+    body: JSON.stringify(data),
+    method: 'POST',
+    headers: {
+      Authorization: getAuthHeader() as string,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(async (response) => {
+      if (response.status === 201) {
+        return {
+          isSuccessful: true,
+          data: await response.json(),
+        };
+      } else {
+        return {
+          isSuccessful: false,
+          data: await response.json(),
+        };
+      }
+    })
+    .then(({ isSuccessful, data }: IJiraResponse) => {
+      if (!isSuccessful) {
+        return {
+          isSuccessful: false,
+          data: {
+            error: data?.error,
+          },
+        };
+      } else {
+        dispatch({
+          type: 'UPDATE_JIRA_TOKEN',
+          payload: {
+            jiraToken: data?.jiraToken as string,
+            jiraDomain: data?.jiraDomain as string,
+          },
+        });
+
+        return {
+          isSuccessful: true,
+        };
+      }
+    });
 
 export const changeName = (
   changeNameData: IChangeNameData
@@ -130,6 +191,7 @@ export const changeName = (
     method: 'POST',
     headers: {
       Authorization: getAuthHeader() as string,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(changeNameData),
   })
@@ -166,5 +228,12 @@ export const updateUserAction = (action: string): IUserAction => {
   return {
     type: 'UPDATE_USER_ACTION',
     payload: action,
+  };
+};
+
+export const updateIsJiraTokenValid = (data: boolean): IUserAction => {
+  return {
+    type: 'UPDATE_IS_JIRA_TOKEN_VALID',
+    payload: data,
   };
 };

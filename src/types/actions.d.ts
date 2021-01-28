@@ -14,7 +14,8 @@ interface IRoomAction extends IAction {
     | boolean
     | number
     | undefined
-    | IUser[];
+    | IUser[]
+    | string[];
 }
 
 interface IUserAction extends IAction {

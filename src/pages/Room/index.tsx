@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Body from './Body';
 import style from './style.module.scss';
-import * as signalR from '@microsoft/signalr';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 import { ROOM_CHANNEL } from '@scrpoker/constants/apis';
 import CookieReader from 'js-cookie';
 import { Actions } from '@scrpoker/store';
@@ -17,7 +17,7 @@ interface Props {
   cleanUpRoomData: (data: IRoomData) => IRoomAction;
 }
 
-const connection = new signalR.HubConnectionBuilder()
+const connection = new HubConnectionBuilder()
   .withUrl(ROOM_CHANNEL, { accessTokenFactory: () => CookieReader.get('jwtToken') as string })
   .build();
 

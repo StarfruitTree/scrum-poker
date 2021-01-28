@@ -4,35 +4,48 @@
   border-radius: 8px;
   box-shadow: 0 1px 3px #888888;
   width: 100%;
-  height: 100px;
-  padding: 0.8rem;
+  height: 120px;
+  padding: 0.5rem 0.8rem;
   flex-direction: column;
   justify-content: space-between;
   background-color: white;
+  transition: background-color 140ms ease-in-out;
+  position: relative;
+}
+
+.story:hover {
+  background-color: #f4f5f7;
+  .closeButton {
+    display: block;
+  }
 }
 
 .title {
   font-weight: 500;
   font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1rem;
 }
 
 .details {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-top: 1.5rem;
 }
 
 .point {
   border: 1px solid transparent;
   border-radius: 5px;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #376fe9;
+  background-color: #276ef1;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 
@@ -42,11 +55,32 @@
   font-weight: 500;
 }
 
-span {
+.span {
   font-weight: 500;
   margin-left: 0.3rem;
 }
 
 .clickable {
   cursor: pointer;
+}
+
+.selected {
+  border: 2px solid #276ef1;
+}
+
+.jiraIssueId {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  position: fixed;
+}
+
+.closeButton {
+  display: none;
+  position: absolute;
+  font-size: 1rem;
+  right: 10px;
 }

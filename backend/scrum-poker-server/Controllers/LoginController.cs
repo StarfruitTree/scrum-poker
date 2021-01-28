@@ -32,25 +32,23 @@ namespace scrum_poker_server.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDTO data)
         {
-            if (ModelState.IsValid)
+            var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
+            string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
+
+            var userRoom = await _dbContext.UserRooms.Include(ur => ur.Room).Include(ur => ur.User).FirstOrDefaultAsync(ur => ur.User.Email == data.Email && ur.User.Password == hashedPassword);
+            if (userRoom == null) return Unauthorized();
+
+            return Ok(new
             {
-                var bytes = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(data.Password));
-                string hashedPassword = BitConverter.ToString(bytes).Replace("-", "").ToLower();
-
-                var userRoom = await _dbContext.UserRooms.Include(ur => ur.Room).Include(ur => ur.User).FirstOrDefaultAsync(ur => ur.User.Email == data.Email && ur.User.Password == hashedPassword);
-                if (userRoom == null) return Unauthorized();
-
-                return Ok(new
-                {
-                    jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = userRoom.UserID, Name = userRoom.User.Name }),
-                    expiration = 29,
-                    name = userRoom.User.Name,
-                    userId = userRoom.UserID,
-                    userRoomCode = userRoom.Room.Code,
-                    email = data.Email
-                });
-            }
-            else return StatusCode(422);
+                jwtToken = JwtTokenGenerator.GenerateToken(new UserData { Email = data.Email, UserId = userRoom.UserID, Name = userRoom.User.Name }),
+                expiration = 29,
+                name = userRoom.User.Name,
+                userId = userRoom.UserID,
+                userRoomCode = userRoom.Room.Code,
+                email = data.Email,
+                jiraToken = userRoom.User.JiraToken,
+                jiraDomain = userRoom.User.JiraDomain,
+            });
         }
     }
 }

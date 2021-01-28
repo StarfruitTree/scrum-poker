@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
 using Microsoft.IdentityModel.Tokens;
 using scrum_poker_server.Data;
 using scrum_poker_server.Hubs;
@@ -36,8 +38,7 @@ namespace scrum_poker_server
                       builder.SetIsOriginAllowed(_ => true)
                            .AllowAnyMethod()
                            .AllowAnyHeader()
-                           .AllowCredentials()
-                           .WithOrigins("https://scrum-poker.starfruit-tree.vercel.app");
+                           .AllowCredentials();
                   }));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -82,6 +83,8 @@ namespace scrum_poker_server
                 });
             });
 
+            services.AddHttpClient();
+            services.RemoveAll<IHttpMessageHandlerBuilderFilter>();
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<RoomService>();

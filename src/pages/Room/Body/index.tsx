@@ -6,13 +6,16 @@ import { connect } from 'react-redux';
 import { GET_STORY, GET_ROOM_STORIES } from '@scrpoker/constants/apis';
 import { Actions } from '@scrpoker/store';
 import { getAuthHeader } from '@scrpoker/utils';
+import { GlobalPoints } from '@scrpoker/utils/pointController';
 
 interface Props {
   className?: string;
   roomConnection: any;
   roomId?: number;
+  jiraIssueIds: string[];
   updateCurrentStory: (story: IStory | undefined) => IRoomAction;
   updateCurrentStoryPoint: (point: number) => IRoomAction;
+  updateJiraIssueIds: (issueIds: string[]) => IRoomAction;
 }
 
 interface IStoryData {
@@ -26,8 +29,10 @@ interface ICurrentStoryPointData {
 const Body: React.FC<Props> = ({
   roomConnection,
   roomId,
+  jiraIssueIds,
   updateCurrentStory,
   updateCurrentStoryPoint,
+  updateJiraIssueIds,
   className = '',
 }) => {
   const [stories, setStories] = useState([] as IStory[]);
@@ -39,8 +44,18 @@ const Body: React.FC<Props> = ({
           Authorization: getAuthHeader() as string,
         },
       });
-      const data = await response.json();
-      setStories(data.stories);
+      const stories = (await response.json()).stories as IStory[];
+      setStories(stories);
+
+      const jiraIssueIds: string[] = [];
+
+      stories.forEach((s) => {
+        if (s.isJiraStory) {
+          jiraIssueIds.push(s.jiraIssueId as string);
+        }
+      });
+
+      updateJiraIssueIds(jiraIssueIds);
     }
   };
 
@@ -55,7 +70,24 @@ const Body: React.FC<Props> = ({
     if (response.status === 404) {
       console.log(data.error);
     } else {
-      setStories([...stories, { id, title: data.title, content: data.content, point: data.point }]);
+      setStories([
+        ...stories,
+        {
+          id,
+          title: data.title,
+          content: data.content,
+          point: data.point,
+          isJiraStory: data.isJiraStory,
+          jiraIssueId: data.jiraIssueId,
+          submittedPointByUsers: data.submittedPointByUsers,
+        },
+      ]);
+
+      if (data.isJiraStory) {
+        const newJiraIssueIds = jiraIssueIds.slice();
+        newJiraIssueIds.push(data.jiraIssueId);
+        updateJiraIssueIds(newJiraIssueIds);
+      }
     }
   };
 
@@ -75,10 +107,26 @@ const Body: React.FC<Props> = ({
       updatedStories.forEach((s) => {
         if (s.id === data.id) {
           s.point = data.point;
+          s.submittedPointByUsers = data.submittedPointByUsers;
         }
       });
       setStories(updatedStories);
     }
+  };
+
+  const storyDeletedCallback = ({ id }: IStoryData) => {
+    const newStories = stories.slice(0);
+    const story = newStories.find((s) => s.id === id);
+
+    if (story?.isJiraStory) {
+      const newJiraIssueIds = jiraIssueIds.slice(0);
+      const jiraIssueId = newJiraIssueIds.find((s) => s === story.jiraIssueId);
+      newJiraIssueIds.splice(newJiraIssueIds.indexOf(jiraIssueId as string), 1);
+      updateJiraIssueIds(newJiraIssueIds);
+    }
+
+    newStories.splice(newStories.indexOf(story as IStory), 1);
+    setStories(newStories);
   };
 
   const currentStoryChangedCallback = ({ id }: IStoryData) => {
@@ -87,6 +135,7 @@ const Body: React.FC<Props> = ({
   };
 
   const currentStoryPointChangedCallback = ({ point }: ICurrentStoryPointData) => {
+    GlobalPoints.pointer = GlobalPoints.points.indexOf(point) as number;
     updateCurrentStoryPoint(point);
   };
 
@@ -94,6 +143,11 @@ const Body: React.FC<Props> = ({
     roomConnection.off('storyAdded');
     roomConnection.on('storyAdded', storyAddedCallback);
   }, [storyAddedCallback]);
+
+  useEffect(() => {
+    roomConnection.off('storyDeleted');
+    roomConnection.on('storyDeleted', storyDeletedCallback);
+  }, [storyDeletedCallback]);
 
   useEffect(() => {
     roomConnection.off('storyUpdated');
@@ -122,16 +176,18 @@ const Body: React.FC<Props> = ({
   );
 };
 
-const mapStateToProps = ({ roomData: { roomConnection, roomId } }: IGlobalState) => {
+const mapStateToProps = ({ roomData: { roomConnection, roomId, jiraIssueIds } }: IGlobalState) => {
   return {
     roomConnection,
     roomId,
+    jiraIssueIds,
   };
 };
 
 const mapDispatchToProps = {
   updateCurrentStory: Actions.roomActions.updateCurrentStory,
   updateCurrentStoryPoint: Actions.roomActions.updateCurrentStoryPoint,
+  updateJiraIssueIds: Actions.roomActions.updateJiraIssueIds,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Body);

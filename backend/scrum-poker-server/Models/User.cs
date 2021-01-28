@@ -17,6 +17,10 @@ namespace scrum_poker_server.Models
         [Column(TypeName = "varchar(255)")]
         public string Password { get; set; }
 
+        public string JiraToken { get; set; }
+
+        public string JiraDomain { get; set; }
+
         [ForeignKey("Account")]
         public int? AccountId { get; set; }
 

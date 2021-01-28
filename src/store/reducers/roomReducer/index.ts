@@ -28,6 +28,8 @@ const reducer = (state: IRoomData = initialRoomData, action: IRoomAction): IRoom
       return { ...state, ...(action.payload as IRoomData) };
     case 'UPDATE_USERS_AND_ROOM_STATE_AND_CURRENT_STORY_POINT':
       return { ...state, ...(action.payload as IUsersAndRoomStateAndCurrentStoryPoint) };
+    case 'UPDATE_JIRA_ISSUE_IDS':
+      return { ...state, jiraIssueIds: action.payload as string[] };
     default:
       return state;
   }

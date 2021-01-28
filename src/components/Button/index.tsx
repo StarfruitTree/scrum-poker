@@ -10,6 +10,10 @@ interface Props {
   icon?: string;
   className?: string;
   disabled?: boolean;
+  small?: boolean;
+  square?: boolean;
+  pointerCursor?: boolean;
+  lightFont?: boolean;
   onClick?: () => void;
 }
 
@@ -21,20 +25,31 @@ const Button: React.FC<Props> = ({
   fullWidth = false,
   disabled = false,
   secondary = false,
+  small = false,
+  square = false,
+  lightFont = false,
+  pointerCursor = true,
   onClick,
 }) => {
   const widthClass = fullWidth ? style.fullWidth : '';
   const typeClass = secondary ? style.secondary : '';
   const classes = `${style.button} ${widthClass} ${typeClass} ${className}`;
   return linkTo ? (
-    <Link to={linkTo} className={classes}>
+    <Link to={linkTo} className={`${classes} ${small ? style.small : ''}`}>
       <Typo type="span">{children}</Typo>
-      {icon && <Icon name={icon} />}
+      {icon && <Icon className={children ? style.marginedIcon : style.normalIcon} name={icon} />}
     </Link>
   ) : (
-    <button onClick={onClick} className={classes} type="button" disabled={disabled}>
-      <Typo type="span">{children}</Typo>
-      {icon && <Icon name={icon} />}
+    <button
+      onClick={onClick}
+      className={`${classes} ${small ? style.small : ''} ${square ? style.square : ''} ${
+        pointerCursor ? style.pointer : ''
+      }`}
+      type="button"
+      disabled={disabled}
+    >
+      {children && <Typo type="span">{children}</Typo>}
+      {icon && <Icon className={children ? style.marginedIcon : style.normalIcon} name={icon} size="lg" />}
     </button>
   );
 };

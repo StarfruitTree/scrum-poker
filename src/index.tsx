@@ -7,17 +7,9 @@ import { store } from './store';
 import './index.scss';
 import { AUTHENTICATE, JOIN_ROOM, REFRESH_TOKEN } from '@scrpoker/constants/apis';
 import { getAuthHeader } from '@scrpoker/utils';
+import { GlobalRoomJiraDomain } from '@scrpoker/constants/objects';
 import { Actions } from '@scrpoker/store';
 import CookieReader from 'js-cookie';
-
-interface IUserInfoResponse {
-  jwtToken: string;
-  userId: number;
-  name: string;
-  userRoomCode?: string;
-  expiration: number;
-  email?: string;
-}
 
 const App = () => {
   const [isTokenValid, setIsTokenValid] = useState(getAuthHeader() ? true : false);
@@ -26,7 +18,7 @@ const App = () => {
 
   const refreshToken = async () => {
     fetch(REFRESH_TOKEN, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Authorization: getAuthHeader() as string,
       },
@@ -54,13 +46,16 @@ const App = () => {
       .then((response) => {
         return response.json();
       })
-      .then(({ userId, name, userRoomCode, email }: IUserInfoResponse) => {
+      .then(({ userId, name, userRoomCode, email, jiraToken, jiraDomain }: IUserInfoResponse) => {
         const userInfo: IUserInfoPayload = {
           userId,
           name,
           userRoomCode,
           email,
+          jiraToken,
+          jiraDomain,
         };
+
         store.dispatch(Actions.userActions.updateUserInfo(userInfo));
       })
       .catch((err) => console.log(err));
@@ -82,6 +77,9 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((roomData: IRoomInfoPayload) => {
+        if (roomData.jiraDomain) {
+          GlobalRoomJiraDomain.roomJiraDomain = roomData.jiraDomain;
+        }
         store.dispatch(Actions.roomActions.updateRoomInfo(roomData));
       })
       .catch((err) => {
@@ -93,14 +91,20 @@ const App = () => {
     if (isTokenValid) {
       authenticate();
       if (currentPath.includes('/room')) {
-        joinRoom();
+        if (!currentPath.includes('/room/join')) {
+          joinRoom();
+        }
       }
       const expiration = new Date(CookieReader.get('tokenExpiration') as string);
-      if (expiration.getDate() - new Date().getDate() <= 300000) {
+      if (expiration.getTime() - new Date().getTime() <= 300000) {
+        console.log('hihihi');
         refreshToken();
       } else {
         expiration.setMinutes(expiration.getMinutes() - 5);
-        setTimeout(refreshToken, expiration.getTime() - new Date().getTime());
+        setTimeout(() => {
+          console.log('hahaha');
+          refreshToken();
+        }, expiration.getTime() - new Date().getTime());
       }
     }
   }, []);
@@ -110,9 +114,23 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/" exact>
-            {isTokenValid && isOfficialUser ? <Redirect to={{ pathname: '/home' }} /> : <LandingPage />}
+            {isTokenValid && isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : isTokenValid ? (
+              <Redirect to={{ pathname: '/room/join' }} />
+            ) : (
+              <LandingPage />
+            )}
           </Route>
-          <Route path="/welcome">{isOfficialUser ? <Redirect to={{ pathname: '/home' }} /> : <WelcomePage />}</Route>
+          <Route path="/welcome">
+            {isOfficialUser ? (
+              <Redirect to={{ pathname: '/home' }} />
+            ) : isTokenValid ? (
+              <Redirect to={{ pathname: '/room/join' }} />
+            ) : (
+              <WelcomePage />
+            )}
+          </Route>
           <Route path="/signup" exact>
             {isTokenValid && isOfficialUser ? (
               <Redirect to={{ pathname: '/home' }} />
@@ -146,4 +164,13 @@ const App = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+if (window.innerWidth < 1024) {
+  ReactDOM.render(
+    <h3 style={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
+      Scrum Poker is not available on phone yet
+    </h3>,
+    document.getElementById('root')
+  );
+} else {
+  ReactDOM.render(<App />, document.getElementById('root'));
+}

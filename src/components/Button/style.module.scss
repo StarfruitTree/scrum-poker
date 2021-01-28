@@ -4,13 +4,11 @@
   align-items: center;
   outline: none;
   box-shadow: $lightShadow;
-  border-radius: $borderRadius;
+  border-radius: 3px;
   padding: $base;
   border: 1px solid $blue;
   background-color: $blue;
   color: $white;
-  width: fit-content;
-  cursor: pointer;
 
   &.secondary {
     background-color: $white;
@@ -27,11 +25,24 @@
     width: 100%;
   }
 
-  i {
+  .marginedIcon {
     margin-left: 1rem;
   }
 
   span {
-    font-weight: bold;
+    font-weight: 500;
   }
+}
+
+.small {
+  height: 6px;
+  width: 6px;
+}
+
+.square {
+  border-radius: 3px;
+}
+
+.pointer {
+  cursor: pointer;
 }

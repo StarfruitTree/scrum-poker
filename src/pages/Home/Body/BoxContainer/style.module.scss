@@ -8,12 +8,49 @@
 }
 
 .input {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
   box-shadow: $lightShadow;
 }
 
 .submit {
   display: flex;
   justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.jiraDomain {
+  margin: 0.5rem 0;
+}
+
+.roomCodeInput {
+  width: 350px;
+}
+
+.closeButton {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.loadingButton {
+  width: 94.81px;
+  height: 53px;
+}
+
+.okButton {
+  background-color: #276ef1;
+  border-radius: 3px;
+  height: 35px;
+  float: right;
+  margin-top: 1rem;
+}
+
+.description {
+  margin-bottom: 0.5rem;
 }

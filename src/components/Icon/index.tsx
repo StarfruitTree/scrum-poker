@@ -6,7 +6,7 @@ interface Props {
   name: string;
   size?: IconSize;
   className?: string;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent) => void;
 }
 
 const Icon: React.FC<Props> = ({ name, size, className = '', onClick }) => {

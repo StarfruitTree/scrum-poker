@@ -7,5 +7,9 @@
         public string Title { get; set; }
 
         public string Content { get; set; }
+
+        public bool IsJiraStory { get; set; }
+
+        public string JiraIssueId { get; set; }
     }
 }
