@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { Button, Typo, Input, Card, Checkbox } from '@scrpoker/components';
+import { Button, Typo, Input, Card } from '@scrpoker/components';
 import style from './style.module.scss';
 import { Actions } from '@scrpoker/store';
-import { getAuthHeader } from '@scrpoker/utils';
-import CookieReader from 'js-cookie';
 
 const USER_NAME = 'userName';
 const PASSWORD = 'password';
@@ -22,7 +20,7 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [isPersistentLogin, setIsPersistentLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
   const goBack = () => history.goBack();
@@ -34,7 +32,10 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
       alert('Password and email cannot be empty or white space');
     } else if (password.length < 6) {
       alert('Password should be at least 6 characters');
+    } else if (userName.length > 20) {
+      alert(`Username characters can't exceed 20 characters`);
     } else if (userName.trim() != '' && password && confirmPassword && email) {
+      setIsLoading(true);
       const signUpData: ISignUpData = {
         userName: userName.trim(),
         password: password,
@@ -43,6 +44,7 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
 
       try {
         const isSignUpSuccessful = await signUp(signUpData);
+        setIsLoading(false);
         if (isSignUpSuccessful) {
           setIsTokenValid(true);
           history.push('/home');
@@ -70,10 +72,6 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
     }
   };
 
-  const handleIsChecked = () => {
-    setIsPersistentLogin(!isPersistentLogin);
-  };
-
   return (
     <div className={style.container}>
       <Card width={450}>
@@ -90,13 +88,14 @@ const SignUp: React.FC<Props> = ({ signUp, setIsTokenValid }) => {
           onTextChange={handleTextChange}
           placeholder="Confirm your password"
         />
-        <div className={style.checkBoxContainer}>
-          <Checkbox isChecked={isPersistentLogin} checkHandler={handleIsChecked} />
-          <Typo>Keep me signed in</Typo>
-        </div>
-        <Button fullWidth onClick={submit}>
-          Create
-        </Button>
+        {isLoading ? (
+          <Button fullWidth className={style.loadingButton} icon={'fas fa-circle-notch fa-spin'}></Button>
+        ) : (
+          <Button fullWidth onClick={submit}>
+            Create
+          </Button>
+        )}
+
         <Button fullWidth secondary onClick={goBack}>
           Cancel
         </Button>
