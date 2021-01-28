@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  input {
+    margin-bottom: $base;
+  }
+
+  h2 {
+    margin-bottom: $base;
+  }
+
+  button {
+    margin-top: $base;
+  }
+
+  .avatar {
+    align-self: center;
+  }
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+
+    a {
+      color: #276ef1;
+      font-weight: 500;
+    }
+  }
+
+  .checkBoxContainer {
+    display: flex;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    align-items: center;
+    p {
+      margin-left: 0.5rem;
+      font-weight: 500;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typo, Icon } from '@scrpoker/components';
+import { useHistory } from 'react-router';
+import { Typo, Icon, Button } from '@scrpoker/components';
 import style from './style.module.scss';
 
 interface Data {
@@ -15,10 +16,10 @@ interface Props {
 
 const RoomInfo: React.FC<Props> = ({ data, className = '' }) => {
   const { roomName, description, roomCode, members } = data;
-
+  const history = useHistory();
   return (
     <div className={`${style.roomInfo} ${className}`}>
-      <Typo type="h1">{roomName}</Typo>
+      <Typo type="h2">{roomName}</Typo>
       <Typo>{description}</Typo>
       <hr className={style.dotted} />
       <Typo className={`${style.inline} ${style.light}`}>
@@ -34,6 +35,15 @@ const RoomInfo: React.FC<Props> = ({ data, className = '' }) => {
           {members}
         </Typo>
       </Typo>
+      <Button
+        className={style.leaveButton}
+        onClick={() => {
+          history.push('/home');
+        }}
+        icon="sign-out-alt"
+      >
+        Leave
+      </Button>
     </div>
   );
 };

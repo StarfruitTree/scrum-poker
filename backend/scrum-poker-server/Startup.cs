@@ -1,13 +1,21 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
+using Microsoft.IdentityModel.Tokens;
 using scrum_poker_server.Data;
 using scrum_poker_server.Hubs;
 using scrum_poker_server.HubServices;
+using scrum_poker_server.Utils.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace scrum_poker_server
 {
@@ -15,12 +23,14 @@ namespace scrum_poker_server
     {
         public IConfiguration _configuration { get; set; }
 
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment _env { get; set; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
+            _env = env;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
@@ -31,19 +41,60 @@ namespace scrum_poker_server
                            .AllowCredentials();
                   }));
 
-            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]))
+                };
 
-            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(_configuration.GetConnectionString("ScrumPokerConnection")));
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.Request.Path;
 
-            services.AddSignalR();
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/room"))
+                        {
+                            context.Token = accessToken;
+                        }
 
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("OfficialUsers", policyBuilder =>
+                {
+                    policyBuilder.RequireClaim(ClaimTypes.Email);
+                });
+
+                options.AddPolicy("AllUsers", policyBuilder =>
+                {
+                    policyBuilder.RequireClaim("UserId");
+                });
+            });
+
+            services.AddHttpClient();
+            services.RemoveAll<IHttpMessageHandlerBuilderFilter>();
+            services.AddControllers();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddSingleton<RoomService>();
+            services.AddSingleton<JwtTokenGenerator>();
+            services.AddSignalR();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -53,6 +104,10 @@ namespace scrum_poker_server
             app.UseCors("MyPolicy");
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
