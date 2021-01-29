@@ -138,27 +138,31 @@ const BoxContainer: React.FC<Props> = ({
   };
 
   const addJiraToken = async () => {
-    setIsLoading(true);
-    const data = {
-      jiraDomain,
-      jiraEmail,
-      apiToken,
-      roomCode: userRoomCode as string,
-    };
+    if (jiraDomain.length > 50 || (jiraToken as string).length > 50 || jiraEmail.length > 50) {
+      alert(`'Fields can't be too long`);
+    } else if (jiraEmail && jiraToken && jiraDomain) {
+      setIsLoading(true);
+      const data = {
+        jiraDomain,
+        jiraEmail,
+        apiToken,
+        roomCode: userRoomCode as string,
+      };
 
-    if (jiraDomain && jiraEmail && apiToken) {
-      const responseStatus = (await submitJiraUserCredentials(data)) as IJiraResponse;
-      setIsLoading(false);
+      if (jiraDomain && jiraEmail && apiToken) {
+        const responseStatus = (await submitJiraUserCredentials(data)) as IJiraResponse;
+        setIsLoading(false);
 
-      if (!responseStatus.isSuccessful) {
-        if (responseStatus.data?.error === 'The domain is not valid') {
-          showDomainWarningModal();
+        if (!responseStatus.isSuccessful) {
+          if (responseStatus.data?.error === 'The domain is not valid') {
+            showDomainWarningModal();
+          } else {
+            showTokenWarningModal();
+          }
         } else {
-          showTokenWarningModal();
+          showSuccessModal();
+          closeIntegrationModal();
         }
-      } else {
-        showSuccessModal();
-        closeIntegrationModal();
       }
     } else {
       alert('Fields cannot be empty');
