@@ -15,8 +15,6 @@ interface Props {
 }
 
 const Popup: React.FC<Props> = ({ submittedPoint, popUpState, className }) => {
-  console.log(popUpState.left);
-
   return submittedPoint && submittedPoint.length != 0 ? (
     <div
       style={{ left: popUpState.left, top: popUpState.top }}

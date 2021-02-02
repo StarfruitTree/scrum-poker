@@ -108,7 +108,7 @@ const StoriesContainer: React.FC<Props> = ({
       const response = await fetch(FETCH_JIRA_STORIES, {
         method: 'POST',
         headers: {
-          Authorization: getAuthHeader() as string,
+          Authorization: getAuthHeader(),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
@@ -116,8 +116,6 @@ const StoriesContainer: React.FC<Props> = ({
 
       if (response.status === 'Ok') {
         const jsonObject = JSON.parse(response.content);
-
-        console.log(jsonObject);
 
         const issues = jsonObject.sections[0].issues as Array<IIssueResponse>;
 
@@ -128,13 +126,14 @@ const StoriesContainer: React.FC<Props> = ({
             issueTypeLink: `https://${jiraDomain}/${s.img}`,
           };
         });
-        setFetching(false);
         setJiraStories(jiraStories);
       } else {
         setJiraStories([]);
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setFetching(false);
     }
   };
 
@@ -172,7 +171,7 @@ const StoriesContainer: React.FC<Props> = ({
           body: JSON.stringify(storyData),
           headers: {
             'Content-Type': 'application/json',
-            Authorization: getAuthHeader() as string,
+            Authorization: getAuthHeader(),
           },
         });
 
@@ -325,7 +324,7 @@ const StoriesContainer: React.FC<Props> = ({
                     await fetch(DELETE_STORY, {
                       method: 'DELETE',
                       headers: {
-                        Authorization: getAuthHeader() as string,
+                        Authorization: getAuthHeader(),
                         'Content-Type': 'application/json',
                       },
                       body: JSON.stringify(requestBody),

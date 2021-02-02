@@ -41,7 +41,7 @@ const Body: React.FC<Props> = ({
     if (roomId) {
       const response = await fetch(GET_ROOM_STORIES(roomId), {
         headers: {
-          Authorization: getAuthHeader() as string,
+          Authorization: getAuthHeader(),
         },
       });
       const stories = (await response.json()).stories as IStory[];
@@ -62,7 +62,7 @@ const Body: React.FC<Props> = ({
   const storyAddedCallback = async ({ id }: IStoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`, {
       headers: {
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     });
     const data = await response.json();
@@ -94,7 +94,7 @@ const Body: React.FC<Props> = ({
   const storyUpdatedCallback = async ({ id }: IStoryData) => {
     const response = await fetch(`${GET_STORY}/${id}`, {
       headers: {
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     });
 

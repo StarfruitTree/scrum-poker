@@ -52,7 +52,7 @@ const JiraStoriesTable: React.FC<Props> = ({
     const response = await fetch(ADD_JIRA_STORY, {
       method: 'POST',
       body: JSON.stringify(requestBody),
-      headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader() as string },
+      headers: { 'Content-Type': 'application/json', Authorization: getAuthHeader() },
     });
 
     if (response.status === 401) {

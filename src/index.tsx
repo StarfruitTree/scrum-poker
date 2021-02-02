@@ -20,7 +20,7 @@ const App = () => {
     fetch(REFRESH_TOKEN, {
       method: 'GET',
       headers: {
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     })
       .then((response) => response.json())
@@ -40,7 +40,7 @@ const App = () => {
     fetch(AUTHENTICATE, {
       method: 'POST',
       headers: {
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     })
       .then((response) => {
@@ -72,7 +72,7 @@ const App = () => {
       body: JSON.stringify(joinRoomData),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     })
       .then((response) => response.json())
@@ -90,19 +90,15 @@ const App = () => {
   useEffect(() => {
     if (isTokenValid) {
       authenticate();
-      if (currentPath.includes('/room')) {
-        if (!currentPath.includes('/room/join')) {
-          joinRoom();
-        }
+      if (currentPath.includes('/room') && !currentPath.includes('/room/join')) {
+        joinRoom();
       }
       const expiration = new Date(CookieReader.get('tokenExpiration') as string);
       if (expiration.getTime() - new Date().getTime() <= 300000) {
-        console.log('hihihi');
         refreshToken();
       } else {
         expiration.setMinutes(expiration.getMinutes() - 5);
         setTimeout(() => {
-          console.log('hahaha');
           refreshToken();
         }, expiration.getTime() - new Date().getTime());
       }

@@ -1,10 +1,6 @@
-interface callback {
-  (): void;
-}
-
 let timeoutID: number;
 
-const debounce = (callback: callback, delay: number): void => {
+const debounce = (callback: () => void, delay: number): void => {
   if (timeoutID) {
     clearTimeout(timeoutID);
   }

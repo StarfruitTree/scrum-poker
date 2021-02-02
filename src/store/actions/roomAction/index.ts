@@ -24,7 +24,7 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
     body: JSON.stringify(joinRoomData),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: getAuthHeader() as string,
+      Authorization: getAuthHeader(),
     },
   })
     .then((response) => response.json())
@@ -32,8 +32,6 @@ export const joinRoom = (roomCode: string): ThunkAction<Promise<void>, IGlobalSt
       if (jiraDomain) {
         GlobalRoomJiraDomain.roomJiraDomain = jiraDomain;
       }
-
-      console.log(jiraDomain);
 
       dispatch({
         type: 'UPDATE_ROOM_INFO',

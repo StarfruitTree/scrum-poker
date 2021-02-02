@@ -150,18 +150,24 @@ const BoxContainer: React.FC<Props> = ({
       };
 
       if (jiraDomain && jiraEmail && apiToken) {
-        const responseStatus = (await submitJiraUserCredentials(data)) as IJiraResponse;
-        setIsLoading(false);
+        try {
+          const responseStatus = (await submitJiraUserCredentials(data)) as IJiraResponse;
+          setIsLoading(false);
 
-        if (!responseStatus.isSuccessful) {
-          if (responseStatus.data?.error === 'The domain is not valid') {
-            showDomainWarningModal();
+          if (!responseStatus.isSuccessful) {
+            if (responseStatus.data?.error === 'The domain is not valid') {
+              showDomainWarningModal();
+            } else {
+              showTokenWarningModal();
+            }
           } else {
-            showTokenWarningModal();
+            showSuccessModal();
+            closeIntegrationModal();
           }
-        } else {
-          showSuccessModal();
-          closeIntegrationModal();
+        } catch (err) {
+          console.log(err);
+        } finally {
+          setIsLoading(false);
         }
       }
     } else {
@@ -176,7 +182,7 @@ const BoxContainer: React.FC<Props> = ({
       onClick: async () => {
         const roomStatus: IRoomStatus = await fetch(CHECK_ROOM(userRoomCode as string), {
           headers: {
-            Authorization: getAuthHeader() as string,
+            Authorization: getAuthHeader(),
           },
         }).then((response) => {
           if (response.ok) {

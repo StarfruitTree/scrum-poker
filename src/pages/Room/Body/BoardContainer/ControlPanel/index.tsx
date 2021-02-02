@@ -74,7 +74,7 @@ const ControlPanel: React.FC<Props> = ({
       body: JSON.stringify(submitPointData),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     });
   };
@@ -89,7 +89,7 @@ const ControlPanel: React.FC<Props> = ({
     await fetch(SUBMIT_POINT, {
       method: 'POST',
       headers: {
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(storyData),
@@ -107,7 +107,7 @@ const ControlPanel: React.FC<Props> = ({
     fetch(SUBMIT_JIRA_POINT, {
       method: 'POST',
       headers: {
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(jiraStoryData),
@@ -131,7 +131,7 @@ const ControlPanel: React.FC<Props> = ({
       body: JSON.stringify(submitPointData),
       headers: {
         'Content-Type': 'application/json',
-        Authorization: getAuthHeader() as string,
+        Authorization: getAuthHeader(),
       },
     });
   };

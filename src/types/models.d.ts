@@ -30,7 +30,7 @@ interface IStory {
 }
 
 interface IRoomData {
-  roomId: number | undefined;
+  roomId?: number;
   roomCode: string;
   roomName: string;
   roomState: string;
@@ -40,8 +40,8 @@ interface IRoomData {
   submittedUsers: number;
   point: number;
   isLocked: boolean;
-  role: number | undefined;
-  currentStory: IStory | undefined;
+  role?: number;
+  currentStory?: IStory;
   currentStoryPoint: number;
   jiraIssueIds: string[];
 }
@@ -62,8 +62,8 @@ interface IUserData {
   userId: number;
   name: string;
   action: number;
-  userRoomCode: string | undefined;
-  email: string | undefined;
+  userRoomCode?: string;
+  email?: string;
 }
 
 interface IUserInfoResponse {
@@ -88,8 +88,8 @@ interface IJiraUserCredentials {
 interface IUserInfoPayload {
   userId: number;
   name: string;
-  userRoomCode: string | undefined;
-  email: string | undefined;
+  userRoomCode?: string;
+  email?: string;
   jiraToken?: string;
   jiraDomain?: string;
 }

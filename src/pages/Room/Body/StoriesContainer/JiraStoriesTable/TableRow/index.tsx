@@ -26,7 +26,7 @@ const TableRow: React.FC<Props> = ({ storyState, issueKey, summary, issueTypeLin
         <Button
           square={true}
           small={true}
-          pointerCursor={storyState === 'notAdded' ? true : false}
+          pointerCursor={storyState === 'notAdded'}
           icon={storyState === 'notAdded' ? 'plus' : storyState === 'adding' ? 'fas fa-circle-notch fa-spin' : 'check'}
           onClick={storyState === 'notAdded' ? onclick : undefined}
         ></Button>

@@ -87,28 +87,28 @@ export const login = (
       }: IUserInfoResponse) => {
         if (isLoginFailed) {
           return false;
-        } else {
-          const date = new Date();
-          date.setMinutes(date.getMinutes() + expiration);
-          document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
-          document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
-          if (email) {
-            document.cookie = `officialUser=thisuserhasemail;expires=${date};path=/`;
-          }
-
-          const userInfo: IUserInfoPayload = {
-            userId,
-            name,
-            userRoomCode,
-            email,
-            jiraToken,
-            jiraDomain,
-          };
-
-          dispatch(Actions.userActions.updateUserInfo(userInfo));
-
-          return true;
         }
+
+        const date = new Date();
+        date.setMinutes(date.getMinutes() + expiration);
+        document.cookie = `jwtToken=${jwtToken};expires=${date};path=/`;
+        document.cookie = `tokenExpiration=${date.toString()};expires=${date};path=/`;
+        if (email) {
+          document.cookie = `officialUser=thisuserhasemail;expires=${date};path=/`;
+        }
+
+        const userInfo: IUserInfoPayload = {
+          userId,
+          name,
+          userRoomCode,
+          email,
+          jiraToken,
+          jiraDomain,
+        };
+
+        dispatch(Actions.userActions.updateUserInfo(userInfo));
+
+        return true;
       }
     )
     .catch((err) => console.log(err));
@@ -119,7 +119,7 @@ export const authenticate = (): ThunkAction<Promise<void>, IGlobalState, unknown
   fetch(AUTHENTICATE, {
     method: 'POST',
     headers: {
-      Authorization: getAuthHeader() as string,
+      Authorization: getAuthHeader(),
     },
   })
     .then((response) => response.json())
@@ -144,7 +144,7 @@ export const submitJiraUserCredentials = (
     body: JSON.stringify(data),
     method: 'POST',
     headers: {
-      Authorization: getAuthHeader() as string,
+      Authorization: getAuthHeader(),
       'Content-Type': 'application/json',
     },
   })
@@ -190,7 +190,7 @@ export const changeName = (
   fetch(CHANGE_NAME, {
     method: 'POST',
     headers: {
-      Authorization: getAuthHeader() as string,
+      Authorization: getAuthHeader(),
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(changeNameData),
